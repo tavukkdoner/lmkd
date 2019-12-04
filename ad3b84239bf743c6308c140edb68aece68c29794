@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6388d722_923e72a4",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 651,
+      "author": {
+        "id": 1108565
+      },
+      "writtenOn": "2019-12-04T21:24:25Z",
+      "side": 1,
+      "message": "haha :).",
+      "range": {
+        "startLine": 651,
+        "startChar": 75,
+        "endLine": 651,
+        "endChar": 86
+      },
+      "revId": "ad3b84239bf743c6308c140edb68aece68c29794",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
