@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3066725e_cd2d4147",
+        "filename": "tests/lmkd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-12-18T17:36:28Z",
+      "side": 1,
+      "message": "if (!ReadFileToString(\"/proc/self/cmdline\", \u0026name)) {\n        PLOG(ERROR) \u003c\u003c \"Failed to read /proc/self/cmdline\";\n        return false;\n}\nreturn true;",
+      "range": {
+        "startLine": 115,
+        "startChar": 0,
+        "endLine": 127,
+        "endChar": 19
+      },
+      "revId": "0a9dffbcf11222833c079c9783901586e52ea019",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
