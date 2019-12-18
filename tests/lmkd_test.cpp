@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <fstream>
+#include <iostream>
 #include <sstream>
 #include <stdio.h>
 #include <string.h>
@@ -109,14 +111,20 @@ std::string getTextAround(const std::string& text, size_t pos,
                        std::string::npos : pos - start_pos);
 }
 
-bool getExecPath(std::string &path) {
-    char buf[PATH_MAX + 1];
-    int ret = readlink("/proc/self/exe", buf, sizeof(buf) - 1);
-    if (ret < 0) {
+bool getTaskName(std::string &name) {
+    std::ifstream ifs("/proc/self/cmdline");
+    std::string cmdline;
+    if (!ifs.is_open()) {
         return false;
     }
-    buf[ret] = '\0';
-    path = buf;
+    ifs >> cmdline;
+
+    size_t idx = cmdline.find('\0');
+    if (idx != std::string::npos) {
+        cmdline = cmdline.substr(0, idx);
+    }
+
+    name = cmdline;
     return true;
 }
 
@@ -308,15 +316,15 @@ TEST(lmkd, check_for_oom) {
     ASSERT_TRUE(writeKmsg(marker));
 
     // get executable complete path
-    std::string test_path;
-    ASSERT_TRUE(getExecPath(test_path));
+    std::string task_name;
+    ASSERT_TRUE(getTaskName(task_name));
 
     std::string test_output;
     if (getuid() != static_cast<unsigned>(AID_ROOT)) {
         // if not root respawn itself as root and capture output
         std::string command = StringPrintf(
             "%s=true su root %s 2>&1", LMKDTEST_RESPAWN_FLAG,
-            test_path.c_str());
+            task_name.c_str());
         std::string test_output = readCommand(command);
         GTEST_LOG_(INFO) << test_output;
     } else {
@@ -332,7 +340,7 @@ TEST(lmkd, check_for_oom) {
     std::stringstream kill_logs;
     int hit_count = 0;
     size_t pos = 0;
-    marker = StringPrintf(LMKD_KILL_MARKER_TEMPLATE, test_path.c_str());
+    marker = StringPrintf(LMKD_KILL_MARKER_TEMPLATE, task_name.c_str());
 
     while (true) {
         if ((pos = logcat_out.find(marker, pos)) != std::string::npos) {
