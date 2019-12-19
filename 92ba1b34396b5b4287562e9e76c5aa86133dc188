@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bc3b6f6b_4312f388",
+        "filename": "tests/lmkd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2019-12-19T22:51:27Z",
+      "side": 1,
+      "message": "do you need this?\ncode always use task_name.c_str() which as c_str() and it should always terminate at the first NUL\n\nalso I think you can just do which use the name will be copied from C string which terminate at first NUL also\nname \u003d cmdline.c_str();",
+      "range": {
+        "startLine": 119,
+        "startChar": 0,
+        "endLine": 123,
+        "endChar": 5
+      },
+      "revId": "92ba1b34396b5b4287562e9e76c5aa86133dc188",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
