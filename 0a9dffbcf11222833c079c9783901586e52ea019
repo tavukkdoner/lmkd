@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "490d7acb_a6086941",
+        "filename": "tests/lmkd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1323232
+      },
+      "writtenOn": "2019-12-19T09:30:34Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "fa0cff1d_517e008c",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 19
+      },
+      "revId": "0a9dffbcf11222833c079c9783901586e52ea019",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3066725e_cd2d4147",
         "filename": "tests/lmkd_test.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-12-18T17:36:28Z",
       "side": 1,
       "message": "if (!ReadFileToString(\"/proc/self/cmdline\", \u0026name)) {\n        PLOG(ERROR) \u003c\u003c \"Failed to read /proc/self/cmdline\";\n        return false;\n}\nreturn true;",
+      "range": {
+        "startLine": 115,
+        "startChar": 0,
+        "endLine": 127,
+        "endChar": 19
+      },
+      "revId": "0a9dffbcf11222833c079c9783901586e52ea019",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1e628f54_b779e690",
+        "filename": "tests/lmkd_test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1323232
+      },
+      "writtenOn": "2019-12-19T09:30:34Z",
+      "side": 1,
+      "message": "Thanks for the information. I used ReadFiletoString part which make code much clear and keep filtering parameters code to align with lmkd.\n\nhttp://cs/android/system/memory/lmkd/lmkd.cpp?l\u003d1013\u0026rcl\u003d053c05d93d9c6ac611ef3ba1b6a9f33d863837d0",
+      "parentUuid": "3066725e_cd2d4147",
       "range": {
         "startLine": 115,
         "startChar": 0,
