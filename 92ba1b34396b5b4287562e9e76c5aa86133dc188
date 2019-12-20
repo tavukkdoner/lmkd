@@ -22,6 +22,30 @@
       "revId": "92ba1b34396b5b4287562e9e76c5aa86133dc188",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05b2e35e_ac8337ce",
+        "filename": "tests/lmkd_test.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1323232
+      },
+      "writtenOn": "2019-12-20T03:24:56Z",
+      "side": 1,
+      "message": "Yup, we could use name \u003d cmdline.c_str() to filter out. I didn\u0027t think that way. Thanks for the hint.",
+      "parentUuid": "bc3b6f6b_4312f388",
+      "range": {
+        "startLine": 119,
+        "startChar": 0,
+        "endLine": 123,
+        "endChar": 5
+      },
+      "revId": "92ba1b34396b5b4287562e9e76c5aa86133dc188",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
