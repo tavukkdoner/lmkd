@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4e3f0a12_11097d97",
+        "filename": "Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2019-12-24T00:12:17Z",
+      "side": 1,
+      "message": "What are the size implications of linking lmkd to libutils? We are trying to keep lmkd footprint as small as possible because it is locked in memory (see mlockall() in lmkd.cpp). If overhead is high consider not using libutils.\n\n+tomcherry@ and enh@ to be aware of new users of libutils.",
+      "range": {
+        "startLine": 22,
+        "startChar": 9,
+        "endLine": 22,
+        "endChar": 17
+      },
+      "revId": "5e7bc55a304fa86a4a2e608967379dd2ee6d7de3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
