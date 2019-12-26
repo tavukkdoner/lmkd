@@ -22,6 +22,30 @@
       "revId": "5e7bc55a304fa86a4a2e608967379dd2ee6d7de3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d395b28f_b5e3664e",
+        "filename": "Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1431413
+      },
+      "writtenOn": "2019-12-26T23:31:12Z",
+      "side": 1,
+      "message": "I\u0027m not sure. We\u0027re only making use of SystemClock from libutils I believe to get the current timestamp. The new autogen codepath (disabled by a build time flag currently) uses C so the dependency on SystemClock and libutils should go away once that flag is turned on. If the overhead is high, we can continue hand-writing the logging code until the flag is turned on.",
+      "parentUuid": "4e3f0a12_11097d97",
+      "range": {
+        "startLine": 22,
+        "startChar": 9,
+        "endLine": 22,
+        "endChar": 17
+      },
+      "revId": "5e7bc55a304fa86a4a2e608967379dd2ee6d7de3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
