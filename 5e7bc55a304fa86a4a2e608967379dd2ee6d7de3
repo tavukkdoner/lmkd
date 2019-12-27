@@ -46,6 +46,30 @@
       "revId": "5e7bc55a304fa86a4a2e608967379dd2ee6d7de3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fc77da1a_80de4cd5",
+        "filename": "Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2019-12-27T21:16:54Z",
+      "side": 1,
+      "message": "You probably don\u0027t want to bring in libutils.  It has at least some global state, https://cs.android.com/android/platform/superproject/+/master:system/core/libutils/misc.cpp;bpv\u003d0;bpt\u003d0;l\u003d43, so you\u0027ll waste at least a page on that.  It\u0027s probably not a huge cost, but non-zero.",
+      "parentUuid": "d395b28f_b5e3664e",
+      "range": {
+        "startLine": 22,
+        "startChar": 9,
+        "endLine": 22,
+        "endChar": 17
+      },
+      "revId": "5e7bc55a304fa86a4a2e608967379dd2ee6d7de3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
