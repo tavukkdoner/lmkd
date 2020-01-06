@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "62202143_90867e58",
+        "filename": "statslog.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-01-06T17:19:50Z",
+      "side": 0,
+      "message": "I assume all the removed parts are now auto-generated, so will rely on your testing and verification for correctness of that.",
+      "range": {
+        "startLine": 54,
+        "startChar": 0,
+        "endLine": 66,
+        "endChar": 1
+      },
+      "revId": "f2ead0ca1a2f5f432a51028f886f4e7d55a62d55",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
