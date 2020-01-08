@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "65ea4e9a_56cc31d0",
+        "filename": "Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1431413
+      },
+      "writtenOn": "2020-01-08T22:27:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b229ba99_1cc58de9",
+      "range": {
+        "startLine": 25,
+        "startChar": 28,
+        "endLine": 25,
+        "endChar": 51
+      },
+      "revId": "1d8a83bf86bb9f09afc8a23c4826f8127d8a4919",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "841c9d0c_c1a86600",
         "filename": "Android.bp",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "1d8a83bf86bb9f09afc8a23c4826f8127d8a4919",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6bfdfa79_196b3900",
+        "filename": "Android.bp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1431413
+      },
+      "writtenOn": "2020-01-08T22:27:15Z",
+      "side": 1,
+      "message": "Without change:\nVmLck:     34568 kB\n\nWith change:\nVmLck:     34568 kB",
+      "parentUuid": "841c9d0c_c1a86600",
+      "range": {
+        "startLine": 47,
+        "startChar": 9,
+        "endLine": 47,
+        "endChar": 25
+      },
+      "revId": "1d8a83bf86bb9f09afc8a23c4826f8127d8a4919",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
