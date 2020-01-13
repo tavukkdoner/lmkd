@@ -16,6 +16,24 @@
       "revId": "d6ee0854ae3b39e8fc321d37064fdb86d566be64",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2e283933_74434fe5",
+        "filename": "statslog.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1431413
+      },
+      "writtenOn": "2020-01-13T20:17:59Z",
+      "side": 1,
+      "message": "Yes, good catch!",
+      "parentUuid": "2bd87f49_5ee7a2b8",
+      "revId": "d6ee0854ae3b39e8fc321d37064fdb86d566be64",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
