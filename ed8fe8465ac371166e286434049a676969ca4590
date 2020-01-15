@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2d2a8569_7607f693",
+        "filename": "Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1286922
+      },
+      "writtenOn": "2020-01-15T02:40:50Z",
+      "side": 1,
+      "message": "+suren,\nis this the correct namespace?",
+      "range": {
+        "startLine": 54,
+        "startChar": 91,
+        "endLine": 54,
+        "endChar": 100
+      },
+      "revId": "ed8fe8465ac371166e286434049a676969ca4590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cf8c8123_efb3d278",
+        "filename": "statslog.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1286922
+      },
+      "writtenOn": "2020-01-15T02:40:50Z",
+      "side": 1,
+      "message": "why are these default implementations necessary?",
+      "range": {
+        "startLine": 98,
+        "startChar": 77,
+        "endLine": 98,
+        "endChar": 83
+      },
+      "revId": "ed8fe8465ac371166e286434049a676969ca4590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
