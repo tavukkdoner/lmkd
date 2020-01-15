@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5cea9b5d_7030da36",
+        "filename": "Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-01-15T02:48:37Z",
+      "side": 1,
+      "message": "lmkd did not use namespaces before, so this is a new addition. I don\u0027t object to using it.",
+      "parentUuid": "2d2a8569_7607f693",
+      "range": {
+        "startLine": 54,
+        "startChar": 91,
+        "endLine": 54,
+        "endChar": 100
+      },
+      "revId": "ed8fe8465ac371166e286434049a676969ca4590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cf8c8123_efb3d278",
         "filename": "statslog.h",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2020-01-15T02:40:50Z",
       "side": 1,
       "message": "why are these default implementations necessary?",
+      "range": {
+        "startLine": 98,
+        "startChar": 77,
+        "endLine": 98,
+        "endChar": 83
+      },
+      "revId": "ed8fe8465ac371166e286434049a676969ca4590",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a516c79_fc708d17",
+        "filename": "statslog.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-01-15T02:48:37Z",
+      "side": 1,
+      "message": "For the case when vendor does not want to enable stats logging by setting use_lmkd_stats_log\u003dfalse, which in turn undefs LMKD_LOG_STATS. lmkd currently does not check the return value, so in such configuration these calls become NoOps.",
+      "parentUuid": "cf8c8123_efb3d278",
       "range": {
         "startLine": 98,
         "startChar": 77,
