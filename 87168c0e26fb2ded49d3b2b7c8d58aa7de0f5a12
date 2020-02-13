@@ -16,6 +16,24 @@
       "revId": "87168c0e26fb2ded49d3b2b7c8d58aa7de0f5a12",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4aad10a6_fa2fbf99",
+        "filename": "Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1431413
+      },
+      "writtenOn": "2020-02-13T07:25:13Z",
+      "side": 1,
+      "message": "yeah doesn\u0027t compile otherwise",
+      "parentUuid": "26a6e555_bcaba4ec",
+      "revId": "87168c0e26fb2ded49d3b2b7c8d58aa7de0f5a12",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
