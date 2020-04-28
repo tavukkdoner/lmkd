@@ -48,6 +48,14 @@ int lmkd_register_proc(int sock, struct lmk_procprio *params);
 int lmkd_unregister_proc(int sock, struct lmk_procremove *params);
 
 /*
+ * Updates lmkd properties.
+ * On success returns 0.
+ * On error, -1 is returned.
+ * In the case of error errno is set appropriately.
+ */
+int lmkd_update_props(int sock);
+
+/*
  * Creates memcg directory for given process.
  * On success returns 0.
  * -1 is returned if path creation failed.
