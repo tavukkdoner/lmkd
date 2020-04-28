@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cd263631_fe148317",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1434,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-04-28T23:29:47Z",
+      "side": 1,
+      "message": "crash ?",
+      "range": {
+        "startLine": 1434,
+        "startChar": 52,
+        "endLine": 1434,
+        "endChar": 57
+      },
+      "revId": "954e636483fa975a52ec2e1c59b0c33e44d6fc52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c38bf4f1_607ae408",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2836,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-04-28T23:29:47Z",
+      "side": 1,
+      "message": "fwiw, now that this is C++, void isn\u0027t needed or encouraged in empty parameter lists.",
+      "range": {
+        "startLine": 2836,
+        "startChar": 26,
+        "endLine": 2836,
+        "endChar": 30
+      },
+      "revId": "954e636483fa975a52ec2e1c59b0c33e44d6fc52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e414c362_2a013a95",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3163,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-04-28T23:29:47Z",
+      "side": 1,
+      "message": "This isn\u0027t being used.  Copy/paste left overs?",
+      "range": {
+        "startLine": 3161,
+        "startChar": 4,
+        "endLine": 3163,
+        "endChar": 6
+      },
+      "revId": "954e636483fa975a52ec2e1c59b0c33e44d6fc52",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
