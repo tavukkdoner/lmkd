@@ -16,6 +16,24 @@
       "revId": "1d0ebeaa9c0d7410c347622ccf16942efde0c20c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2593550b_24453e61",
+        "filename": "liblmkd_utils.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-05-08T14:43:39Z",
+      "side": 1,
+      "message": "Good catch.  I\u0027m surprised the compiler didn\u0027t check this.  Is it in -Wextra, which I don\u0027t see enabled for lmkd?  It\u0027s probably worth enabling that to catch more errors.",
+      "parentUuid": "70d1b34d_996276d8",
+      "revId": "1d0ebeaa9c0d7410c347622ccf16942efde0c20c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
