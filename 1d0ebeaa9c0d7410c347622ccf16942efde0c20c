@@ -34,6 +34,24 @@
       "revId": "1d0ebeaa9c0d7410c347622ccf16942efde0c20c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d48a760d_90e214fa",
+        "filename": "liblmkd_utils.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2020-05-08T14:53:06Z",
+      "side": 1,
+      "message": "I don\u0027t know if it\u0027s in -Wextra (but +1 to enabling more warnings in general, including here).  I caught it via a static analysis tool (cppcheck) which I occasionally run (but which has a number of false positives, so unfortunately can\u0027t really be automated).",
+      "parentUuid": "2593550b_24453e61",
+      "revId": "1d0ebeaa9c0d7410c347622ccf16942efde0c20c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
