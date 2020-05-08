@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "70d1b34d_996276d8",
+        "filename": "liblmkd_utils.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1096713
+      },
+      "writtenOn": "2020-05-08T14:14:39Z",
+      "side": 1,
+      "message": "Since \u0027size\u0027 is of type size_t, which is unsigned, this will always be false and we won\u0027t catch this error.  read() returns a ssize_t, and I think we want to use an ssize_t here.  I don\u0027t know how we want to mix that with the other uses of \u0027size\u0027 in here (write() does us a size_t, not an ssize_t, for it\u0027s argument), perhaps just a cast for this comparison?  Whatever we chose, it seems like we should change this code (or remove this check if it\u0027s not important).  Thanks!",
+      "revId": "1d0ebeaa9c0d7410c347622ccf16942efde0c20c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
