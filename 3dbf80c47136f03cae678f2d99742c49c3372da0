@@ -22,6 +22,30 @@
       "revId": "3dbf80c47136f03cae678f2d99742c49c3372da0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "442894d7_edcc1de4",
+        "filename": "Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-05-12T02:46:48Z",
+      "side": 1,
+      "message": "Hmm. I did see a difference when I added -Wall first and then incrementally added -Wextra. After each step I\u0027ve got more errors reported.",
+      "parentUuid": "93164b29_32914360",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 18
+      },
+      "revId": "3dbf80c47136f03cae678f2d99742c49c3372da0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
     }
   ]
 }
