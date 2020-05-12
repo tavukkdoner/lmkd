@@ -204,6 +204,7 @@ static int psi_complete_stall_ms;
 static int thrashing_limit_pct;
 static int thrashing_limit_decay_pct;
 static int swap_util_max;
+static int kill_min_score_adj;
 static bool use_psi_monitors = false;
 static int kpoll_fd;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
@@ -2397,12 +2398,14 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         snprintf(kill_desc, sizeof(kill_desc), "device is low on swap (%" PRId64
             "kB < %" PRId64 "kB) and thrashing (%" PRId64 "%%)",
             mi.field.free_swap * page_k, swap_low_threshold * page_k, thrashing);
+        min_score_adj = kill_min_score_adj;
     } else if (swap_is_low && wmark < WMARK_HIGH) {
         /* Both free memory and swap are low */
         kill_reason = LOW_MEM_AND_SWAP;
         snprintf(kill_desc, sizeof(kill_desc), "%s watermark is breached and swap is low (%"
             PRId64 "kB < %" PRId64 "kB)", wmark > WMARK_LOW ? "min" : "low",
             mi.field.free_swap * page_k, swap_low_threshold * page_k);
+        min_score_adj = kill_min_score_adj;
     } else if (wmark < WMARK_HIGH && swap_util_max < 100 &&
                (swap_util = calc_swap_utilization(&mi)) > swap_util_max) {
         /*
@@ -2413,6 +2416,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         snprintf(kill_desc, sizeof(kill_desc), "%s watermark is breached and swap utilization"
             " is high (%d%% > %d%%)", wmark > WMARK_LOW ? "min" : "low",
             swap_util, swap_util_max);
+        min_score_adj = kill_min_score_adj;
     } else if (wmark < WMARK_HIGH && thrashing > thrashing_limit) {
         /* Page cache is thrashing while memory is low */
         kill_reason = LOW_MEM_AND_THRASHING;
@@ -3225,6 +3229,7 @@ static void update_props() {
     thrashing_limit_decay_pct = clamp(0, 100, property_get_int32("ro.lmk.thrashing_limit_decay",
         low_ram_device ? DEF_THRASHING_DECAY_LOWRAM : DEF_THRASHING_DECAY));
     swap_util_max = clamp(0, 100, property_get_int32("ro.lmk.swap_util_max", 100));
+    kill_min_score_adj = property_get_int32("ro.lmk.kill_min_score_adj", 0);
 }
 
 int main(int argc, char **argv) {
