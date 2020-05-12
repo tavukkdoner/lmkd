@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "93164b29_32914360",
+        "filename": "Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1064128
+      },
+      "writtenOn": "2020-05-12T00:12:54Z",
+      "side": 1,
+      "message": "enh@ and others pointed to me in a different CL that -Wall and -Werror are on by default now.  It should be only -Wextra that\u0027s needed.",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 18
+      },
+      "revId": "3dbf80c47136f03cae678f2d99742c49c3372da0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
