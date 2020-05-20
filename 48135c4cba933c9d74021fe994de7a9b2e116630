@@ -1,0 +1,10 @@
+Open-Source-Licensing+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Verified+1: Suren Baghdasaryan <surenb@google.com>
+Code-Review+2: Mark Salyzyn <salyzyn@google.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Lint+1: Lint 🤖 <android-build-prod-ayeaye@system.gserviceaccount.com>
+Submitted-by: Suren Baghdasaryan <surenb@google.com>
+Submitted-at: Wed, 20 May 2020 20:47:28 +0000
+Reviewed-on: https://android-review.googlesource.com/c/platform/system/memory/lmkd/+/1314689
+Project: platform/system/memory/lmkd
+Branch: refs/heads/master
