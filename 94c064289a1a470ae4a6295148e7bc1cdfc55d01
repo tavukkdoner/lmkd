@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "62a23ae8_fc0a8c97",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2400,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-06-02T15:39:18Z",
+      "side": 1,
+      "message": "this should be wmark \u003e WMARK_MIN or wmark \u003e\u003d WMARK_LOW",
+      "range": {
+        "startLine": 2400,
+        "startChar": 12,
+        "endLine": 2400,
+        "endChar": 29
+      },
+      "revId": "94c064289a1a470ae4a6295148e7bc1cdfc55d01",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
