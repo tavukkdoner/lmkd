@@ -22,6 +22,30 @@
       "revId": "94c064289a1a470ae4a6295148e7bc1cdfc55d01",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "97adb44f_eb75b3b9",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2400,
+      "author": {
+        "id": 1323232
+      },
+      "writtenOn": "2020-06-02T15:45:39Z",
+      "side": 1,
+      "message": "Yup, Suren. You are correct! Thanks.",
+      "parentUuid": "62a23ae8_fc0a8c97",
+      "range": {
+        "startLine": 2400,
+        "startChar": 12,
+        "endLine": 2400,
+        "endChar": 29
+      },
+      "revId": "94c064289a1a470ae4a6295148e7bc1cdfc55d01",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
