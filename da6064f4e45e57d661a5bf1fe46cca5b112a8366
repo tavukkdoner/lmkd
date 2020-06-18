@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "57484196_861de725",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2333,
+      "author": {
+        "id": 1323232
+      },
+      "writtenOn": "2020-06-18T14:28:58Z",
+      "side": 1,
+      "message": "Do we want to add some trace to show what the memory status we actually get? Then it could help understand why we don\u0027t kill a process? or we could add into common part of vmstat_parser and  meminfo_parse.",
+      "range": {
+        "startLine": 2325,
+        "startChar": 0,
+        "endLine": 2333,
+        "endChar": 5
+      },
+      "revId": "da6064f4e45e57d661a5bf1fe46cca5b112a8366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c93288a9_38e37c19",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2385,
+      "author": {
+        "id": 1323232
+      },
+      "writtenOn": "2020-06-18T14:28:58Z",
+      "side": 1,
+      "message": "Do you think we need trace in zoneinfo_parse to get memory status? The reason is to help understand lmkd judgement.",
+      "range": {
+        "startLine": 2385,
+        "startChar": 12,
+        "endLine": 2385,
+        "endChar": 31
+      },
+      "revId": "da6064f4e45e57d661a5bf1fe46cca5b112a8366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "21b9b490_1439de4f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2595,
+      "author": {
+        "id": 1323232
+      },
+      "writtenOn": "2020-06-18T14:28:58Z",
+      "side": 1,
+      "message": "same as above mp_event_psi() memory status trace.",
+      "range": {
+        "startLine": 2595,
+        "startChar": 4,
+        "endLine": 2595,
+        "endChar": 60
+      },
+      "revId": "da6064f4e45e57d661a5bf1fe46cca5b112a8366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
