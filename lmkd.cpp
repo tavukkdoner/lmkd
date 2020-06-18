@@ -53,6 +53,15 @@
 
 #include "statslog.h"
 
+#define LMKD_STATE_ASLEEP     0
+#define LMKD_STATE_AWAKE      1
+#define LMKD_STATE_CONNECT    2
+#define LMKD_STATE_DATA       3
+#define LMKD_STATE_PSI        4
+#define LMKD_STATE_VMPRESSURE 5
+#define LMKD_STATE_KILLDONE   6
+#define LMKD_STATE_KERNEL     7
+
 /*
  * Define LMKD_TRACE_KILLS to record lmkd kills in kernel traces
  * to profile and correlate with OOM kills
@@ -531,6 +540,14 @@ static long page_k;
 static void update_props();
 static bool init_monitors();
 static void destroy_monitors();
+
+void trace_state(int state) {
+#ifdef LMKD_TRACE_KILLS
+    if (debug_process_killing) ATRACE_INT("state", state);
+#else
+    (void)state;
+#endif
+}
 
 static int clamp(int low, int high, int value) {
     return max(min(value, high), low);
@@ -1462,6 +1479,7 @@ wronglen:
 
 static void ctrl_data_handler(int data, uint32_t events,
                               struct polling_params *poll_params __unused) {
+    trace_state(LMKD_STATE_DATA);
     if (events & EPOLLIN) {
         ctrl_command_handler(data);
     }
@@ -1479,8 +1497,11 @@ static int get_free_dsock() {
 static void ctrl_connect_handler(int data __unused, uint32_t events __unused,
                                  struct polling_params *poll_params __unused) {
     struct epoll_event epev;
-    int free_dscock_idx = get_free_dsock();
+    int free_dscock_idx;
 
+    trace_state(LMKD_STATE_CONNECT);
+
+    free_dscock_idx = get_free_dsock();
     if (free_dscock_idx < 0) {
         /*
          * Number of data connections exceeded max supported. This should not
@@ -1966,6 +1987,7 @@ static void stop_wait_for_proc_kill(bool finished) {
 
 static void kill_done_handler(int data __unused, uint32_t events __unused,
                               struct polling_params *poll_params) {
+    trace_state(LMKD_STATE_KILLDONE);
     stop_wait_for_proc_kill(true);
     poll_params->update = POLLING_RESUME;
 }
@@ -2281,6 +2303,8 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     int min_score_adj = 0;
     int swap_util = 0;
 
+    trace_state(LMKD_STATE_PSI);
+
     if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
         ALOGE("Failed to get current time");
         return;
@@ -2502,6 +2526,8 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
         .filename = MEMCG_MEMORYSW_USAGE,
         .fd = -1,
     };
+
+    trace_state(LMKD_STATE_VMPRESSURE);
 
     if (debug_process_killing) {
         ALOGI("%s memory pressure event is triggered", level_name[level]);
@@ -2876,6 +2902,7 @@ static void destroy_mp_common(enum vmpressure_level level) {
 
 static void kernel_event_handler(int data __unused, uint32_t events __unused,
                                  struct polling_params *poll_params __unused) {
+    trace_state(LMKD_STATE_KERNEL);
     poll_kernel(kpoll_fd);
 }
 
@@ -3028,6 +3055,9 @@ static void call_handler(struct event_handler_info* handler_info,
 
     poll_params->update = POLLING_DO_NOT_CHANGE;
     handler_info->handler(handler_info->data, events, poll_params);
+    /* Mark the end of the state set by the handler */
+    trace_state(LMKD_STATE_AWAKE);
+
     clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm);
     if (poll_params->poll_handler == handler_info) {
         poll_params->last_poll_tm = curr_tm;
@@ -3094,7 +3124,9 @@ static void mainloop(void) {
                     poll_params.polling_interval_ms - delay : poll_params.polling_interval_ms;
 
                 /* Wait for events until the next polling timeout */
+                trace_state(LMKD_STATE_ASLEEP);
                 nevents = epoll_wait(epollfd, events, maxevents, delay);
+                trace_state(LMKD_STATE_AWAKE);
 
                 /* Update current time after wait */
                 clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm);
@@ -3109,7 +3141,9 @@ static void mainloop(void) {
                 clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm);
                 delay = kill_timeout_ms - get_time_diff_ms(&last_kill_tm, &curr_tm);
                 /* Wait for pidfds notification or kill timeout to expire */
+                trace_state(LMKD_STATE_ASLEEP);
                 nevents = (delay > 0) ? epoll_wait(epollfd, events, maxevents, delay) : 0;
+                trace_state(LMKD_STATE_AWAKE);
                 if (nevents == 0) {
                     /* Kill notification timed out */
                     stop_wait_for_proc_kill(false);
@@ -3120,7 +3154,9 @@ static void mainloop(void) {
                 }
             } else {
                 /* Wait for events with no timeout */
+                trace_state(LMKD_STATE_ASLEEP);
                 nevents = epoll_wait(epollfd, events, maxevents, -1);
+                trace_state(LMKD_STATE_AWAKE);
             }
         }
 
