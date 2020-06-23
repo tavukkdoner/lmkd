@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "ebf103dc_b814c6a7",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1017430
+      },
+      "writtenOn": "2020-06-23T01:17:52Z",
+      "side": 1,
+      "message": "userspace trace events are relatively expensive, and this is going to run frequently. if there\u0027s some other way to infer the state, then we should not be emitting trace events.",
+      "parentUuid": "42912be0_1402f9d5",
+      "revId": "da6064f4e45e57d661a5bf1fe46cca5b112a8366",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "57484196_861de725",
         "filename": "lmkd.cpp",
         "patchSetId": 2
