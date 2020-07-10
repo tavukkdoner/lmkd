@@ -16,6 +16,24 @@
       "revId": "7d1f4f0047df41f84a1d88ac2f58c6e63645fdf0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9c138bc6_2bb79b5c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-07-10T20:07:27Z",
+      "side": 1,
+      "message": "That is true. In that case lmkd will rip the mm of the dying process itself and it won\u0027t matter that it\u0027s in uninterruptible sleep.",
+      "parentUuid": "9011d08b_d3a9e8e4",
+      "revId": "7d1f4f0047df41f84a1d88ac2f58c6e63645fdf0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
