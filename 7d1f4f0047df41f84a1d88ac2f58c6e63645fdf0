@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9011d08b_d3a9e8e4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2020-07-10T18:59:50Z",
+      "side": 1,
+      "message": "At this moment, I agree with this approach.\n\nA note for the future reference:\nIf we have process_madvise(DONTEED) in future, we don\u0027t need this killing timeout any longer.",
+      "revId": "7d1f4f0047df41f84a1d88ac2f58c6e63645fdf0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
