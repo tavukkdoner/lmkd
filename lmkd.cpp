@@ -2574,7 +2574,7 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
     if (use_minfree_levels) {
         int i;
 
-        other_free = mi.field.nr_free_pages - zi.totalreserve_pages;
+        other_free = mi.field.nr_free_pages - zi.totalreserve_pages - mi.field.cma_free;
         if (mi.field.nr_file_pages > (mi.field.shmem + mi.field.unevictable + mi.field.swap_cached)) {
             other_file = (mi.field.nr_file_pages - mi.field.shmem -
                           mi.field.unevictable - mi.field.swap_cached);
@@ -2668,7 +2668,8 @@ do_kill:
 
         if (!use_minfree_levels) {
             /* Free up enough memory to downgrate the memory pressure to low level */
-            if (mi.field.nr_free_pages >= low_pressure_mem.max_nr_free_pages) {
+            if (level < VMPRESS_LEVEL_CRITICAL &&
+                mi.field.nr_free_pages >= low_pressure_mem.max_nr_free_pages) {
                 if (debug_process_killing) {
                     ALOGI("Ignoring pressure since more memory is "
                         "available (%" PRId64 ") than watermark (%" PRId64 ")",
@@ -2692,10 +2693,11 @@ do_kill:
         /* Log whenever we kill or when report rate limit allows */
         if (use_minfree_levels) {
             ALOGI("Reclaimed %ldkB, cache(%ldkB) and "
-                "free(%" PRId64 "kB)-reserved(%" PRId64 "kB) below min(%ldkB) for oom_adj %d",
+                "free(%" PRId64 "kB)-reserved(%" PRId64 "kB)-cma_free(%" PRId64 "kB)"
+                "below min(%ldkB) for oom_adj %d",
                 pages_freed * page_k,
                 other_file * page_k, mi.field.nr_free_pages * page_k,
-                zi.totalreserve_pages * page_k,
+                zi.totalreserve_pages * page_k, mi.field.cma_free * page_k,
                 minfree * page_k, min_score_adj);
         } else {
             ALOGI("Reclaimed %ldkB at oom_adj %d",
