@@ -2143,13 +2143,14 @@ static int64_t get_memory_usage(struct reread_data *file_data) {
 }
 
 void record_low_pressure_levels(union meminfo *mi) {
+    int64_t sys_nr_free_pages = mi->field.nr_free_pages - mi->field.cma_free;
     if (low_pressure_mem.min_nr_free_pages == -1 ||
-        low_pressure_mem.min_nr_free_pages > mi->field.nr_free_pages) {
+        low_pressure_mem.min_nr_free_pages > sys_nr_free_pages) {
         if (debug_process_killing) {
             ALOGI("Low pressure min memory update from %" PRId64 " to %" PRId64,
-                low_pressure_mem.min_nr_free_pages, mi->field.nr_free_pages);
+                low_pressure_mem.min_nr_free_pages, sys_nr_free_pages);
         }
-        low_pressure_mem.min_nr_free_pages = mi->field.nr_free_pages;
+        low_pressure_mem.min_nr_free_pages = sys_nr_free_pages;
     }
     /*
      * Free memory at low vmpressure events occasionally gets spikes,
@@ -2158,14 +2159,14 @@ void record_low_pressure_levels(union meminfo *mi) {
      * Ignore large jumps in max_nr_free_pages that would mess up our stats.
      */
     if (low_pressure_mem.max_nr_free_pages == -1 ||
-        (low_pressure_mem.max_nr_free_pages < mi->field.nr_free_pages &&
-         mi->field.nr_free_pages - low_pressure_mem.max_nr_free_pages <
+        (low_pressure_mem.max_nr_free_pages < sys_nr_free_pages &&
+         sys_nr_free_pages - low_pressure_mem.max_nr_free_pages <
          low_pressure_mem.max_nr_free_pages * 0.1)) {
         if (debug_process_killing) {
             ALOGI("Low pressure max memory update from %" PRId64 " to %" PRId64,
-                low_pressure_mem.max_nr_free_pages, mi->field.nr_free_pages);
+                low_pressure_mem.max_nr_free_pages, sys_nr_free_pages);
         }
-        low_pressure_mem.max_nr_free_pages = mi->field.nr_free_pages;
+        low_pressure_mem.max_nr_free_pages = sys_nr_free_pages;
     }
 }
 
@@ -2574,7 +2575,7 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
     if (use_minfree_levels) {
         int i;
 
-        other_free = mi.field.nr_free_pages - zi.totalreserve_pages;
+        other_free = mi.field.nr_free_pages - zi.totalreserve_pages - mi.field.cma_free;
         if (mi.field.nr_file_pages > (mi.field.shmem + mi.field.unevictable + mi.field.swap_cached)) {
             other_file = (mi.field.nr_file_pages - mi.field.shmem -
                           mi.field.unevictable - mi.field.swap_cached);
@@ -2668,11 +2669,13 @@ do_kill:
 
         if (!use_minfree_levels) {
             /* Free up enough memory to downgrate the memory pressure to low level */
-            if (mi.field.nr_free_pages >= low_pressure_mem.max_nr_free_pages) {
+            int64_t sys_nr_free_pages = mi.field.nr_free_pages - mi.field.cma_free;
+            if (level < VMPRESS_LEVEL_CRITICAL &&
+                sys_nr_free_pages >= low_pressure_mem.max_nr_free_pages) {
                 if (debug_process_killing) {
                     ALOGI("Ignoring pressure since more memory is "
                         "available (%" PRId64 ") than watermark (%" PRId64 ")",
-                        mi.field.nr_free_pages, low_pressure_mem.max_nr_free_pages);
+                        sys_nr_free_pages, low_pressure_mem.max_nr_free_pages);
                 }
                 return;
             }
@@ -2692,10 +2695,11 @@ do_kill:
         /* Log whenever we kill or when report rate limit allows */
         if (use_minfree_levels) {
             ALOGI("Reclaimed %ldkB, cache(%ldkB) and "
-                "free(%" PRId64 "kB)-reserved(%" PRId64 "kB) below min(%ldkB) for oom_adj %d",
+                "free(%" PRId64 "kB)-reserved(%" PRId64 "kB)-cma_free(%" PRId64 "kB)"
+                "below min(%ldkB) for oom_adj %d",
                 pages_freed * page_k,
                 other_file * page_k, mi.field.nr_free_pages * page_k,
-                zi.totalreserve_pages * page_k,
+                zi.totalreserve_pages * page_k, mi.field.cma_free * page_k,
                 minfree * page_k, min_score_adj);
         } else {
             ALOGI("Reclaimed %ldkB at oom_adj %d",
