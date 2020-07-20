@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2aa2ddf1_c469b0c8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-07-20T16:05:29Z",
+      "side": 1,
+      "message": "cma_free",
+      "range": {
+        "startLine": 7,
+        "startChar": 5,
+        "endLine": 7,
+        "endChar": 13
+      },
+      "revId": "fed818451470f288aea4b33e40fdf0736abaa335",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "46b6e635_f49c37a2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-07-20T16:05:29Z",
+      "side": 1,
+      "message": "status",
+      "range": {
+        "startLine": 15,
+        "startChar": 78,
+        "endLine": 15,
+        "endChar": 84
+      },
+      "revId": "fed818451470f288aea4b33e40fdf0736abaa335",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8df3d553_59f9b92b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-07-20T16:05:29Z",
+      "side": 1,
+      "message": "If this is due to CMA you should simply subtract cma_free from nr_free_pages instead of adding new condition.",
+      "range": {
+        "startLine": 21,
+        "startChar": 48,
+        "endLine": 22,
+        "endChar": 40
+      },
+      "revId": "fed818451470f288aea4b33e40fdf0736abaa335",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0a97111a_f8598527",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2671,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-07-20T16:05:29Z",
+      "side": 1,
+      "message": "If the issue here is the CMA then this should be changed as:\n\nif (mi.field.nr_free_pages - mi.field.cma_free \u003e\u003d low_pressure_mem.max_nr_free_pages)\n\ninstead of checking the pressure level.",
+      "range": {
+        "startLine": 2671,
+        "startChar": 16,
+        "endLine": 2671,
+        "endChar": 49
+      },
+      "revId": "fed818451470f288aea4b33e40fdf0736abaa335",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
