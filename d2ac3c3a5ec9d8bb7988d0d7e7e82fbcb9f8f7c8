@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "f89991cb_ff63f159",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-07-23T23:20:53Z",
+      "side": 1,
+      "message": "This part of the description pretty much explain all the changes in this patch. The rest can be dropped.\nAlso please use 80 chars per line in the description.",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 53
+      },
+      "revId": "d2ac3c3a5ec9d8bb7988d0d7e7e82fbcb9f8f7c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b9483263_fe6ee498",
         "filename": "/COMMIT_MSG",
         "patchSetId": 4
