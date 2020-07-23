@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8bf341ba_75232319",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2673,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-07-23T23:15:52Z",
+      "side": 1,
+      "message": "Why is this additional condition is needed if we already accounted for CMA area?",
+      "range": {
+        "startLine": 2673,
+        "startChar": 16,
+        "endLine": 2673,
+        "endChar": 49
+      },
+      "revId": "d2ac3c3a5ec9d8bb7988d0d7e7e82fbcb9f8f7c8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
