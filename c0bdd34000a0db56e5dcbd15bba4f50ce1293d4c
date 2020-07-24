@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1675c354_94a13c0a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-07-24T00:46:38Z",
+      "side": 1,
+      "message": "This fixes CMA handling for the legacy algorithm.",
+      "revId": "c0bdd34000a0db56e5dcbd15bba4f50ce1293d4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
