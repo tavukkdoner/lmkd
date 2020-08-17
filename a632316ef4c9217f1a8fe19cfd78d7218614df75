@@ -22,6 +22,30 @@
       "revId": "a632316ef4c9217f1a8fe19cfd78d7218614df75",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f32c295a_13390239",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1323232
+      },
+      "writtenOn": "2020-08-17T16:04:17Z",
+      "side": 1,
+      "message": "Sorry, I missed this part.",
+      "parentUuid": "0829956d_80890274",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 0
+      },
+      "revId": "a632316ef4c9217f1a8fe19cfd78d7218614df75",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
