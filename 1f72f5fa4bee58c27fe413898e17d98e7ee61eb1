@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0d7ca48d_a92ba122",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2437,
+      "author": {
+        "id": 1325114
+      },
+      "writtenOn": "2020-09-03T13:11:21Z",
+      "side": 1,
+      "message": "Seems we need to do this before line 2425. Or this might cause division by zero.",
+      "range": {
+        "startLine": 2437,
+        "startChar": 8,
+        "endLine": 2437,
+        "endChar": 76
+      },
+      "revId": "1f72f5fa4bee58c27fe413898e17d98e7ee61eb1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
