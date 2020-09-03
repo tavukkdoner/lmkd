@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "475f2917_02b4a09d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1520081
+      },
+      "writtenOn": "2020-09-03T16:10:08Z",
+      "side": 1,
+      "message": "Original author has fix forward, aosp/1418831 - will see if that repairs stuff.",
+      "revId": "b4427cb31b6c53219a782a9ad607dd2502bd838c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
