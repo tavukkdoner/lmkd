@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9603262f_27263458",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-09-10T03:20:40Z",
+      "side": 1,
+      "message": "This is partial implementation, passing required information to statsd. statsd should package and forward this information further.",
+      "revId": "5ddc9c1a45a8064e79737269437933ea7001e25f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
