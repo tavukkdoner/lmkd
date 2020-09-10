@@ -800,8 +800,16 @@ static void poll_kernel(int poll_fd) {
             ctrl_data_write_lmk_kill_occurred((pid_t)pid, (uid_t)uid);
             mem_st.process_start_time_ns = starttime * (NS_PER_SEC / sysconf(_SC_CLK_TCK));
             mem_st.rss_in_bytes = rss_in_pages * PAGE_SIZE;
-            stats_write_lmk_kill_occurred_pid(uid, pid, oom_score_adj,
-                                              min_score_adj, &mem_st);
+
+            struct kill_stat kill_st = {
+                .uid = static_cast<int32_t>(uid),
+                .kill_reason = 0,
+                .oom_score = oom_score_adj,
+                .min_oom_score = min_score_adj,
+                .free_mem_kb = 0,
+                .free_swap_kb = 0,
+            };
+            stats_write_lmk_kill_occurred_pid(pid, &kill_st, &mem_st);
         }
 
         free(taskname);
@@ -2055,6 +2063,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, int kill_reas
     int r;
     int result = -1;
     struct memory_stat *mem_st;
+    struct kill_stat kill_st;
     int64_t tgid;
     int64_t rss_kb;
     int64_t swap_kb;
@@ -2123,7 +2132,14 @@ static int kill_one_process(struct proc* procp, int min_oom_score, int kill_reas
               uid, procp->oomadj, rss_kb);
     }
 
-    stats_write_lmk_kill_occurred(uid, taskname, procp->oomadj, min_oom_score, mem_st);
+    kill_st.uid = static_cast<int32_t>(uid);
+    kill_st.taskname = taskname;
+    kill_st.kill_reason = kill_reason;
+    kill_st.oom_score = procp->oomadj;
+    kill_st.min_oom_score = min_oom_score;
+    kill_st.free_mem_kb = mi->field.nr_free_pages * page_k;
+    kill_st.free_swap_kb = mi->field.free_swap * page_k;
+    stats_write_lmk_kill_occurred(&kill_st, mem_st);
 
     ctrl_data_write_lmk_kill_occurred((pid_t)pid, uid);
 
