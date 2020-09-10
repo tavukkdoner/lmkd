@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8d6a40ba_0a687ef9",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 806,
+      "author": {
+        "id": 1386032
+      },
+      "writtenOn": "2020-09-10T14:00:33Z",
+      "side": 1,
+      "message": "Is this PRESSURE_AFTER_KILL (which is what 0 is mapped to)? Can we change it to something that is unambiguous with the existing reasons?",
+      "range": {
+        "startLine": 806,
+        "startChar": 0,
+        "endLine": 806,
+        "endChar": 33
+      },
+      "revId": "82c85f5d2bb33c51e35e0d3ac26c00474ef9207d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a375c07a_ef7cb7d4",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 810,
+      "author": {
+        "id": 1386032
+      },
+      "writtenOn": "2020-09-10T14:00:33Z",
+      "side": 1,
+      "message": "Should these be -1 or something unambiguous?",
+      "range": {
+        "startLine": 809,
+        "startChar": 0,
+        "endLine": 810,
+        "endChar": 34
+      },
+      "revId": "82c85f5d2bb33c51e35e0d3ac26c00474ef9207d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5bc649d7_bd70c15f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2316,
+      "author": {
+        "id": 1386032
+      },
+      "writtenOn": "2020-09-10T14:00:33Z",
+      "side": 1,
+      "message": "Should we promote the visibility of that so we can map it to statsd enums later?",
+      "range": {
+        "startLine": 2316,
+        "startChar": 0,
+        "endLine": 2316,
+        "endChar": 23
+      },
+      "revId": "82c85f5d2bb33c51e35e0d3ac26c00474ef9207d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
