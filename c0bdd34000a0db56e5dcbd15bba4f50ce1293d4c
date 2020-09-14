@@ -33,6 +33,24 @@
       "revId": "c0bdd34000a0db56e5dcbd15bba4f50ce1293d4c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ea735ed2_883c93f7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-09-14T16:19:04Z",
+      "side": 1,
+      "message": "Until we have a separate CMA zone this will be an issue and there is no perfect solution. In R we decided to be on a safe side and disregard CMA free pages. This CL brings Q in-line with R.",
+      "parentUuid": "6b8cda1f_cf453fb9",
+      "revId": "c0bdd34000a0db56e5dcbd15bba4f50ce1293d4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
