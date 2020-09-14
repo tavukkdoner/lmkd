@@ -2566,18 +2566,23 @@ static void log_zone_watermarks(struct zoneinfo* zi, struct zone_watermarks* wma
         for (j = 0; j < node->zone_count; j++) {
             zone_fields = &node->zones[j].fields;
 
-            ULMK_LOG(D,
-                     "Zone: %d nr_free_pages: %" PRId64 " min: %" PRId64 " low: %" PRId64
-                     " high: %" PRId64 " present: %" PRId64 " nr_cma_free: %" PRId64
-                     " max_protection: %" PRId64,
-                     j, zone_fields->field.nr_free_pages, zone_fields->field.min,
-                     zone_fields->field.low, zone_fields->field.high, zone_fields->field.present,
-                     zone_fields->field.nr_free_cma, node->zones[j].max_protection);
+            if (debug_process_killing) {
+                ULMK_LOG(D,
+                         "Zone: %d nr_free_pages: %" PRId64 " min: %" PRId64 " low: %" PRId64
+                         " high: %" PRId64 " present: %" PRId64 " nr_cma_free: %" PRId64
+                         " max_protection: %" PRId64,
+                         j, zone_fields->field.nr_free_pages, zone_fields->field.min,
+                         zone_fields->field.low, zone_fields->field.high,
+                         zone_fields->field.present, zone_fields->field.nr_free_cma,
+                         node->zones[j].max_protection);
+            }
         }
     }
 
-    ULMK_LOG(D, "Aggregate wmarks: min: %ld low: %ld high: %ld", wmarks->min_wmark,
-             wmarks->low_wmark, wmarks->high_wmark);
+    if (debug_process_killing) {
+        ULMK_LOG(D, "Aggregate wmarks: min: %ld low: %ld high: %ld", wmarks->min_wmark,
+                 wmarks->low_wmark, wmarks->high_wmark);
+    }
 }
 
 void calc_zone_watermarks(struct zoneinfo *zi, struct zone_watermarks *watermarks) {
@@ -2614,11 +2619,13 @@ static void log_meminfo(union meminfo* mi, enum zone_watermark wmark) {
         strlcpy(wmark_str, "none", LINE_MAX);
     }
 
-    ULMK_LOG(D,
-             "smallest wmark breached: %s nr_free_pages: %" PRId64 " active_anon: %" PRId64
-             " inactive_anon: %" PRId64 " cma_free: %" PRId64,
-             wmark_str, mi->field.nr_free_pages, mi->field.active_anon, mi->field.inactive_anon,
-             mi->field.cma_free);
+    if (debug_process_killing) {
+        ULMK_LOG(D,
+                 "smallest wmark breached: %s nr_free_pages: %" PRId64 " active_anon: %" PRId64
+                 " inactive_anon: %" PRId64 " cma_free: %" PRId64,
+                 wmark_str, mi->field.nr_free_pages, mi->field.active_anon, mi->field.inactive_anon,
+                 mi->field.cma_free);
+    }
 }
 
 static void log_pgskip_stats(union vmstat* vs, int64_t* init_pgskip) {
@@ -2631,12 +2638,15 @@ static void log_pgskip_stats(union vmstat* vs, int64_t* init_pgskip) {
         }
     }
 
-    ULMK_LOG(D,
-             "pgskip deltas: DMA: %" PRId64 " Normal: %" PRId64 " High: %" PRId64
-             " Movable: %" PRId64,
-             pgskip_deltas[PGSKIP_IDX(VS_PGSKIP_DMA)], pgskip_deltas[PGSKIP_IDX(VS_PGSKIP_NORMAL)],
-             pgskip_deltas[PGSKIP_IDX(VS_PGSKIP_HIGH)],
-             pgskip_deltas[PGSKIP_IDX(VS_PGSKIP_MOVABLE)]);
+    if (debug_process_killing) {
+        ULMK_LOG(D,
+                 "pgskip deltas: DMA: %" PRId64 " Normal: %" PRId64 " High: %" PRId64
+                 " Movable: %" PRId64,
+                 pgskip_deltas[PGSKIP_IDX(VS_PGSKIP_DMA)],
+                 pgskip_deltas[PGSKIP_IDX(VS_PGSKIP_NORMAL)],
+                 pgskip_deltas[PGSKIP_IDX(VS_PGSKIP_HIGH)],
+                 pgskip_deltas[PGSKIP_IDX(VS_PGSKIP_MOVABLE)]);
+    }
 }
 
 static int calc_swap_utilization(union meminfo *mi) {
@@ -2736,17 +2746,20 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         prev_thrash_growth = 0;
     }
 
-    ULMK_LOG(D,
-             "nr_free_pages: %" PRId64 " nr_inactive_file: %" PRId64 " nr_active_file: %" PRId64
-             " workingset_refault: %" PRId64 " pgscan_kswapd: %" PRId64 " pgscan_direct: %" PRId64
-             " pgscan_direct_throttle: %" PRId64 " init_pgscan_direct: %" PRId64
-             " init_pgscan_kswapd: %" PRId64 " base_file_lru: %" PRId64 " init_ws_refault: %" PRId64
-             " free_swap: %" PRId64 " total_swap: %" PRId64 " swap_free_percentage: %" PRId64 "%%",
-             vs.field.nr_free_pages, vs.field.nr_inactive_file, vs.field.nr_active_file,
-             vs.field.workingset_refault, vs.field.pgscan_kswapd, vs.field.pgscan_direct,
-             vs.field.pgscan_direct_throttle, init_pgscan_direct, init_pgscan_kswapd, base_file_lru,
-             init_ws_refault, mi.field.free_swap, mi.field.total_swap,
-             (mi.field.free_swap * 100) / (mi.field.total_swap + 1));
+    if (debug_process_killing) {
+        ULMK_LOG(D,
+                 "nr_free_pages: %" PRId64 " nr_inactive_file: %" PRId64 " nr_active_file: %" PRId64
+                 " workingset_refault: %" PRId64 " pgscan_kswapd: %" PRId64
+                 " pgscan_direct: %" PRId64 " pgscan_direct_throttle: %" PRId64
+                 " init_pgscan_direct: %" PRId64 " init_pgscan_kswapd: %" PRId64
+                 " base_file_lru: %" PRId64 " init_ws_refault: %" PRId64 " free_swap: %" PRId64
+                 " total_swap: %" PRId64 " swap_free_percentage: %" PRId64 "%%",
+                 vs.field.nr_free_pages, vs.field.nr_inactive_file, vs.field.nr_active_file,
+                 vs.field.workingset_refault, vs.field.pgscan_kswapd, vs.field.pgscan_direct,
+                 vs.field.pgscan_direct_throttle, init_pgscan_direct, init_pgscan_kswapd,
+                 base_file_lru, init_ws_refault, mi.field.free_swap, mi.field.total_swap,
+                 (mi.field.free_swap * 100) / (mi.field.total_swap + 1));
+    }
     log_pgskip_stats(&vs, init_pgskip);
 
     /* Check free swap levels */
