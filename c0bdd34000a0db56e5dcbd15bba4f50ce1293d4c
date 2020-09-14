@@ -69,6 +69,24 @@
       "revId": "c0bdd34000a0db56e5dcbd15bba4f50ce1293d4c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "40a4def2_66aa8a5a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-09-14T16:55:12Z",
+      "side": 1,
+      "message": "I was thinking about discarding it when we read zoneinfo. But on the second thought, that would be the same as subtracting cma_free from nr_free_pages like we do in this CL. You are right, there is no perfect fix for that as long as we use free memory to make kill decisions.\nI still think that discarding CMA in this calculation in a safer approach. It\u0027s true that this can make lmkd more aggressive when considerable amount of memory is under CMA but in that case I think userspace allocations should successfully allocate from that reserve and not generate PSI event.",
+      "parentUuid": "d305147f_0f4a0086",
+      "revId": "c0bdd34000a0db56e5dcbd15bba4f50ce1293d4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
