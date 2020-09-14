@@ -16,6 +16,23 @@
       "revId": "c0bdd34000a0db56e5dcbd15bba4f50ce1293d4c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6b8cda1f_cf453fb9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2020-09-14T14:09:24Z",
+      "side": 1,
+      "message": "CMA free page depends on allocation context.\n\nIf allocation is under userspace memory(e.g., anonymous or file-backed LRU pages), we don\u0027t need to subtract cma_free pages from nr_free_pages. IOW, this CL makes more aggressive killing even though we have enough free pages. Furthermore, such allocation context is dominant in the system rather than other kernel allocation context.\n\nSince I see this is fundamental problem of userspace out of memory killer because it couldn\u0027t know allocation context, unfortunately, I have no idea to fix it properly.",
+      "revId": "c0bdd34000a0db56e5dcbd15bba4f50ce1293d4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
