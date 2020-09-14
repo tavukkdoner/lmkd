@@ -51,6 +51,24 @@
       "revId": "c0bdd34000a0db56e5dcbd15bba4f50ce1293d4c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d305147f_0f4a0086",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2020-09-14T16:32:18Z",
+      "side": 1,
+      "message": "How could it be solved in CMA zone?",
+      "parentUuid": "ea735ed2_883c93f7",
+      "revId": "c0bdd34000a0db56e5dcbd15bba4f50ce1293d4c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }
