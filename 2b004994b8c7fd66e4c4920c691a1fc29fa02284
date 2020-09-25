@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cc791039_cc94706c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-09-25T18:50:45Z",
+      "side": 1,
+      "message": "Please remove this, it\u0027s not really needed. This description is enough:\n\nlibpsi source code is missing cutils and stdio header files. Add cutils and stdio header files, and add libcutils_headers to the header library in Android.bp.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 54
+      },
+      "revId": "2b004994b8c7fd66e4c4920c691a1fc29fa02284",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": true
+    }
+  ]
+}
