@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6caa8820_784455b9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2020-09-28T23:53:12Z",
+      "side": 1,
+      "message": "Seems correct to me. Steve, could you please double-check before I submit?",
+      "revId": "c467601098be654f77363deb19fa6166e8f496d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}
