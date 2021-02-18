@@ -2123,11 +2123,11 @@ static int kill_one_process(struct proc* procp, int min_oom_score, enum kill_rea
     killinfo_log(procp, min_oom_score, rss_kb, kill_reason, mi, wi, tm);
 
     if (kill_desc) {
-        ALOGI("Kill '%s' (%d), uid %d, oom_adj %d to free %" PRId64 "kB; reason: %s", taskname, pid,
-              uid, procp->oomadj, rss_kb, kill_desc);
+        ALOGI("Kill '%s' (%d), uid %d, oom_adj %d to free %" PRId64 "kB rss, %" PRId64 "kB swap;"
+              " reason: %s", taskname, pid, uid, procp->oomadj, rss_kb, swap_kb, kill_desc);
     } else {
-        ALOGI("Kill '%s' (%d), uid %d, oom_adj %d to free %" PRId64 "kB", taskname, pid,
-              uid, procp->oomadj, rss_kb);
+        ALOGI("Kill '%s' (%d), uid %d, oom_adj %d to free %" PRId64 "kB rss, %" PRId64 "kb swap",
+              taskname, pid, uid, procp->oomadj, rss_kb, swap_kb);
     }
 
     kill_st.uid = static_cast<int32_t>(uid);
