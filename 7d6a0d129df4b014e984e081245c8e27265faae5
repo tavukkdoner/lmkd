@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "07a9cd33_3283d70f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2123,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-02-18T21:07:22Z",
+      "side": 1,
+      "message": "If we do this then let\u0027s also log it in killinfo because they survive logcat chatty trimming. You can add an argument to killinfo_log and add a new field in event.logtags file. I would add it after TaskSize field.",
+      "range": {
+        "startLine": 2123,
+        "startChar": 4,
+        "endLine": 2123,
+        "endChar": 16
+      },
+      "revId": "7d6a0d129df4b014e984e081245c8e27265faae5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
