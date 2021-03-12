@@ -18,11 +18,11 @@ cc_binary {
         "liblog",
         "libprocessgroup",
         "libpsi",
-        "libstatssocket",
     ],
     static_libs: [
         "libstatslogc",
         "libstatslog_lmkd",
+        "libstatssocket_lazy",
         "liblmkd_utils",
     ],
     local_include_dirs: ["include"],
@@ -77,8 +77,8 @@ cc_library_static {
     generated_sources: ["statslog_lmkd.cpp"],
     generated_headers: ["statslog_lmkd.h"],
     export_generated_headers: ["statslog_lmkd.h"],
-    shared_libs: [
-        "libstatssocket",
+    static_libs: [
+        "libstatssocket_lazy",
     ],
 }
 
