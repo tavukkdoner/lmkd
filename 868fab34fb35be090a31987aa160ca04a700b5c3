@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dd91b293_0a99f6de",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-03-20T01:20:21Z",
+      "side": 1,
+      "message": "Does this change affect memory footprint of the lmkd process?\nRemember that lmkd is mlock\u0027ed in memory, so we should keep it as small as possible.",
+      "revId": "868fab34fb35be090a31987aa160ca04a700b5c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
