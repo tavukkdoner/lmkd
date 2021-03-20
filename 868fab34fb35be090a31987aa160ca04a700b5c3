@@ -16,6 +16,24 @@
       "message": "Does this change affect memory footprint of the lmkd process?\nRemember that lmkd is mlock\u0027ed in memory, so we should keep it as small as possible.",
       "revId": "868fab34fb35be090a31987aa160ca04a700b5c3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e42cb10_0b1f2d4c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1286922
+      },
+      "writtenOn": "2021-03-20T02:09:27Z",
+      "side": 1,
+      "message": "The memory footprint I think should be very small. The library basically just tries to dlopen libstatssocket whenever any api is called. The source is here: https://cs.corp.google.com/android/system/core/libstats/socket_lazy/libstatssocket_lazy.cpp. It holds an array of function pointers to the libstatssocket symbols, and an atomic bool.",
+      "parentUuid": "dd91b293_0a99f6de",
+      "revId": "868fab34fb35be090a31987aa160ca04a700b5c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
