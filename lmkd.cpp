@@ -30,6 +30,7 @@
 #include <sys/epoll.h>
 #include <sys/eventfd.h>
 #include <sys/mman.h>
+#include <sys/pidfd.h>
 #include <sys/resource.h>
 #include <sys/socket.h>
 #include <sys/syscall.h>
@@ -146,15 +147,6 @@
 #define DEF_COMPLETE_STALL 700
 
 #define LMKD_REINIT_PROP "lmkd.reinit"
-
-static inline int sys_pidfd_open(pid_t pid, unsigned int flags) {
-    return syscall(__NR_pidfd_open, pid, flags);
-}
-
-static inline int sys_pidfd_send_signal(int pidfd, int sig, siginfo_t *info,
-                                        unsigned int flags) {
-    return syscall(__NR_pidfd_send_signal, pidfd, sig, info, flags);
-}
 
 /* default to old in-kernel interface if no memory pressure events */
 static bool use_inkernel_interface = true;
@@ -1135,7 +1127,7 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
         int pidfd = -1;
 
         if (pidfd_supported) {
-            pidfd = TEMP_FAILURE_RETRY(sys_pidfd_open(params.pid, 0));
+            pidfd = TEMP_FAILURE_RETRY(pidfd_open(params.pid, 0));
             if (pidfd < 0) {
                 ALOGE("pidfd_open for pid %d failed; errno=%d", params.pid, errno);
                 return;
@@ -2103,7 +2095,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, enum kill_rea
         r = kill(pid, SIGKILL);
     } else {
         start_wait_for_proc_kill(pidfd);
-        r = sys_pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
+        r = pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
     }
 
     TRACE_KILL_END();
@@ -2163,12 +2155,21 @@ static int find_and_kill_process(int min_score_adj, enum kill_reasons kill_reaso
     int i;
     int killed_size = 0;
     bool lmk_state_change_start = false;
+    bool choose_heaviest_task = kill_heaviest_task;
 
     for (i = OOM_SCORE_ADJ_MAX; i >= min_score_adj; i--) {
         struct proc *procp;
 
+        if (!choose_heaviest_task && i <= PERCEPTIBLE_APP_ADJ) {
+            /*
+             * If we have to choose a perceptible process, choose the heaviest one to
+             * hopefully minimize the number of victims.
+             */
+            choose_heaviest_task = true;
+        }
+
         while (true) {
-            procp = kill_heaviest_task ?
+            procp = choose_heaviest_task ?
                 proc_get_heaviest(i) : proc_adj_lru(i);
 
             if (!procp)
@@ -2508,7 +2509,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         /* Both free memory and swap are low */
         kill_reason = LOW_MEM_AND_SWAP;
         snprintf(kill_desc, sizeof(kill_desc), "%s watermark is breached and swap is low (%"
-            PRId64 "kB < %" PRId64 "kB)", wmark > WMARK_LOW ? "min" : "low",
+            PRId64 "kB < %" PRId64 "kB)", wmark < WMARK_LOW ? "min" : "low",
             mi.field.free_swap * page_k, swap_low_threshold * page_k);
         /* Do not kill perceptible apps unless below min watermark */
         if (wmark > WMARK_MIN) {
@@ -2522,13 +2523,13 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
          */
         kill_reason = LOW_MEM_AND_SWAP_UTIL;
         snprintf(kill_desc, sizeof(kill_desc), "%s watermark is breached and swap utilization"
-            " is high (%d%% > %d%%)", wmark > WMARK_LOW ? "min" : "low",
+            " is high (%d%% > %d%%)", wmark < WMARK_LOW ? "min" : "low",
             swap_util, swap_util_max);
     } else if (wmark < WMARK_HIGH && thrashing > thrashing_limit) {
         /* Page cache is thrashing while memory is low */
         kill_reason = LOW_MEM_AND_THRASHING;
         snprintf(kill_desc, sizeof(kill_desc), "%s watermark is breached and thrashing (%"
-            PRId64 "%%)", wmark > WMARK_LOW ? "min" : "low", thrashing);
+            PRId64 "%%)", wmark < WMARK_LOW ? "min" : "low", thrashing);
         cut_thrashing_limit = true;
         /* Do not kill perceptible apps because of thrashing */
         min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
@@ -3108,7 +3109,7 @@ static int init(void) {
     }
 
     /* check if kernel supports pidfd_open syscall */
-    pidfd = TEMP_FAILURE_RETRY(sys_pidfd_open(getpid(), 0));
+    pidfd = TEMP_FAILURE_RETRY(pidfd_open(getpid(), 0));
     if (pidfd < 0) {
         pidfd_supported = (errno != ENOSYS);
     } else {
