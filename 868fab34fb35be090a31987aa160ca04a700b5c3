@@ -34,6 +34,24 @@
       "parentUuid": "dd91b293_0a99f6de",
       "revId": "868fab34fb35be090a31987aa160ca04a700b5c3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "45d1c149_de7816a4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-03-22T18:39:38Z",
+      "side": 1,
+      "message": "Could you please capture outputs of \"adb shell \u0027showmap `pidof lmkd`\u0027\" command before and after the change to see changes in PSS/RSS?",
+      "parentUuid": "1e42cb10_0b1f2d4c",
+      "revId": "868fab34fb35be090a31987aa160ca04a700b5c3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
