@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "56ef7124_f2de6272",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1323232
+      },
+      "writtenOn": "2021-03-31T02:14:52Z",
+      "side": 1,
+      "message": "What does \"By default it is disabled\" mean here? The thrashing_critical_pct should be thrashing_limit_pct * 2 if ro.lmk.thrashing_limit_critical is not set, right? If so, this should be enabled by default?",
+      "revId": "0142b3c166c878e11896379bc18ff76de6ff63a3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
