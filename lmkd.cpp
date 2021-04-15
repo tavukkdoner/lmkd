@@ -30,6 +30,7 @@
 #include <sys/epoll.h>
 #include <sys/eventfd.h>
 #include <sys/mman.h>
+#include <sys/pidfd.h>
 #include <sys/resource.h>
 #include <sys/socket.h>
 #include <sys/syscall.h>
@@ -147,15 +148,6 @@
 
 #define LMKD_REINIT_PROP "lmkd.reinit"
 
-static inline int sys_pidfd_open(pid_t pid, unsigned int flags) {
-    return syscall(__NR_pidfd_open, pid, flags);
-}
-
-static inline int sys_pidfd_send_signal(int pidfd, int sig, siginfo_t *info,
-                                        unsigned int flags) {
-    return syscall(__NR_pidfd_send_signal, pidfd, sig, info, flags);
-}
-
 /* default to old in-kernel interface if no memory pressure events */
 static bool use_inkernel_interface = true;
 static bool has_inkernel_module;
@@ -205,6 +197,7 @@ static int psi_partial_stall_ms;
 static int psi_complete_stall_ms;
 static int thrashing_limit_pct;
 static int thrashing_limit_decay_pct;
+static int thrashing_critical_pct;
 static int swap_util_max;
 static bool use_psi_monitors = false;
 static int kpoll_fd;
@@ -1135,7 +1128,7 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
         int pidfd = -1;
 
         if (pidfd_supported) {
-            pidfd = TEMP_FAILURE_RETRY(sys_pidfd_open(params.pid, 0));
+            pidfd = TEMP_FAILURE_RETRY(pidfd_open(params.pid, 0));
             if (pidfd < 0) {
                 ALOGE("pidfd_open for pid %d failed; errno=%d", params.pid, errno);
                 return;
@@ -2103,7 +2096,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, enum kill_rea
         r = kill(pid, SIGKILL);
     } else {
         start_wait_for_proc_kill(pidfd);
-        r = sys_pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
+        r = pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
     }
 
     TRACE_KILL_END();
@@ -2509,8 +2502,8 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         snprintf(kill_desc, sizeof(kill_desc), "device is low on swap (%" PRId64
             "kB < %" PRId64 "kB) and thrashing (%" PRId64 "%%)",
             mi.field.free_swap * page_k, swap_low_threshold * page_k, thrashing);
-        /* Do not kill perceptible apps unless below min watermark */
-        if (wmark > WMARK_MIN) {
+        /* Do not kill perceptible apps unless below min watermark or heavily thrashing */
+        if (wmark > WMARK_MIN && thrashing < thrashing_critical_pct) {
             min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
         }
     } else if (swap_is_low && wmark < WMARK_HIGH) {
@@ -2519,8 +2512,8 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         snprintf(kill_desc, sizeof(kill_desc), "%s watermark is breached and swap is low (%"
             PRId64 "kB < %" PRId64 "kB)", wmark < WMARK_LOW ? "min" : "low",
             mi.field.free_swap * page_k, swap_low_threshold * page_k);
-        /* Do not kill perceptible apps unless below min watermark */
-        if (wmark > WMARK_MIN) {
+        /* Do not kill perceptible apps unless below min watermark or heavily thrashing */
+        if (wmark > WMARK_MIN && thrashing < thrashing_critical_pct) {
             min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
         }
     } else if (wmark < WMARK_HIGH && swap_util_max < 100 &&
@@ -2539,16 +2532,20 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         snprintf(kill_desc, sizeof(kill_desc), "%s watermark is breached and thrashing (%"
             PRId64 "%%)", wmark < WMARK_LOW ? "min" : "low", thrashing);
         cut_thrashing_limit = true;
-        /* Do not kill perceptible apps because of thrashing */
-        min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
+        /* Do not kill perceptible apps unless thrashing at critical levels */
+        if (thrashing < thrashing_critical_pct) {
+            min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
+        }
     } else if (reclaim == DIRECT_RECLAIM && thrashing > thrashing_limit) {
         /* Page cache is thrashing while in direct reclaim (mostly happens on lowram devices) */
         kill_reason = DIRECT_RECL_AND_THRASHING;
         snprintf(kill_desc, sizeof(kill_desc), "device is in direct reclaim and thrashing (%"
             PRId64 "%%)", thrashing);
         cut_thrashing_limit = true;
-        /* Do not kill perceptible apps because of thrashing */
-        min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
+        /* Do not kill perceptible apps unless thrashing at critical levels */
+        if (thrashing < thrashing_critical_pct) {
+            min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
+        }
     }
 
     /* Kill a process if necessary */
@@ -3117,7 +3114,7 @@ static int init(void) {
     }
 
     /* check if kernel supports pidfd_open syscall */
-    pidfd = TEMP_FAILURE_RETRY(sys_pidfd_open(getpid(), 0));
+    pidfd = TEMP_FAILURE_RETRY(pidfd_open(getpid(), 0));
     if (pidfd < 0) {
         pidfd_supported = (errno != ENOSYS);
     } else {
@@ -3345,6 +3342,8 @@ static void update_props() {
         low_ram_device ? DEF_THRASHING_LOWRAM : DEF_THRASHING));
     thrashing_limit_decay_pct = clamp(0, 100, property_get_int32("ro.lmk.thrashing_limit_decay",
         low_ram_device ? DEF_THRASHING_DECAY_LOWRAM : DEF_THRASHING_DECAY));
+    thrashing_critical_pct = max(0, property_get_int32("ro.lmk.thrashing_limit_critical",
+        thrashing_limit_pct * 2));
     swap_util_max = clamp(0, 100, property_get_int32("ro.lmk.swap_util_max", 100));
 }
 
