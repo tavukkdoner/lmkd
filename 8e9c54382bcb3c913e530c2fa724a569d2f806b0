@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "378dcf6e_0d7062df",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-04-23T21:17:31Z",
+      "side": 1,
+      "message": "Good point. I\u0027ll update the description.",
+      "parentUuid": "db1fbd51_2cf2a291",
+      "range": {
+        "startLine": 9,
+        "startChar": 65,
+        "endLine": 9,
+        "endChar": 70
+      },
+      "revId": "8e9c54382bcb3c913e530c2fa724a569d2f806b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "f437ba9e_e25873ab",
