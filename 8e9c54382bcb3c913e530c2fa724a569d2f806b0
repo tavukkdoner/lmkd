@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db1fbd51_2cf2a291",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-04-23T21:08:36Z",
+      "side": 1,
+      "message": "or open fail by some reasons like -ENOMEM which would be since we are in low memory state.",
+      "range": {
+        "startLine": 9,
+        "startChar": 65,
+        "endLine": 9,
+        "endChar": 70
+      },
+      "revId": "8e9c54382bcb3c913e530c2fa724a569d2f806b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f437ba9e_e25873ab",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-04-23T21:08:36Z",
+      "side": 1,
+      "message": "It",
+      "revId": "8e9c54382bcb3c913e530c2fa724a569d2f806b0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
