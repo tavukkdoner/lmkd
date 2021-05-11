@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "78b41fdc_80622fb1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1827146
+      },
+      "writtenOn": "2021-05-11T00:03:52Z",
+      "side": 1,
+      "message": "Merging sc-dev changes into master branch",
+      "revId": "a92b76b54d9d7d406943bc0d9b8211bf75876c5d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
