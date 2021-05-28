@@ -70,6 +70,24 @@
       "parentUuid": "49c5e2d8_70b8e33e",
       "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9bb363fa_14932d73",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-05-28T16:23:39Z",
+      "side": 1,
+      "message": "I\u0027m likely wrong about kmallocs from GPU driver. Need to double check with Yiwei. I think only large allocations are traced and included in BPF map. I doubt GPU would use kmalloc for large allocations.\n\nRemoving duplication between GPU dmabuf mapped buffers and the same buffers in dmabuf heaps is non-trivial task as I mentioned before and involves dmabuf sysfs traversal and access to memtrack HAL, so unfortunately I don\u0027t think LMKD can afford to do that.",
+      "parentUuid": "10883b1d_f6cfbbb6",
+      "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
