@@ -380,8 +380,8 @@ enum meminfo_field {
     MI_SUNRECLAIM,
     MI_KERNEL_STACK,
     MI_PAGE_TABLES,
-    MI_ION_HELP,
-    MI_ION_HELP_POOL,
+    MI_ION_HEAP,
+    MI_ION_HEAP_POOL,
     MI_CMA_FREE,
     MI_FIELD_COUNT
 };
@@ -1785,6 +1785,20 @@ static bool meminfo_parse_line(char *line, union meminfo *mi) {
     return (match_res != PARSE_FAIL);
 }
 
+static int64_t read_dmabuf_total_pools_kb() {
+    static struct reread_data file_data = {
+        .filename = "/sys/kernel/dma_heap/total_pools_kb",
+        .fd = -1,
+    };
+    char *buf;
+    int64_t res;
+
+    if ((buf = reread_file(&file_data)) == NULL) {
+        return -1;
+    }
+    return parse_int64(buf, &res) ? res : -1;
+}
+
 static int meminfo_parse(union meminfo *mi) {
     static struct reread_data file_data = {
         .filename = MEMINFO_PATH,
@@ -1904,6 +1918,8 @@ static void record_wakeup_time(struct timespec *tm, enum wakeup_reason reason,
 static void killinfo_log(struct proc* procp, int min_oom_score, int rss_kb,
                          int swap_kb, int kill_reason, union meminfo *mi,
                          struct wakeup_info *wi, struct timespec *tm) {
+    int64_t dmabuf_heap_pool;
+
     /* log process information */
     android_log_write_int32(ctx, procp->pid);
     android_log_write_int32(ctx, procp->uid);
@@ -1912,6 +1928,11 @@ static void killinfo_log(struct proc* procp, int min_oom_score, int rss_kb,
     android_log_write_int32(ctx, (int32_t)min(rss_kb, INT32_MAX));
     android_log_write_int32(ctx, kill_reason);
 
+    /* replace ION_HEAP_POOL with dmabuf heap pool if available */
+    dmabuf_heap_pool = read_dmabuf_total_pools_kb();
+    if (dmabuf_heap_pool >= 0) {
+        mi->arr[MI_ION_HEAP_POOL] = dmabuf_heap_pool;
+    }
     /* log meminfo fields */
     for (int field_idx = 0; field_idx < MI_FIELD_COUNT; field_idx++) {
         android_log_write_int32(ctx, (int32_t)min(mi->arr[field_idx] * page_k, INT32_MAX));
