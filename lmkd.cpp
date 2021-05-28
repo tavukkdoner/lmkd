@@ -380,8 +380,8 @@ enum meminfo_field {
     MI_SUNRECLAIM,
     MI_KERNEL_STACK,
     MI_PAGE_TABLES,
-    MI_ION_HELP,
-    MI_ION_HELP_POOL,
+    MI_ION_HEAP,
+    MI_ION_HEAP_POOL,
     MI_CMA_FREE,
     MI_FIELD_COUNT
 };
@@ -1785,6 +1785,20 @@ static bool meminfo_parse_line(char *line, union meminfo *mi) {
     return (match_res != PARSE_FAIL);
 }
 
+static int64_t read_dmabuf_total_pools_kb() {
+    static struct reread_data file_data = {
+        .filename = "/sys/kernel/dma_heap/total_pools_kb",
+        .fd = -1,
+    };
+    char *buf;
+    int64_t res;
+
+    if ((buf = reread_file(&file_data)) == NULL) {
+        return -1;
+    }
+    return parse_int64(buf, &res) ? res : -1;
+}
+
 static int meminfo_parse(union meminfo *mi) {
     static struct reread_data file_data = {
         .filename = MEMINFO_PATH,
@@ -1793,6 +1807,7 @@ static int meminfo_parse(union meminfo *mi) {
     char *buf;
     char *save_ptr;
     char *line;
+    int64_t dmabuf_heap_pool;
 
     memset(mi, 0, sizeof(union meminfo));
 
@@ -1809,6 +1824,12 @@ static int meminfo_parse(union meminfo *mi) {
     }
     mi->field.nr_file_pages = mi->field.cached + mi->field.swap_cached +
         mi->field.buffers;
+
+    /* replace ION_HEAP_POOL with dmabuf heap pool if available */
+    dmabuf_heap_pool = read_dmabuf_total_pools_kb();
+    if (dmabuf_heap_pool >= 0) {
+        mi->field.ion_heap_pool = dmabuf_heap_pool;
+    }
 
     return 0;
 }
