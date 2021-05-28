@@ -34,6 +34,24 @@
       "parentUuid": "c81e678e_80570820",
       "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49c5e2d8_70b8e33e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-05-28T02:03:34Z",
+      "side": 1,
+      "message": "Correction:\n\nTotal GPU includes:\nprivate allocations by GPU driver (alloc_pages/kmalloc/etc)\ndmabufs mapped by GPU driver",
+      "parentUuid": "0bf37b43_ab231e18",
+      "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
