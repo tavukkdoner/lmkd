@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c81e678e_80570820",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-05-28T01:46:12Z",
+      "side": 1,
+      "message": "First of all, Thanks Suren, It would be really useful. \n\nI\u0027d like to clarify my understanding about duplicated memory accouting.\n\nGPU memory LMKD reported by this CL is subpart of /sys/kernel/dma_heap/total_pools_kb in previous patch? \n\nIOW, it could be wrong if I use this expression to get LostRAM from killinfo\n\nanon_lru + file_lru + kstack + slab + zram + total_pools_kb from dma_heap + *gpu* + and so on \n\nInstead should I use?\n\nMEMINFO - (anon_lru + file_lru + kstack + slab + zram + total_pools_kb + and so on) \u003d \n\n",
+      "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
