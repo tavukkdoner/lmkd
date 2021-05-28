@@ -52,6 +52,24 @@
       "parentUuid": "0bf37b43_ab231e18",
       "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "10883b1d_f6cfbbb6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-05-28T03:18:57Z",
+      "side": 1,
+      "message": "private allocation by GPU driver (alloc_pages/kmalloc/etc).\n\n- That(kmalloc) means they are double accounted by slab. \n\ndmabufs mapped by GPU driver\n\n- They are double accounted by dmabuf.\n\nThe legacy I added ION in vmstat and gpu in mm_event was never double accounted since I only accounted them on the alloc_pages in each driver. \n\nCan we have like this?\n\ndmabuf private heap + gpu private so their sum is never overlap with other statistics so it\u0027s much clear to sum up the final memory consumption snapshot based on system total memory.\n\nEither combination is fine if we could remove the duplication, please.",
+      "parentUuid": "49c5e2d8_70b8e33e",
+      "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
