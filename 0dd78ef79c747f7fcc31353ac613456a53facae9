@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5c6342d_8b1c48f5",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 1323232
+      },
+      "writtenOn": "2021-05-30T17:00:04Z",
+      "side": 1,
+      "message": "May I know what is difference between MI_ION_HEAP and MI_ION_HEAP_POOL when we are switching to dma_buf interface? Thanks.",
+      "range": {
+        "startLine": 383,
+        "startChar": 0,
+        "endLine": 384,
+        "endChar": 21
+      },
+      "revId": "0dd78ef79c747f7fcc31353ac613456a53facae9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
