@@ -106,6 +106,24 @@
       "parentUuid": "9bb363fa_14932d73",
       "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9bf9344b_053e1741",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-05-30T19:21:53Z",
+      "side": 1,
+      "message": "Yes, total_pools_kb represents memory in dmabuf pools - buffers allocated but currently unused. GPU allocation include GPU private allocations + dmabufs mapped by GPU driver. So there is overlap between dmabuf hueaps (not reported here) and total GPU allocations, but there is no overlap between GPU allocations and dmabuf heap pools reported here.",
+      "parentUuid": "ff4b38ba_c9bd930a",
+      "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
