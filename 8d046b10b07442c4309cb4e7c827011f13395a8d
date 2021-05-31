@@ -124,6 +124,24 @@
       "parentUuid": "ff4b38ba_c9bd930a",
       "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c21cc421_6e94e5c1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1323232
+      },
+      "writtenOn": "2021-05-31T13:44:36Z",
+      "side": 1,
+      "message": "Thanks,Suren. One more question. Does all mapped dmabufs are managed(mapped) by GPU driver? If not, we might miss something mapped dmabufs which are not mapped by GPU driver, right?\n\nI saw Minchan is exporting used dma_buf size(pa/1937168). If we log it, we could have some idea if GPU is using a lot of memory even thought they are double accounting. Is my understanding correct? \n\nex.\nDMA_USED is 1G and GPU_TOTAL is 1.2G so we could guess most of used(mapped) dma_buf come from GPU side.",
+      "parentUuid": "9bf9344b_053e1741",
+      "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
