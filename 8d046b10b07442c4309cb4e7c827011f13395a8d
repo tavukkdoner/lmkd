@@ -142,6 +142,24 @@
       "parentUuid": "9bf9344b_053e1741",
       "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6e93cbf1_f0a8bfd5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-05-31T18:40:40Z",
+      "side": 1,
+      "message": "No, not all dmabufs are mapped by GPU driver, some are used for other purposes. And yes, we will miss some dmabufs which are used but not by GPU driver.\n\nI also just noticed pa/1937168 and that would expose the total dmabuf size I think (Hridya would be the best person to review this CL and also decide whether it can be upstreamed). If it gets accepted I would like to report this number under MI_ION_HEAP.\n\nBut as Minchan noted, even in that case MI_ION_HEAP and GPU categories will have some overlap which is not easy to calculate (it requires walking dmabuf sysfs hierarchy and also having access to memtrack HAL to obtain GPU device name).",
+      "parentUuid": "c21cc421_6e94e5c1",
+      "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
