@@ -158,6 +158,30 @@
       },
       "revId": "0dd78ef79c747f7fcc31353ac613456a53facae9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22a91a79_d2b1e144",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1931,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-06-01T18:09:35Z",
+      "side": 1,
+      "message": "I\u0027ll run some measurements to check if these sysfs/bpf reads might cause slowdown before the kill.",
+      "parentUuid": "8eabf17b_8503ddc2",
+      "range": {
+        "startLine": 1931,
+        "startChar": 0,
+        "endLine": 1931,
+        "endChar": 66
+      },
+      "revId": "0dd78ef79c747f7fcc31353ac613456a53facae9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
