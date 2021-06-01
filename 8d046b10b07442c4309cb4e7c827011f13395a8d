@@ -178,6 +178,24 @@
       "parentUuid": "6e93cbf1_f0a8bfd5",
       "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1f84b82_f3d197de",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-06-01T19:07:48Z",
+      "side": 1,
+      "message": "I think vendors also express the desire to have a light-weight way to get the dmabuf heap size: aosp/1719010.",
+      "parentUuid": "907861d4_f0bcc612",
+      "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
