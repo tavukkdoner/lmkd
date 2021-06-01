@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0b47813a_b200e772",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1386032
+      },
+      "writtenOn": "2021-06-01T09:44:23Z",
+      "side": 1,
+      "message": "Ideally we also want to replace the non-pooled heap usage to the dmabuf one (I do understand given the current interface it\u0027s likely not possible in the lmkd context).",
+      "revId": "0dd78ef79c747f7fcc31353ac613456a53facae9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c5c6342d_8b1c48f5",
@@ -43,6 +60,29 @@
         "startChar": 0,
         "endLine": 384,
         "endChar": 21
+      },
+      "revId": "0dd78ef79c747f7fcc31353ac613456a53facae9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6570842e_14a6a2ac",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1931,
+      "author": {
+        "id": 1386032
+      },
+      "writtenOn": "2021-06-01T09:44:23Z",
+      "side": 1,
+      "message": "Can we do this in kill_one_process, right before we call killinfo_log? It will be easier to log the same value in other places if required (e.g. statsd).",
+      "range": {
+        "startLine": 1931,
+        "startChar": 0,
+        "endLine": 1931,
+        "endChar": 66
       },
       "revId": "0dd78ef79c747f7fcc31353ac613456a53facae9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
