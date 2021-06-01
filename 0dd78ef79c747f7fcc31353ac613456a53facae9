@@ -134,6 +134,30 @@
       },
       "revId": "0dd78ef79c747f7fcc31353ac613456a53facae9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8eabf17b_8503ddc2",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1931,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-06-01T16:01:40Z",
+      "side": 1,
+      "message": "The issue with post-kill (which is what is done here as well) is that there is no guarantee that the memory allocations won\u0027t go away before we capture them. So, if we want to report always correct values pre-kill capture is needed.",
+      "parentUuid": "563479d0_e3ff25a5",
+      "range": {
+        "startLine": 1931,
+        "startChar": 0,
+        "endLine": 1931,
+        "endChar": 66
+      },
+      "revId": "0dd78ef79c747f7fcc31353ac613456a53facae9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
