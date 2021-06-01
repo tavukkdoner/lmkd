@@ -160,6 +160,24 @@
       "parentUuid": "c21cc421_6e94e5c1",
       "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "907861d4_f0bcc612",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-06-01T16:22:21Z",
+      "side": 1,
+      "message": "Here my concern are dmabuf_heap *pool* memory consumption is minor(usually they are shrunk under memory pressure if we don\u0027t have the bug) and GPU bpf stat are overlapped. So we could miss whole picture how the memory are distributed by several big memory consumers we usually categorize to gather big picture.\n(slab, anon_LRU, file_LRU, ION and so on)\n\nHonestly, I\u0027m okay without heap_pool and gpu bpf stat here since they are less important(having said, yeah, those two stats would be helpful so please keep working on it) but I really want to have dmabuf heap memory usage(it\u0027s exactly we carried from ION_HEAP memory consumption so we could easily override IonHeap) since it covers every case, not only GPU memory consumption of dmabuf.\n\nLet\u0027s have the stat of dmabuf heap and make LMKD report it.\nLet me upload the kernel patch for the dmabuf heap stat after the testing.",
+      "parentUuid": "6e93cbf1_f0a8bfd5",
+      "revId": "8d046b10b07442c4309cb4e7c827011f13395a8d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
