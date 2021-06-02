@@ -71,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "06e9ffb1_f6b38bb7",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2364,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-06-02T21:22:35Z",
+      "side": 1,
+      "message": "what I meant is shall we use libbase, given now lmkd is coverted to C++ already.\n\nlibbase provides many neat helper function for reading string and parsing, as well as unique_fd.",
+      "parentUuid": "d147c3dd_e0116457",
+      "range": {
+        "startLine": 2360,
+        "startChar": 3,
+        "endLine": 2364,
+        "endChar": 47
+      },
+      "revId": "da12e59e199fac810b4f482a19fcb768099f0ee2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5fe9d452_f868b7f9",
