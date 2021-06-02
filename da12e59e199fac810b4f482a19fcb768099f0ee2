@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1d6d1ff4_950b11e1",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2364,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-06-02T17:02:56Z",
+      "side": 1,
+      "message": "can we use libbase in lmkd?",
+      "range": {
+        "startLine": 2360,
+        "startChar": 3,
+        "endLine": 2364,
+        "endChar": 47
+      },
+      "revId": "da12e59e199fac810b4f482a19fcb768099f0ee2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
