@@ -82,6 +82,7 @@
 #define ZONEINFO_PATH "/proc/zoneinfo"
 #define MEMINFO_PATH "/proc/meminfo"
 #define VMSTAT_PATH "/proc/vmstat"
+#define WATERMARK_BOOST_PATH "/proc/sys/vm/watermark_boost_factor"
 #define PROC_STATUS_TGID_FIELD "Tgid:"
 #define PROC_STATUS_RSS_FIELD "VmRSS:"
 #define PROC_STATUS_SWAP_FIELD "VmSwap:"
@@ -2350,6 +2351,31 @@ void calc_zone_watermarks(struct zoneinfo *zi, struct zone_watermarks *watermark
     }
 }
 
+static bool watermark_boost_is_enabled(void) {
+    int fd;
+    ssize_t ret;
+    char line[LINE_MAX];
+    unsigned int boost_factor;
+
+    fd = open(WATERMARK_BOOST_PATH, O_RDONLY | O_CLOEXEC);
+    if (fd == -1)
+        return false;
+
+    ret = read_all(fd, line, sizeof(line) - 1);
+    close(fd);
+    if (ret < 0) {
+        return false;
+    }
+    line[ret] = '\0';
+
+    sscanf(line, "%u", &boost_factor);
+
+    if(boost_factor > 0)
+        return true;
+    else
+        return false;
+}
+
 static int calc_swap_utilization(union meminfo *mi) {
     int64_t swap_used = mi->field.total_swap - mi->field.free_swap;
     int64_t total_swappable = mi->field.active_anon + mi->field.inactive_anon +
@@ -2376,6 +2402,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     static struct wakeup_info wi;
     static struct timespec thrashing_reset_tm;
     static int64_t prev_thrash_growth = 0;
+    static bool has_watermark_boost = true;
 
     union meminfo mi;
     union vmstat vs;
@@ -2501,12 +2528,16 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
 
     /*
      * Refresh watermarks once per min in case user updated one of the margins.
+     * Also, we need to update watermarks if the watermark boost feature is enabled.
      * TODO: b/140521024 replace this periodic update with an API for AMS to notify LMKD
      * that zone watermarks were changed by the system software.
      */
-    if (watermarks.high_wmark == 0 || get_time_diff_ms(&wmark_update_tm, &curr_tm) > 60000) {
+    if (watermarks.high_wmark == 0 || has_watermark_boost ||
+        get_time_diff_ms(&wmark_update_tm, &curr_tm) > 60000) {
+
         struct zoneinfo zi;
 
+        has_watermark_boost = watermark_boost_is_enabled();
         if (zoneinfo_parse(&zi) < 0) {
             ALOGE("Failed to parse zoneinfo!");
             return;
