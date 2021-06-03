@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "07a67471_8ddf016a",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2372,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-06-03T19:39:02Z",
+      "side": 1,
+      "message": "nit: return boost_factor \u003e 0;",
+      "range": {
+        "startLine": 2369,
+        "startChar": 4,
+        "endLine": 2372,
+        "endChar": 21
+      },
+      "revId": "7594cdaeafe86f13afaa506f351347a3241a75d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d5e30d9_7efaf332",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2537,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-06-03T19:39:02Z",
+      "side": 1,
+      "message": "This will result in zoneinfo_parse() being called almost on every wakeup. Is that the intention here?\nI though we want to call zoneinfo_parse() only when watermark_boost value changes. IOW something like this:\n\n\nstatic bool has_watermark_boost \u003d true;\nstatic int prev_watermark_boost \u003d 0;\nbool refresh_watermarks \u003d false;\n\nif (watermarks.high_wmark \u003d\u003d 0 || get_time_diff_ms(\u0026wmark_update_tm, \u0026curr_tm) \u003e 60000) {\n    refresh_watermarks \u003d true;\n    // in case userspace enables watermark_boost at runtime (not sure if needed)\n    has_watermark_boost \u003d read_watermark_boost() \u003e 0;\n} else {\n    if (has_watermark_boost) {\n        int watermark_boost \u003d read_watermark_boost();\n        \n        if (watermark_boost !\u003d prev_watermark_boost) {\n            refresh_watermarks \u003d watermark_boost !\u003d prev_watermark_boost;\n            prev_watermark_boost \u003d watermark_boost;\n        } else {\n            has_watermark_boost \u003d watermark_boost \u003e 0;\n        }\n    }\n}\nif (refresh_watermarks) zoneinfo_parse();\n\nDoes this make sense?",
+      "range": {
+        "startLine": 2537,
+        "startChar": 30,
+        "endLine": 2537,
+        "endChar": 49
+      },
+      "revId": "7594cdaeafe86f13afaa506f351347a3241a75d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
