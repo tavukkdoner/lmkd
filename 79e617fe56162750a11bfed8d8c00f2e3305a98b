@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "60540d20_e3eade7b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-06-03T23:01:18Z",
+      "side": 1,
+      "message": "Splitting GPU and dmabuf pools accounting into separate topics.",
+      "revId": "79e617fe56162750a11bfed8d8c00f2e3305a98b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
