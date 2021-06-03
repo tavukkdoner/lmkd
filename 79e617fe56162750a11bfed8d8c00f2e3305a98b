@@ -16,6 +16,29 @@
       "message": "Splitting GPU and dmabuf pools accounting into separate topics.",
       "revId": "79e617fe56162750a11bfed8d8c00f2e3305a98b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72c6161a_059a0c10",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1831,
+      "author": {
+        "id": 1120612
+      },
+      "writtenOn": "2021-06-03T23:46:56Z",
+      "side": 1,
+      "message": "nit: Should we check if the field is non-empty first in case a partner sets this field using the /proc/meminfo vendor hook?",
+      "range": {
+        "startLine": 1831,
+        "startChar": 8,
+        "endLine": 1831,
+        "endChar": 31
+      },
+      "revId": "79e617fe56162750a11bfed8d8c00f2e3305a98b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
