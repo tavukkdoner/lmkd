@@ -45,6 +45,30 @@
       },
       "revId": "7594cdaeafe86f13afaa506f351347a3241a75d2",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e766783c_6136a9cb",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2537,
+      "author": {
+        "id": 1323232
+      },
+      "writtenOn": "2021-06-04T03:50:10Z",
+      "side": 1,
+      "message": "Per sync offline, watermark_boost_factor is telling the max value of the watermark boot value (watermark_boost_factor/1000 * watermark-\u003ehigh). And, watermarks level will change dynamically between of that when hitting fragmentation event. Thus, we need to query that on every wake up path. Feel free to let me know any questions :) Thanks.",
+      "parentUuid": "8d5e30d9_7efaf332",
+      "range": {
+        "startLine": 2537,
+        "startChar": 30,
+        "endLine": 2537,
+        "endChar": 49
+      },
+      "revId": "7594cdaeafe86f13afaa506f351347a3241a75d2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
