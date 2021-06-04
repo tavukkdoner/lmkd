@@ -56,6 +56,30 @@
       },
       "revId": "79e617fe56162750a11bfed8d8c00f2e3305a98b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "35f2f935_9493aea4",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1831,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-06-04T15:43:05Z",
+      "side": 1,
+      "message": "Since we agreed to use ion_heap and ion_heap_pool to report dmabuf heap/pool sizes, I won\u0027t be merging this CL until we have upstream solution for dmabuf heap total size. That\u0027s why I split this topic into dmabuf pool and GPU accounting topics. We can merge GPU one but this one will stay unmerged until we have upstream solution for heaps.",
+      "parentUuid": "72c6161a_059a0c10",
+      "range": {
+        "startLine": 1831,
+        "startChar": 8,
+        "endLine": 1831,
+        "endChar": 31
+      },
+      "revId": "79e617fe56162750a11bfed8d8c00f2e3305a98b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
