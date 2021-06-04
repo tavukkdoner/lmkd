@@ -18,6 +18,23 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "95184367_3071423c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-06-04T00:42:26Z",
+      "side": 1,
+      "message": "Just a question, Maybe Hridya will have an answer.\n\nEvery vendor changed to use upstreamed dmabuf pool or do we still allow using custom dmabuf vendor pool like custom vendor dma-heap?\n\nThe question comes from that we will support vendor custom dmea-heap report to lmkd via /proc/meminfo so if some vendor has custom implementation, they might want to report their dmabuf pool. \n\n",
+      "revId": "79e617fe56162750a11bfed8d8c00f2e3305a98b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "72c6161a_059a0c10",
