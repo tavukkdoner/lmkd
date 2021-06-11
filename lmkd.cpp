@@ -19,9 +19,11 @@
 #include <dirent.h>
 #include <errno.h>
 #include <inttypes.h>
+#include <pthread.h>
 #include <pwd.h>
 #include <sched.h>
 #include <signal.h>
+#include <stdatomic.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -2044,6 +2046,22 @@ static void set_process_group_and_prio(int pid, const std::vector<std::string>& 
     closedir(d);
 }
 
+// LMKD reaper
+static struct {
+    // req_mutex and req_cond are used to wakeup the reaper thread.
+    pthread_mutex_t req_mutex = PTHREAD_MUTEX_INITIALIZER;
+    pthread_cond_t req_cond = PTHREAD_COND_INITIALIZER;
+    // repl_mutex and repl_cond are used to wakeup the main thread waiting for the kill result.
+    pthread_mutex_t repl_mutex = PTHREAD_MUTEX_INITIALIZER;
+    pthread_cond_t repl_cond = PTHREAD_COND_INITIALIZER;
+    // req_mutex protects pidfd access.
+    int pidfd = -1;
+    // kill_result and kill_result_ready do not need access protection because main thread issues
+    // only one kill request at a time.
+    int kill_result;
+    atomic_int kill_result_ready = ATOMIC_VAR_INIT(0);
+} reaper;
+
 #ifndef __NR_process_mrelease
 #define __NR_process_mrelease 448
 #endif
@@ -2070,10 +2088,102 @@ static bool is_reaping_supported() {
     return reap_support == SUPPORTED;
 }
 
-static int do_process_mrelease(int pidfd, unsigned int flags) {
-    if (!is_reaping_supported())
-        return -1;
-    return process_mrelease(pidfd, flags);
+static bool reaper_kill(int pidfd, int *kill_result) {
+    if (pidfd == -1) {
+        return false;
+    }
+
+    if (!is_reaping_supported()) {
+        return false;
+    }
+
+    pthread_mutex_lock(&reaper.req_mutex);
+    bool busy = (reaper.pidfd != -1);
+    if (!busy) {
+        // Duplicate pidfd because the original one is used for waiting
+        reaper.pidfd = dup(pidfd);
+        atomic_store(&reaper.kill_result_ready, 0);
+        // Wake up reaper thread
+        pthread_cond_signal(&reaper.req_cond);
+    }
+    pthread_mutex_unlock(&reaper.req_mutex);
+
+    if (busy)
+        return false;
+
+    // Timeout is used in case we miss the signal from reaper_main.
+    // reaper_main is optimized not to take repl_mutex when signaling to
+    // minimize the time between sending a SIGKILL and calling process_mrelease
+    struct timespec timeout;
+    clock_gettime(CLOCK_REALTIME, &timeout);
+    timeout.tv_nsec += 10000000L; // 10ms
+    if (timeout.tv_nsec > 1000000000L) {
+        timeout.tv_nsec -= 1000000000L;
+        timeout.tv_sec++;
+    }
+
+    // Wait for kill result
+    pthread_mutex_lock(&reaper.repl_mutex);
+    while (!atomic_load(&reaper.kill_result_ready)) {
+        pthread_cond_timedwait(&reaper.repl_cond, &reaper.repl_mutex, &timeout);
+    }
+
+    *kill_result = reaper.kill_result;
+    atomic_store(&reaper.kill_result_ready, 0);
+    pthread_mutex_unlock(&reaper.repl_mutex);
+
+    return true;
+}
+
+static int get_reap_target() {
+    pthread_mutex_lock(&reaper.req_mutex);
+    reaper.pidfd = -1;
+    while (reaper.pidfd < 0) {
+        pthread_cond_wait(&reaper.req_cond, &reaper.req_mutex);
+    }
+    pthread_mutex_unlock(&reaper.req_mutex);
+
+    return reaper.pidfd;
+}
+
+static void* reaper_main(void*) {
+    struct timespec start_tm, end_tm;
+    int pidfd, res;
+
+    for (;;) {
+        pidfd = get_reap_target();
+        if (pidfd < 0) {
+            continue;
+        }
+
+        if (debug_process_killing) {
+            clock_gettime(CLOCK_MONOTONIC_COARSE, &start_tm);
+        }
+
+        res = pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
+        reaper.kill_result = res;
+        // atomic_store implements implicit barrier, so reaper.kill_result is set first
+        atomic_store(&reaper.kill_result_ready, 1);
+        // We skip locking repl_mutex to minimize the time between pidfd_send_signal and
+        // process_mrelease, relying on the timeout in pthread_cond_timedwait instead.
+        pthread_cond_signal(&reaper.repl_cond);
+
+        if (!res) {
+            if (!process_mrelease(pidfd, 0)) {
+                if (debug_process_killing) {
+                    clock_gettime(CLOCK_MONOTONIC_COARSE, &end_tm);
+                    ALOGI("Process was reaped in %ldms", get_time_diff_ms(&start_tm, &end_tm));
+                }
+            } else {
+                ALOGE("process_mrelease %d failed: %s", pidfd, strerror(errno));
+            }
+        } else {
+            ALOGE("pidfd_send_signal %d failed: %s", pidfd, strerror(errno));
+        }
+        close(pidfd);
+    }
+
+    return NULL;
 }
 
 static bool is_kill_pending(void) {
@@ -2229,9 +2339,10 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
         kill_result = kill(pid, SIGKILL);
     } else {
         start_wait_for_proc_kill(pidfd);
-        kill_result = pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
-        if (kill_result == 0 && !do_process_mrelease(pidfd, 0)) {
-            reaped = true;
+        if (reaper_kill(pidfd, &kill_result)) {
+            reaped = kill_result == 0;
+        } else {
+            kill_result = pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
         }
     }
 
@@ -2246,9 +2357,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
 
     last_kill_tm = *tm;
 
-    if (reaped) {
-        stop_wait_for_proc_kill(true);
-    } else {
+    if (!reaped) {
         set_process_group_and_prio(pid, {"CPUSET_SP_FOREGROUND", "SCHED_SP_FOREGROUND"},
                                    ANDROID_PRIORITY_HIGHEST);
     }
@@ -3558,6 +3667,13 @@ int main(int argc, char **argv) {
             };
             if (sched_setscheduler(0, SCHED_FIFO, &param)) {
                 ALOGW("set SCHED_FIFO failed %s", strerror(errno));
+            }
+        }
+        pthread_t reaper_thread;
+        if (is_reaping_supported()) {
+            int err_no = pthread_create(&reaper_thread, NULL, reaper_main, NULL);
+            if (err_no) {
+                ALOGE("Failed to create the reaper thread %s", strerror(err_no));
             }
         }
 
