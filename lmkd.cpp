@@ -19,9 +19,11 @@
 #include <dirent.h>
 #include <errno.h>
 #include <inttypes.h>
+#include <pthread.h>
 #include <pwd.h>
 #include <sched.h>
 #include <signal.h>
+#include <stdatomic.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -956,7 +958,7 @@ static int pid_remove(int pid) {
      * Close pidfd here if we are not waiting for corresponding process to die,
      * in which case stop_wait_for_proc_kill() will close the pidfd later
      */
-    if (procp->pidfd >= 0 && procp->pidfd != last_kill_pid_or_fd) {
+    if (procp->pidfd >= 0) {
         close(procp->pidfd);
     }
     free(procp);
@@ -2009,15 +2011,17 @@ static struct proc *proc_get_heaviest(int oomadj) {
 }
 
 static void set_process_group_and_prio(int pid, const std::vector<std::string>& profiles,
-                                       int prio) {
+                                       int prio, bool ignore_err) {
     DIR* d;
     char proc_path[PATH_MAX];
     struct dirent* de;
 
     snprintf(proc_path, sizeof(proc_path), "/proc/%d/task", pid);
     if (!(d = opendir(proc_path))) {
-        ALOGW("Failed to open %s; errno=%d: process pid(%d) might have died", proc_path, errno,
-              pid);
+        if (!ignore_err) {
+            ALOGW("Failed to open %s; errno=%d: process pid(%d) might have died", proc_path, errno,
+                  pid);
+        }
         return;
     }
 
@@ -2028,20 +2032,155 @@ static void set_process_group_and_prio(int pid, const std::vector<std::string>& 
         t_pid = atoi(de->d_name);
 
         if (!t_pid) {
-            ALOGW("Failed to get t_pid for '%s' of pid(%d)", de->d_name, pid);
+            if (!ignore_err) {
+                ALOGW("Failed to get t_pid for '%s' of pid(%d)", de->d_name, pid);
+            }
             continue;
         }
 
-        if (setpriority(PRIO_PROCESS, t_pid, prio) && errno != ESRCH) {
+        if (setpriority(PRIO_PROCESS, t_pid, prio) && errno != ESRCH && !ignore_err) {
             ALOGW("Unable to raise priority of killing t_pid (%d): errno=%d", t_pid, errno);
         }
 
         if (!SetTaskProfiles(t_pid, profiles, true)) {
-            ALOGW("Failed to set task_profiles on pid(%d) t_pid(%d)", pid, t_pid);
+            if (!ignore_err) {
+                ALOGW("Failed to set task_profiles on pid(%d) t_pid(%d)", pid, t_pid);
+            }
             continue;
         }
     }
     closedir(d);
+}
+
+// LMKD reaper
+#ifndef __NR_process_mrelease
+#define __NR_process_mrelease 448
+#endif
+
+static struct {
+    pthread_mutex_t req_mutex = PTHREAD_MUTEX_INITIALIZER;
+    pthread_cond_t req_cond = PTHREAD_COND_INITIALIZER;
+    pthread_mutex_t repl_mutex = PTHREAD_MUTEX_INITIALIZER;
+    pthread_cond_t repl_cond = PTHREAD_COND_INITIALIZER;
+    int pidfd = -1;
+    int kill_res;
+    atomic_int kill_res_ready = ATOMIC_VAR_INIT(0);
+} reaper;
+
+static int process_mrelease(int pidfd, unsigned int flags) {
+    return syscall(__NR_process_mrelease, pidfd, flags);
+}
+
+static bool is_reaping_supported() {
+    static enum {
+        UNKNOWN,
+        SUPPORTED,
+        UNSUPPORTED
+    } reap_support = UNKNOWN;
+
+    if (reap_support == UNKNOWN) {
+        process_mrelease(-1, 0);
+        if (errno == ENOSYS) {
+            ALOGI("Process reaping is not supported");
+            reap_support = UNSUPPORTED;
+        } else {
+            reap_support = SUPPORTED;
+        }
+    }
+    return reap_support == SUPPORTED;
+}
+
+static bool reaper_kill(int pidfd, int *kill_res) {
+    if (pidfd == -1) {
+        return false;
+    }
+
+    pthread_mutex_lock(&reaper.req_mutex);
+    bool busy = (reaper.pidfd != -1);
+    if (!busy) {
+        reaper.pidfd = pidfd;
+        atomic_store(&reaper.kill_res_ready, 0);
+        // Wake up reaper thread
+        pthread_cond_signal(&reaper.req_cond);
+    }
+    pthread_mutex_unlock(&reaper.req_mutex);
+
+    if (busy)
+        return false;
+
+    // Timeout is used in case we miss the signal from reaper_main.
+    // reaper_main is optimized not to take repl_mutex when signaling to
+    // minimize the time between sending a SIGKILL and calling process_mrelease
+    struct timespec timeout;
+    clock_gettime(CLOCK_REALTIME, &timeout);
+    timeout.tv_nsec += 10000000L; // 10ms
+    if (timeout.tv_nsec > 1000000000L) {
+        timeout.tv_nsec -= 1000000000L;
+        timeout.tv_sec++;
+    }
+
+    // Wait for kill result
+    pthread_mutex_lock(&reaper.repl_mutex);
+    while (!atomic_load(&reaper.kill_res_ready)) {
+        pthread_cond_timedwait(&reaper.repl_cond, &reaper.repl_mutex, &timeout);
+    }
+
+    *kill_res = reaper.kill_res;
+    atomic_store(&reaper.kill_res_ready, 0);
+    pthread_mutex_unlock(&reaper.repl_mutex);
+
+    return true;
+}
+
+static int get_reap_target() {
+    pthread_mutex_lock(&reaper.req_mutex);
+    reaper.pidfd = -1;
+    while (reaper.pidfd < 0) {
+        pthread_cond_wait(&reaper.req_cond, &reaper.req_mutex);
+    }
+    pthread_mutex_unlock(&reaper.req_mutex);
+
+    return reaper.pidfd;
+}
+
+static void* reaper_main(void*) {
+    struct timespec start_tm, end_tm;
+    int pidfd, res;
+
+    for (;;) {
+        pidfd = get_reap_target();
+        if (pidfd < 0) {
+            continue;
+        }
+
+        if (debug_process_killing) {
+            clock_gettime(CLOCK_MONOTONIC_COARSE, &start_tm);
+        }
+
+        res = pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
+        reaper.kill_res = res;
+        // atomic_store implements implicit barrier, so reaper.kill_res is set first
+        atomic_store(&reaper.kill_res_ready, 1);
+        // We skip locking repl_mutex to minimize the time between pidfd_send_signal and
+        // process_mrelease, relying on the timeout in pthread_cond_timedwait instead.
+        pthread_cond_signal(&reaper.repl_cond);
+
+        if (res) {
+            ALOGE("pidfd_send_signal %d failed: %s", pidfd, strerror(errno));
+            continue;
+        }
+
+        if (!process_mrelease(pidfd, 0)) {
+            if (debug_process_killing) {
+                clock_gettime(CLOCK_MONOTONIC_COARSE, &end_tm);
+                ALOGI("Process was reaped in %ldms", get_time_diff_ms(&start_tm, &end_tm));
+            }
+        } else {
+            ALOGE("process_mrelease %d failed: %s", pidfd, strerror(errno));
+        }
+    }
+
+    return NULL;
 }
 
 static bool is_kill_pending(void) {
@@ -2158,6 +2297,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     int64_t swap_kb;
     char buf[PAGE_SIZE];
     char desc[LINE_MAX];
+    bool reaped = false;
 
     if (!read_proc_status(pid, buf, sizeof(buf))) {
         goto out;
@@ -2195,8 +2335,15 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
         start_wait_for_proc_kill(pid);
         r = kill(pid, SIGKILL);
     } else {
-        start_wait_for_proc_kill(pidfd);
-        r = pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
+        // Need to dup the pidfd because original is closed in pid_remove()
+        int pidfd2 = dup(pidfd);
+
+        start_wait_for_proc_kill(pidfd2);
+        if (is_reaping_supported() && reaper_kill(pidfd2, &r)) {
+            reaped = r == 0;
+        } else {
+            r = pidfd_send_signal(pidfd2, SIGKILL, NULL, 0);
+        }
     }
 
     trace_kill_end();
@@ -2209,7 +2356,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     }
 
     set_process_group_and_prio(pid, {"CPUSET_SP_FOREGROUND", "SCHED_SP_FOREGROUND"},
-                               ANDROID_PRIORITY_HIGHEST);
+                               ANDROID_PRIORITY_HIGHEST, reaped);
 
     last_kill_tm = *tm;
 
@@ -3518,6 +3665,13 @@ int main(int argc, char **argv) {
             };
             if (sched_setscheduler(0, SCHED_FIFO, &param)) {
                 ALOGW("set SCHED_FIFO failed %s", strerror(errno));
+            }
+        }
+        pthread_t reaper_thread;
+        if (is_reaping_supported()) {
+            int err_no = pthread_create(&reaper_thread, NULL, reaper_main, NULL);
+            if (err_no) {
+                ALOGE("Failed to create the reaper thread %s", strerror(err_no));
             }
         }
 
