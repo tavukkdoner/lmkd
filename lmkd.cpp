@@ -2044,6 +2044,30 @@ static void set_process_group_and_prio(int pid, const std::vector<std::string>& 
     closedir(d);
 }
 
+#ifndef __NR_process_mrelease
+#define __NR_process_mrelease 448
+#endif
+
+static bool do_process_mrelease(int pidfd, unsigned int flags) {
+    static bool is_supported = true;
+
+    if (!is_supported) {
+        return false;
+    }
+
+    if (syscall(__NR_process_mrelease, pidfd, flags)) {
+        if (errno == ENOSYS) {
+            ALOGI("Process reaping is not supported");
+            is_supported = false;
+        } else {
+            ALOGE("process_mrelease(%d): %s", pidfd, strerror(errno));
+        }
+        return false;
+    }
+
+    return true;
+}
+
 static bool is_kill_pending(void) {
     char buf[24];
 
@@ -2158,6 +2182,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     int64_t swap_kb;
     char buf[PAGE_SIZE];
     char desc[LINE_MAX];
+    bool reaped = false;
 
     if (!read_proc_status(pid, buf, sizeof(buf))) {
         goto out;
@@ -2197,6 +2222,10 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     } else {
         start_wait_for_proc_kill(pidfd);
         r = pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
+        if (r == 0 && do_process_mrelease(pidfd, 0)) {
+            reaped = true;
+            stop_wait_for_proc_kill(true);
+        }
     }
 
     trace_kill_end();
@@ -2208,8 +2237,9 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
         goto out;
     }
 
-    set_process_group_and_prio(pid, {"CPUSET_SP_FOREGROUND", "SCHED_SP_FOREGROUND"},
-                               ANDROID_PRIORITY_HIGHEST);
+    if (!reaped)
+        set_process_group_and_prio(pid, {"CPUSET_SP_FOREGROUND", "SCHED_SP_FOREGROUND"},
+                                   ANDROID_PRIORITY_HIGHEST);
 
     last_kill_tm = *tm;
 
