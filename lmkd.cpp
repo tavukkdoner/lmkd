@@ -52,6 +52,7 @@
 #include <system/thread_defs.h>
 
 #include "statslog.h"
+#include "reaper.h"
 
 #define BPF_FD_JUST_USE_INT
 #include "BpfSyscallWrappers.h"
@@ -228,6 +229,7 @@ static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
 };
 
 static android_log_context ctx;
+static Reaper reaper;
 
 enum polling_update {
     POLLING_DO_NOT_CHANGE,
@@ -277,9 +279,9 @@ static struct event_handler_info vmpressure_hinfo[VMPRESS_LEVEL_COUNT];
 
 /*
  * 1 ctrl listen socket, 3 ctrl data socket, 3 memory pressure levels,
- * 1 lmk events + 1 fd to wait for process death
+ * 1 lmk events + 1 fd to wait for process death + 1 fd to receive kill failure notifications
  */
-#define MAX_EPOLL_EVENTS (1 + MAX_DATA_CONN + VMPRESS_LEVEL_COUNT + 1 + 1)
+#define MAX_EPOLL_EVENTS (1 + MAX_DATA_CONN + VMPRESS_LEVEL_COUNT + 1 + 1 + 1)
 static int epollfd;
 static int maxevents;
 
@@ -2114,6 +2116,18 @@ static void kill_done_handler(int data __unused, uint32_t events __unused,
     poll_params->update = POLLING_RESUME;
 }
 
+static void kill_fail_handler(int data __unused, uint32_t events __unused,
+                              struct polling_params *poll_params) {
+    int pid;
+
+    pid = reaper.get_failed_kill_pid();
+    if (pid >= 0) {
+        ALOGE("Failed to kill process %d", pid);
+    }
+    stop_wait_for_proc_kill(false);
+    poll_params->update = POLLING_RESUME;
+}
+
 static void start_wait_for_proc_kill(int pid_or_fd) {
     static struct event_handler_info kill_done_hinfo = { 0, kill_done_handler };
     struct epoll_event epev;
@@ -2149,7 +2163,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     int pidfd = procp->pidfd;
     uid_t uid = procp->uid;
     char *taskname;
-    int r;
+    int kill_result;
     int result = -1;
     struct memory_stat *mem_st;
     struct kill_stat kill_st;
@@ -2158,6 +2172,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     int64_t swap_kb;
     char buf[PAGE_SIZE];
     char desc[LINE_MAX];
+    bool async_kill = false;
 
     if (!read_proc_status(pid, buf, sizeof(buf))) {
         goto out;
@@ -2193,25 +2208,33 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     /* CAP_KILL required */
     if (pidfd < 0) {
         start_wait_for_proc_kill(pid);
-        r = kill(pid, SIGKILL);
+        kill_result = kill(pid, SIGKILL);
     } else {
         start_wait_for_proc_kill(pidfd);
-        r = pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
+        if (reaper.request_kill(pidfd, pid)) {
+            async_kill = true;
+            // we assume the kill will be successful and if it fails we will be notified
+            kill_result = 0;
+        } else {
+            kill_result = pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
+        }
     }
 
     trace_kill_end();
 
-    if (r) {
+    if (kill_result) {
         stop_wait_for_proc_kill(false);
         ALOGE("kill(%d): errno=%d", pid, errno);
         /* Delete process record even when we fail to kill so that we don't get stuck on it */
         goto out;
     }
 
-    set_process_group_and_prio(pid, {"CPUSET_SP_FOREGROUND", "SCHED_SP_FOREGROUND"},
-                               ANDROID_PRIORITY_HIGHEST);
-
     last_kill_tm = *tm;
+
+    if (!async_kill) {
+        set_process_group_and_prio(pid, {"CPUSET_SP_FOREGROUND", "SCHED_SP_FOREGROUND"},
+                                   ANDROID_PRIORITY_HIGHEST);
+    }
 
     inc_killcnt(procp->oomadj);
 
@@ -3158,6 +3181,42 @@ static void destroy_monitors() {
     }
 }
 
+static bool init_reaper() {
+    if (!reaper.is_reaping_supported()) {
+        ALOGI("Process reaping is not supported");
+        return false;
+    }
+
+    int comm_fd = reaper.setup_thread_comm();
+    if (comm_fd < 0) {
+        ALOGE("Failed to create thread communication channel");
+        return false;
+    }
+
+    // Setup epoll handler
+    struct epoll_event epev;
+    static struct event_handler_info kill_failed_hinfo = { 0, kill_fail_handler };
+    epev.events = EPOLLIN;
+    epev.data.ptr = (void *)&kill_failed_hinfo;
+    if (epoll_ctl(epollfd, EPOLL_CTL_ADD, comm_fd, &epev)) {
+        ALOGE("epoll_ctl failed: %s", strerror(errno));
+        reaper.drop_thread_comm();
+        return false;
+    }
+
+    if (!reaper.create_thread_pool()) {
+        ALOGE("Failed to create reaper thread pool");
+        if (epoll_ctl(epollfd, EPOLL_CTL_DEL, comm_fd, &epev)) {
+            ALOGE("epoll_ctl failed: %s", strerror(errno));
+        }
+        reaper.drop_thread_comm();
+        return false;
+    }
+    maxevents++;
+
+    return true;
+}
+
 static int init(void) {
     static struct event_handler_info kernel_poll_hinfo = { 0, kernel_event_handler };
     struct reread_data file_data = {
@@ -3256,6 +3315,11 @@ static int init(void) {
         close(pidfd);
     }
     ALOGI("Process polling is %s", pidfd_supported ? "supported" : "not supported" );
+
+    if (init_reaper()) {
+        ALOGI("Process reaper initialized with %d threads in the pool",
+            reaper.reaper_thread_cnt());
+    }
 
     return 0;
 }
@@ -3480,6 +3544,8 @@ static void update_props() {
         thrashing_limit_pct * 2));
     swap_util_max = clamp(0, 100, GET_LMK_PROPERTY(int32, "swap_util_max", 100));
     filecache_min_kb = GET_LMK_PROPERTY(int64, "filecache_min_kb", 0);
+
+    reaper.enable_debug_logs(debug_process_killing);
 }
 
 int main(int argc, char **argv) {
