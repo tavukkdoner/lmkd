@@ -2044,6 +2044,38 @@ static void set_process_group_and_prio(int pid, const std::vector<std::string>& 
     closedir(d);
 }
 
+#ifndef __NR_process_mrelease
+#define __NR_process_mrelease 448
+#endif
+
+static int process_mrelease(int pidfd, unsigned int flags) {
+    return syscall(__NR_process_mrelease, pidfd, flags);
+}
+
+static bool is_reaping_supported() {
+    static enum {
+        UNKNOWN,
+        SUPPORTED,
+        UNSUPPORTED
+    } reap_support = UNKNOWN;
+
+    if (reap_support == UNKNOWN) {
+        if (process_mrelease(-1, 0) && errno == ENOSYS) {
+            ALOGI("Process reaping is not supported");
+            reap_support = UNSUPPORTED;
+        } else {
+            reap_support = SUPPORTED;
+        }
+    }
+    return reap_support == SUPPORTED;
+}
+
+static int do_process_mrelease(int pidfd, unsigned int flags) {
+    if (!is_reaping_supported())
+        return -1;
+    return process_mrelease(pidfd, flags);
+}
+
 static bool is_kill_pending(void) {
     char buf[24];
 
@@ -2149,7 +2181,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     int pidfd = procp->pidfd;
     uid_t uid = procp->uid;
     char *taskname;
-    int r;
+    int kill_result;
     int result = -1;
     struct memory_stat *mem_st;
     struct kill_stat kill_st;
@@ -2158,6 +2190,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     int64_t swap_kb;
     char buf[PAGE_SIZE];
     char desc[LINE_MAX];
+    bool reaped = false;
 
     if (!read_proc_status(pid, buf, sizeof(buf))) {
         goto out;
@@ -2193,25 +2226,32 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     /* CAP_KILL required */
     if (pidfd < 0) {
         start_wait_for_proc_kill(pid);
-        r = kill(pid, SIGKILL);
+        kill_result = kill(pid, SIGKILL);
     } else {
         start_wait_for_proc_kill(pidfd);
-        r = pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
+        kill_result = pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
+        if (kill_result == 0 && !do_process_mrelease(pidfd, 0)) {
+            reaped = true;
+        }
     }
 
     trace_kill_end();
 
-    if (r) {
+    if (kill_result) {
         stop_wait_for_proc_kill(false);
         ALOGE("kill(%d): errno=%d", pid, errno);
         /* Delete process record even when we fail to kill so that we don't get stuck on it */
         goto out;
     }
 
-    set_process_group_and_prio(pid, {"CPUSET_SP_FOREGROUND", "SCHED_SP_FOREGROUND"},
-                               ANDROID_PRIORITY_HIGHEST);
-
     last_kill_tm = *tm;
+
+    if (reaped) {
+        stop_wait_for_proc_kill(true);
+    } else {
+        set_process_group_and_prio(pid, {"CPUSET_SP_FOREGROUND", "SCHED_SP_FOREGROUND"},
+                                   ANDROID_PRIORITY_HIGHEST);
+    }
 
     inc_killcnt(procp->oomadj);
 
