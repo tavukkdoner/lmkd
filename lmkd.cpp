@@ -22,7 +22,6 @@
 #include <pwd.h>
 #include <sched.h>
 #include <signal.h>
-#include <statslog_lmkd.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,6 +52,9 @@
 #include <system/thread_defs.h>
 
 #include "statslog.h"
+
+#define BPF_FD_JUST_USE_INT
+#include "BpfSyscallWrappers.h"
 
 /*
  * Define LMKD_TRACE_KILLS to record lmkd kills in kernel traces
@@ -432,6 +434,7 @@ union meminfo {
         int64_t cma_free;
         /* fields below are calculated rather than read from the file */
         int64_t nr_file_pages;
+        int64_t total_gpu_kb;
     } field;
     int64_t arr[MI_FIELD_COUNT];
 };
@@ -754,6 +757,49 @@ static void ctrl_data_write_lmk_kill_occurred(pid_t pid, uid_t uid) {
     for (int i = 0; i < MAX_DATA_CONN; i++) {
         if (data_sock[i].sock >= 0 && data_sock[i].async_event_mask & 1 << LMK_ASYNC_EVENT_KILL) {
             ctrl_data_write(i, (char*)packet, len);
+        }
+    }
+}
+
+/*
+ * Write the kill_stat/memory_stat over the data socket to be propagated via AMS to statsd
+ */
+static void stats_write_lmk_kill_occurred(struct kill_stat *kill_st,
+                                          struct memory_stat *mem_st) {
+    LMK_KILL_OCCURRED_PACKET packet;
+    const size_t len = lmkd_pack_set_kill_occurred(packet, kill_st, mem_st);
+    if (len == 0) {
+        return;
+    }
+
+    for (int i = 0; i < MAX_DATA_CONN; i++) {
+        if (data_sock[i].sock >= 0 && data_sock[i].async_event_mask & 1 << LMK_ASYNC_EVENT_STAT) {
+            ctrl_data_write(i, packet, len);
+        }
+    }
+
+}
+
+static void stats_write_lmk_kill_occurred_pid(int pid, struct kill_stat *kill_st,
+                                              struct memory_stat *mem_st) {
+    kill_st->taskname = stats_get_task_name(pid);
+    if (kill_st->taskname != NULL) {
+        stats_write_lmk_kill_occurred(kill_st, mem_st);
+    }
+}
+
+/*
+ * Write the state_changed over the data socket to be propagated via AMS to statsd
+ */
+static void stats_write_lmk_state_changed(enum lmk_state state) {
+    LMKD_CTRL_PACKET packet_state_changed;
+    const size_t len = lmkd_pack_set_state_changed(packet_state_changed, state);
+    if (len == 0) {
+        return;
+    }
+    for (int i = 0; i < MAX_DATA_CONN; i++) {
+        if (data_sock[i].sock >= 0 && data_sock[i].async_event_mask & 1 << LMK_ASYNC_EVENT_STAT) {
+            ctrl_data_write(i, (char*)packet_state_changed, len);
         }
     }
 }
@@ -1150,9 +1196,10 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
     } else {
         if (!claim_record(procp, cred->pid)) {
             char buf[LINE_MAX];
+            char *taskname = proc_get_name(cred->pid, buf, sizeof(buf));
             /* Only registrant of the record can remove it */
             ALOGE("%s (%d, %d) attempts to modify a process registered by another client",
-                proc_get_name(cred->pid, buf, sizeof(buf)), cred->uid, cred->pid);
+                taskname ? taskname : "A process ", cred->uid, cred->pid);
             return;
         }
         proc_unslot(procp);
@@ -1187,9 +1234,10 @@ static void cmd_procremove(LMKD_CTRL_PACKET packet, struct ucred *cred) {
 
     if (!claim_record(procp, cred->pid)) {
         char buf[LINE_MAX];
+        char *taskname = proc_get_name(cred->pid, buf, sizeof(buf));
         /* Only registrant of the record can remove it */
         ALOGE("%s (%d, %d) attempts to unregister a process registered by another client",
-            proc_get_name(cred->pid, buf, sizeof(buf)), cred->uid, cred->pid);
+            taskname ? taskname : "A process ", cred->uid, cred->pid);
         return;
     }
 
@@ -1741,6 +1789,21 @@ static bool meminfo_parse_line(char *line, union meminfo *mi) {
     return (match_res != PARSE_FAIL);
 }
 
+static int64_t read_gpu_total_kb() {
+    static int fd = android::bpf::bpfFdGet(
+            "/sys/fs/bpf/map_gpu_mem_gpu_mem_total_map", BPF_F_RDONLY);
+    static constexpr uint64_t kBpfKeyGpuTotalUsage = 0;
+    uint64_t value;
+
+    if (fd < 0) {
+        return 0;
+    }
+
+    return android::bpf::findMapEntry(fd, &kBpfKeyGpuTotalUsage, &value)
+            ? 0
+            : (int32_t)(value / 1024);
+}
+
 static int meminfo_parse(union meminfo *mi) {
     static struct reread_data file_data = {
         .filename = MEMINFO_PATH,
@@ -1765,6 +1828,7 @@ static int meminfo_parse(union meminfo *mi) {
     }
     mi->field.nr_file_pages = mi->field.cached + mi->field.swap_cached +
         mi->field.buffers;
+    mi->field.total_gpu_kb = read_gpu_total_kb();
 
     return 0;
 }
@@ -1879,6 +1943,7 @@ static void killinfo_log(struct proc* procp, int min_oom_score, int rss_kb,
     android_log_write_int32(ctx, wi->wakeups_since_event);
     android_log_write_int32(ctx, wi->skipped_wakeups);
     android_log_write_int32(ctx, (int32_t)min(swap_kb, INT32_MAX));
+    android_log_write_int32(ctx, (int32_t)mi->field.total_gpu_kb);
 
     android_log_write_list(ctx, LOG_ID_EVENTS);
     android_log_reset(ctx);
@@ -1896,7 +1961,7 @@ static struct proc *proc_get_heaviest(int oomadj) {
     while (curr != head) {
         int pid = ((struct proc *)curr)->pid;
         int tasksize = proc_get_size(pid);
-        if (tasksize <= 0) {
+        if (tasksize < 0) {
             struct adjslot_list *next = curr->next;
             pid_remove(pid);
             curr = next;
@@ -2181,8 +2246,7 @@ static int find_and_kill_process(int min_score_adj, enum kill_reasons kill_reaso
             if (killed_size >= 0) {
                 if (!lmk_state_change_start) {
                     lmk_state_change_start = true;
-                    stats_write_lmk_state_changed(
-                            android::lmkd::stats::LMK_STATE_CHANGED__STATE__START);
+                    stats_write_lmk_state_changed(STATE_START);
                 }
                 break;
             }
@@ -2193,7 +2257,7 @@ static int find_and_kill_process(int min_score_adj, enum kill_reasons kill_reaso
     }
 
     if (lmk_state_change_start) {
-        stats_write_lmk_state_changed(android::lmkd::stats::LMK_STATE_CHANGED__STATE__STOP);
+        stats_write_lmk_state_changed(STATE_STOP);
     }
 
     return killed_size;
