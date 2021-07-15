@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27658092_4bbd6722",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-07-15T01:11:42Z",
+      "side": 1,
+      "message": "Adding Ioannis because this introducing new kill_reason which might affect collected stats.",
+      "revId": "8b91822ce10e29f4670182ac2f179a52b1f8770a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
