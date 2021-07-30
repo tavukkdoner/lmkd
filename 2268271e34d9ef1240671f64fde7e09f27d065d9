@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f9f13ee_c351074d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2171,
+      "author": {
+        "id": 1386032
+      },
+      "writtenOn": "2021-07-30T08:57:43Z",
+      "side": 1,
+      "message": "Actually | is the separator that\u0027s already used by the atrace format. Out of an abundance of caution, can we use a different separator? : or , or anything else",
+      "range": {
+        "startLine": 2171,
+        "startChar": 0,
+        "endLine": 2171,
+        "endChar": 74
+      },
+      "revId": "2268271e34d9ef1240671f64fde7e09f27d065d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
