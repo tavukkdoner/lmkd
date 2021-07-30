@@ -22,6 +22,53 @@
       },
       "revId": "1711c0e2d3052ea61a23d0bed25af3704a555fbd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b1a909b_b81efd13",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1040443
+      },
+      "writtenOn": "2021-07-30T19:10:58Z",
+      "side": 1,
+      "message": "SGTM. I did a codesearch and there doesn\u0027t seem to be places outside of perfetto depending on this.",
+      "parentUuid": "1f78a115_d6b98f59",
+      "range": {
+        "startLine": 69,
+        "startChar": 4,
+        "endLine": 69,
+        "endChar": 40
+      },
+      "revId": "1711c0e2d3052ea61a23d0bed25af3704a555fbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "758a729d_052bc863",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2171,
+      "author": {
+        "id": 1040443
+      },
+      "writtenOn": "2021-07-30T19:10:58Z",
+      "side": 1,
+      "message": "can we call this \"lmkd\" or something a bit more distinguishable (so we don\u0027t have to rely on the thread name as well)?\n\nAlso probably a bit of paranoy but snprintf(...sizeof(desc)...)?\nIt\u0027s fine now but if in future somebody adds more arg they might not realize and overflow 128 chars.",
+      "range": {
+        "startLine": 2171,
+        "startChar": 19,
+        "endLine": 2171,
+        "endChar": 23
+      },
+      "revId": "1711c0e2d3052ea61a23d0bed25af3704a555fbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
