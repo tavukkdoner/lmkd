@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f78a115_d6b98f59",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-07-30T18:38:39Z",
+      "side": 1,
+      "message": "Hopefully after Ioannis makes Perfetto changes, we can deprecate this one?",
+      "range": {
+        "startLine": 69,
+        "startChar": 4,
+        "endLine": 69,
+        "endChar": 40
+      },
+      "revId": "1711c0e2d3052ea61a23d0bed25af3704a555fbd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
