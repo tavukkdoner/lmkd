@@ -3,6 +3,23 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "65af4a4d_710b0aa0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-08-05T17:21:22Z",
+      "side": 1,
+      "message": "Nice catch!",
+      "revId": "e849f1414ed5b1f3c088bc219ba08b0d44e5aeac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "10da0298_d1f3ae43",
         "filename": "lmkd.cpp",
         "patchSetId": 1
@@ -14,6 +31,30 @@
       "writtenOn": "2021-08-05T17:15:22Z",
       "side": 1,
       "message": "(null check is here, and at least one transitive caller in this TU does pass NULL as `ki`. happy to dig that up if anyone\u0027s interested.)",
+      "range": {
+        "startLine": 2199,
+        "startChar": 0,
+        "endLine": 2207,
+        "endChar": 0
+      },
+      "revId": "e849f1414ed5b1f3c088bc219ba08b0d44e5aeac",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "613a1cb8_582048ed",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2207,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-08-05T17:21:22Z",
+      "side": 1,
+      "message": "yeah, that caller passing NULL is rarely used (legacy).",
+      "parentUuid": "10da0298_d1f3ae43",
       "range": {
         "startLine": 2199,
         "startChar": 0,
