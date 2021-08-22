@@ -53,6 +53,9 @@
 
 #include "statslog.h"
 
+#define BPF_FD_JUST_USE_INT
+#include "BpfSyscallWrappers.h"
+
 /*
  * Define LMKD_TRACE_KILLS to record lmkd kills in kernel traces
  * to profile and correlate with OOM kills
@@ -62,13 +65,20 @@
 #define ATRACE_TAG ATRACE_TAG_ALWAYS
 #include <cutils/trace.h>
 
-#define TRACE_KILL_START(pid) ATRACE_INT(__FUNCTION__, pid);
-#define TRACE_KILL_END()      ATRACE_INT(__FUNCTION__, 0);
+static inline void trace_kill_start(int pid, const char *desc) {
+    ATRACE_INT("kill_one_process", pid);
+    ATRACE_BEGIN(desc);
+}
+
+static inline void trace_kill_end() {
+    ATRACE_END();
+    ATRACE_INT("kill_one_process", 0);
+}
 
 #else /* LMKD_TRACE_KILLS */
 
-#define TRACE_KILL_START(pid) ((void)(pid))
-#define TRACE_KILL_END() ((void)0)
+static inline void trace_kill_start(int, const char *) {}
+static inline void trace_kill_end() {}
 
 #endif /* LMKD_TRACE_KILLS */
 
@@ -198,6 +208,7 @@ static int thrashing_limit_pct;
 static int thrashing_limit_decay_pct;
 static int thrashing_critical_pct;
 static int swap_util_max;
+static int64_t filecache_min_kb;
 static bool use_psi_monitors = false;
 static int kpoll_fd;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
@@ -431,6 +442,7 @@ union meminfo {
         int64_t cma_free;
         /* fields below are calculated rather than read from the file */
         int64_t nr_file_pages;
+        int64_t total_gpu_kb;
     } field;
     int64_t arr[MI_FIELD_COUNT];
 };
@@ -1785,6 +1797,21 @@ static bool meminfo_parse_line(char *line, union meminfo *mi) {
     return (match_res != PARSE_FAIL);
 }
 
+static int64_t read_gpu_total_kb() {
+    static int fd = android::bpf::bpfFdGet(
+            "/sys/fs/bpf/map_gpu_mem_gpu_mem_total_map", BPF_F_RDONLY);
+    static constexpr uint64_t kBpfKeyGpuTotalUsage = 0;
+    uint64_t value;
+
+    if (fd < 0) {
+        return 0;
+    }
+
+    return android::bpf::findMapEntry(fd, &kBpfKeyGpuTotalUsage, &value)
+            ? 0
+            : (int32_t)(value / 1024);
+}
+
 static int meminfo_parse(union meminfo *mi) {
     static struct reread_data file_data = {
         .filename = MEMINFO_PATH,
@@ -1809,6 +1836,7 @@ static int meminfo_parse(union meminfo *mi) {
     }
     mi->field.nr_file_pages = mi->field.cached + mi->field.swap_cached +
         mi->field.buffers;
+    mi->field.total_gpu_kb = read_gpu_total_kb();
 
     return 0;
 }
@@ -1901,8 +1929,15 @@ static void record_wakeup_time(struct timespec *tm, enum wakeup_reason reason,
     }
 }
 
+struct kill_info {
+    enum kill_reasons kill_reason;
+    const char *kill_desc;
+    int thrashing;
+    int max_thrashing;
+};
+
 static void killinfo_log(struct proc* procp, int min_oom_score, int rss_kb,
-                         int swap_kb, int kill_reason, union meminfo *mi,
+                         int swap_kb, struct kill_info *ki, union meminfo *mi,
                          struct wakeup_info *wi, struct timespec *tm) {
     /* log process information */
     android_log_write_int32(ctx, procp->pid);
@@ -1910,7 +1945,7 @@ static void killinfo_log(struct proc* procp, int min_oom_score, int rss_kb,
     android_log_write_int32(ctx, procp->oomadj);
     android_log_write_int32(ctx, min_oom_score);
     android_log_write_int32(ctx, (int32_t)min(rss_kb, INT32_MAX));
-    android_log_write_int32(ctx, kill_reason);
+    android_log_write_int32(ctx, ki ? ki->kill_reason : NONE);
 
     /* log meminfo fields */
     for (int field_idx = 0; field_idx < MI_FIELD_COUNT; field_idx++) {
@@ -1923,6 +1958,14 @@ static void killinfo_log(struct proc* procp, int min_oom_score, int rss_kb,
     android_log_write_int32(ctx, wi->wakeups_since_event);
     android_log_write_int32(ctx, wi->skipped_wakeups);
     android_log_write_int32(ctx, (int32_t)min(swap_kb, INT32_MAX));
+    android_log_write_int32(ctx, (int32_t)mi->field.total_gpu_kb);
+    if (ki) {
+        android_log_write_int32(ctx, ki->thrashing);
+        android_log_write_int32(ctx, ki->max_thrashing);
+    } else {
+        android_log_write_int32(ctx, 0);
+        android_log_write_int32(ctx, 0);
+    }
 
     android_log_write_list(ctx, LOG_ID_EVENTS);
     android_log_reset(ctx);
@@ -2089,9 +2132,8 @@ static void start_wait_for_proc_kill(int pid_or_fd) {
 }
 
 /* Kill one process specified by procp.  Returns the size (in pages) of the process killed */
-static int kill_one_process(struct proc* procp, int min_oom_score, enum kill_reasons kill_reason,
-                            const char *kill_desc, union meminfo *mi, struct wakeup_info *wi,
-                            struct timespec *tm) {
+static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_info *ki,
+                            union meminfo *mi, struct wakeup_info *wi, struct timespec *tm) {
     int pid = procp->pid;
     int pidfd = procp->pidfd;
     uid_t uid = procp->uid;
@@ -2104,6 +2146,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, enum kill_rea
     int64_t rss_kb;
     int64_t swap_kb;
     char buf[PAGE_SIZE];
+    char desc[LINE_MAX];
 
     if (!read_proc_status(pid, buf, sizeof(buf))) {
         goto out;
@@ -2132,7 +2175,9 @@ static int kill_one_process(struct proc* procp, int min_oom_score, enum kill_rea
 
     mem_st = stats_read_memory_stat(per_app_memcg, pid, uid, rss_kb * 1024, swap_kb * 1024);
 
-    TRACE_KILL_START(pid);
+    snprintf(desc, sizeof(desc), "lmk,%d,%d,%d,%d,%d", pid, ki ? (int)ki->kill_reason : -1,
+             procp->oomadj, min_oom_score, ki ? ki->max_thrashing : -1);
+    trace_kill_start(pid, desc);
 
     /* CAP_KILL required */
     if (pidfd < 0) {
@@ -2143,7 +2188,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, enum kill_rea
         r = pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
     }
 
-    TRACE_KILL_END();
+    trace_kill_end();
 
     if (r) {
         stop_wait_for_proc_kill(false);
@@ -2158,19 +2203,24 @@ static int kill_one_process(struct proc* procp, int min_oom_score, enum kill_rea
 
     inc_killcnt(procp->oomadj);
 
-    killinfo_log(procp, min_oom_score, rss_kb, swap_kb, kill_reason, mi, wi, tm);
-
-    if (kill_desc) {
+    if (ki) {
+        kill_st.kill_reason = ki->kill_reason;
+        kill_st.thrashing = ki->thrashing;
+        kill_st.max_thrashing = ki->max_thrashing;
         ALOGI("Kill '%s' (%d), uid %d, oom_score_adj %d to free %" PRId64 "kB rss, %" PRId64
-              "kB swap; reason: %s", taskname, pid, uid, procp->oomadj, rss_kb, swap_kb, kill_desc);
+              "kB swap; reason: %s", taskname, pid, uid, procp->oomadj, rss_kb, swap_kb,
+              ki->kill_desc);
     } else {
+        kill_st.kill_reason = NONE;
+        kill_st.thrashing = 0;
+        kill_st.max_thrashing = 0;
         ALOGI("Kill '%s' (%d), uid %d, oom_score_adj %d to free %" PRId64 "kB rss, %" PRId64
               "kb swap", taskname, pid, uid, procp->oomadj, rss_kb, swap_kb);
     }
+    killinfo_log(procp, min_oom_score, rss_kb, swap_kb, ki, mi, wi, tm);
 
     kill_st.uid = static_cast<int32_t>(uid);
     kill_st.taskname = taskname;
-    kill_st.kill_reason = kill_reason;
     kill_st.oom_score = procp->oomadj;
     kill_st.min_oom_score = min_oom_score;
     kill_st.free_mem_kb = mi->field.nr_free_pages * page_k;
@@ -2194,8 +2244,7 @@ out:
  * Find one process to kill at or above the given oom_score_adj level.
  * Returns size of the killed process.
  */
-static int find_and_kill_process(int min_score_adj, enum kill_reasons kill_reason,
-                                 const char *kill_desc, union meminfo *mi,
+static int find_and_kill_process(int min_score_adj, struct kill_info *ki, union meminfo *mi,
                                  struct wakeup_info *wi, struct timespec *tm) {
     int i;
     int killed_size = 0;
@@ -2220,8 +2269,7 @@ static int find_and_kill_process(int min_score_adj, enum kill_reasons kill_reaso
             if (!procp)
                 break;
 
-            killed_size = kill_one_process(procp, min_score_adj, kill_reason, kill_desc,
-                                           mi, wi, tm);
+            killed_size = kill_one_process(procp, min_score_adj, ki, mi, wi, tm);
             if (killed_size >= 0) {
                 if (!lmk_state_change_start) {
                     lmk_state_change_start = true;
@@ -2376,6 +2424,8 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     static struct wakeup_info wi;
     static struct timespec thrashing_reset_tm;
     static int64_t prev_thrash_growth = 0;
+    static bool check_filecache = false;
+    static int max_thrashing = 0;
 
     union meminfo mi;
     union vmstat vs;
@@ -2454,7 +2504,10 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         init_pgscan_kswapd = vs.field.pgscan_kswapd;
         reclaim = KSWAPD_RECLAIM;
     } else if (workingset_refault_file == prev_workingset_refault) {
-        /* Device is not thrashing and not reclaiming, bail out early until we see these stats changing*/
+        /*
+         * Device is not thrashing and not reclaiming, bail out early until we see these stats
+         * changing
+         */
         goto no_kill;
     }
 
@@ -2467,7 +2520,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
      * important for a slow growing refault case. While retrying, we should keep
      * monitoring new thrashing counter as someone could release the memory to mitigate
      * the thrashing. Thus, when thrashing reset window comes, we decay the prev thrashing
-     * counter by window counts. if the counter is still greater than thrashing limit,
+     * counter by window counts. If the counter is still greater than thrashing limit,
      * we preserve the current prev_thrash counter so we will retry kill again. Otherwise,
      * we reset the prev_thrash counter so we will stop retrying.
      */
@@ -2498,6 +2551,9 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     }
     /* Add previous cycle's decayed thrashing amount */
     thrashing += prev_thrash_growth;
+    if (max_thrashing < thrashing) {
+        max_thrashing = thrashing;
+    }
 
     /*
      * Refresh watermarks once per min in case user updated one of the margins.
@@ -2549,6 +2605,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         if (wmark > WMARK_MIN && thrashing < thrashing_critical_pct) {
             min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
         }
+        check_filecache = true;
     } else if (swap_is_low && wmark < WMARK_HIGH) {
         /* Both free memory and swap are low */
         kill_reason = LOW_MEM_AND_SWAP;
@@ -2579,6 +2636,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         if (thrashing < thrashing_critical_pct) {
             min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
         }
+        check_filecache = true;
     } else if (reclaim == DIRECT_RECLAIM && thrashing > thrashing_limit) {
         /* Page cache is thrashing while in direct reclaim (mostly happens on lowram devices) */
         kill_reason = DIRECT_RECL_AND_THRASHING;
@@ -2589,14 +2647,35 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         if (thrashing < thrashing_critical_pct) {
             min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
         }
+        check_filecache = true;
+    } else if (check_filecache) {
+        int64_t file_lru_kb = (vs.field.nr_inactive_file + vs.field.nr_active_file) * page_k;
+
+        if (file_lru_kb < filecache_min_kb) {
+            /* File cache is too low after thrashing, keep killing background processes */
+            kill_reason = LOW_FILECACHE_AFTER_THRASHING;
+            snprintf(kill_desc, sizeof(kill_desc),
+                "filecache is low (%" PRId64 "kB < %" PRId64 "kB) after thrashing",
+                file_lru_kb, filecache_min_kb);
+            min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
+        } else {
+            /* File cache is big enough, stop checking */
+            check_filecache = false;
+        }
     }
 
     /* Kill a process if necessary */
     if (kill_reason != NONE) {
-        int pages_freed = find_and_kill_process(min_score_adj, kill_reason, kill_desc, &mi,
-                                                &wi, &curr_tm);
+        struct kill_info ki = {
+            .kill_reason = kill_reason,
+            .kill_desc = kill_desc,
+            .thrashing = (int)thrashing,
+            .max_thrashing = max_thrashing,
+        };
+        int pages_freed = find_and_kill_process(min_score_adj, &ki, &mi, &wi, &curr_tm);
         if (pages_freed > 0) {
             killing = true;
+            max_thrashing = 0;
             if (cut_thrashing_limit) {
                 /*
                  * Cut thrasing limit by thrashing_limit_decay_pct percentage of the current
@@ -2813,7 +2892,7 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
 do_kill:
     if (low_ram_device) {
         /* For Go devices kill only one task */
-        if (find_and_kill_process(level_oomadj[level], NONE, NULL, &mi, &wi, &curr_tm) == 0) {
+        if (find_and_kill_process(level_oomadj[level], NULL, &mi, &wi, &curr_tm) == 0) {
             if (debug_process_killing) {
                 ALOGI("Nothing to kill");
             }
@@ -2836,7 +2915,7 @@ do_kill:
             min_score_adj = level_oomadj[level];
         }
 
-        pages_freed = find_and_kill_process(min_score_adj, NONE, NULL, &mi, &wi, &curr_tm);
+        pages_freed = find_and_kill_process(min_score_adj, NULL, &mi, &wi, &curr_tm);
 
         if (pages_freed == 0) {
             /* Rate limit kill reports when nothing was reclaimed */
@@ -3388,6 +3467,7 @@ static void update_props() {
     thrashing_critical_pct = max(0, property_get_int32("ro.lmk.thrashing_limit_critical",
         thrashing_limit_pct * 2));
     swap_util_max = clamp(0, 100, property_get_int32("ro.lmk.swap_util_max", 100));
+    filecache_min_kb = property_get_int64("ro.lmk.filecache_min_kb", 0);
 }
 
 int main(int argc, char **argv) {
