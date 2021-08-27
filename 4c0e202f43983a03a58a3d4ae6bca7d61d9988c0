@@ -34,6 +34,24 @@
       "parentUuid": "31041a49_46cb4d72",
       "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "adb55b6f_c9ea121d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-08-27T22:10:49Z",
+      "side": 1,
+      "message": "Ok, yes lmkd will restart on each property reset, however after they are set any further request to set a property to the same value is ignored and since these properties are persistent, this flood will happen only the first time experiment starts.",
+      "parentUuid": "4f4c174f_c909d293",
+      "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
