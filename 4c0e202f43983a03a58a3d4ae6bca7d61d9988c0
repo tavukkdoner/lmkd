@@ -16,6 +16,24 @@
       "message": "LGTM. Just a question: when your experiment set multiple flags, do you expect lmkd to reinit once for all or multiple times? There seems either a reinit race or storm if those properties are changed at the same time.",
       "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f4c174f_c909d293",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-08-27T22:05:45Z",
+      "side": 1,
+      "message": "I didn\u0027t try setting multiple flags at the same time. I think lmkd might restart multiple times the first time they are set but after that, since these properties persist, it won\u0027t need any more restarting?\nLet me check though what happens when I set several properties.",
+      "parentUuid": "31041a49_46cb4d72",
+      "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
