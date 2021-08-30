@@ -52,6 +52,29 @@
       "parentUuid": "4f4c174f_c909d293",
       "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25a99f01_e68489eb",
+        "filename": "lmkd.rc",
+        "patchSetId": 7
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-08-30T21:16:03Z",
+      "side": 1,
+      "message": "I guess Suren already considered how we could make this bette like this but there was no good way to make it simple:\n\non property:persist.device_config.lmkd_native.*\u003d*\n   setprop lmkd.reinit 1\n   \nJust in case: Let me Cc Wei since he might know some way.\n\nIf we don\u0027t have better way, at least please put some comments on lmkd.cpp not to forget to update this rc file whenever we add new konbs.",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 25
+      },
+      "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
