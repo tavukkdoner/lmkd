@@ -195,6 +195,30 @@
       },
       "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9dd9830b_86b7881b",
+        "filename": "lmkd.rc",
+        "patchSetId": 7
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-08-31T17:10:26Z",
+      "side": 1,
+      "message": "The problem here is that experiment infrastructure does not work like that. You simply specify flags which map to system properties and when a flag is changed in the experiment the system properties are changed on the devices participating in the experiment.\n\nFor your suggestion to work we would have to add a new flag lmkd_reinit which is not really a tuning flag but is used to trigger lmkd reinit, and we have to ensure it is set the last. I don\u0027t think experiments infra supports such ordering and I don\u0027t think supporting this solution is the right direction. If anything, I would prefer for init language to support:\n\non property:persist.device_config.lmkd_native.*\n\nsyntax. So, if we want to improve this, let\u0027s expand the init language rather than find workarounds. This can be done in parallel with these changes to enable experiments, so I want to enable experiments with the current language and then we can change it after init supports the better alternative.",
+      "parentUuid": "67ebdc6d_3ae8ab2e",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 25
+      },
+      "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
