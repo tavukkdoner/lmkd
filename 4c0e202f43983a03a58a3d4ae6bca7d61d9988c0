@@ -171,6 +171,30 @@
       },
       "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "67ebdc6d_3ae8ab2e",
+        "filename": "lmkd.rc",
+        "patchSetId": 7
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-08-31T16:58:23Z",
+      "side": 1,
+      "message": "note: I was totally missing something here since I am really poor how the Android property works so goes dumb comments.\n\nIIUC, I guess what Wei suggested doesn\u0027t aim for optimizing performance but wanted to have more simple code to be maintained.  \n\nIf we have explicit lmkd.reinit property instead of auto updating following changing one of tune, the lmkd.rc file would be clear without introducing additional property whenever we add new knob?\n\nWhat I means is experimental can do like this\n\nset_lmkd_property_A\nset_lmkd_property_B\nset_lmkd_property_C\nset_lmkd_reinit -\u003e so finally, lmkd will update his property with new ones.\n\nWith that, we don\u0027t need to have those implicit property update.\nIs there any problem here?",
+      "parentUuid": "79a8793d_946d970e",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 25
+      },
+      "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
