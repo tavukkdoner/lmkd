@@ -411,6 +411,30 @@
       },
       "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a34fe605_7ace0ca2",
+        "filename": "lmkd.rc",
+        "patchSetId": 7
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-08-31T21:58:27Z",
+      "side": 1,
+      "message": "Ok, I somehow messed up my test and now I see the lmkd reinits. While not really harmful to reinitialize lmkd it\u0027s annoying. I think I have a solution for this based on ro.persistent_properties.ready. I\u0027ll post a separate patch to solve the repeated reinitialization.",
+      "parentUuid": "aa6f4f12_b7504964",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 25
+      },
+      "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
