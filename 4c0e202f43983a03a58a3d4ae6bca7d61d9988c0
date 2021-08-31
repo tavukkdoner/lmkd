@@ -123,6 +123,30 @@
       },
       "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f69bd137_f58b569f",
+        "filename": "lmkd.rc",
+        "patchSetId": 7
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-08-31T16:16:13Z",
+      "side": 1,
+      "message": "re: but do we actually restart lmkd every boot after we have those persist property?\n\nNo. Actually the new lmkd instance simply sends a request to the original lmkd to call its update_props() and exits. Original lmkd simply updates its tuning by re-reading the properties.\n\nre: shall we avoid the reinit by by using trampoline propriety or maybe a explicit property to reinit? so on experiment, we only set the trampoline which then set the persist property OR set the reinit flag everytime in the experiment?\n\nI did not get your idea. AFAIU experiments simply set the persistent property associated with experiment flag. If multiple flags are set then multiple persistent properties will be updated. We don\u0027t really know which properties will be set by the experiment and which one will be set the last, so we can\u0027t optimize the reinit process to trigger only once.\nFrankly, I don\u0027t see the point of optimizing the number of times we reinit lmkd. It happens only once, when experiment starts, persistent properties are set and do not change until another experiment or until experiment ends. Do we want to introduce more complexity simply to optimize something which happens once in a blue moon and has no side-effects?",
+      "parentUuid": "82f4bd9a_95f1e311",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 25
+      },
+      "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
