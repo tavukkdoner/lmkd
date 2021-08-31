@@ -219,6 +219,30 @@
       },
       "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da629b39_43f06d00",
+        "filename": "lmkd.rc",
+        "patchSetId": 7
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-08-31T17:54:48Z",
+      "side": 1,
+      "message": "I am rather surprised if the infra doesn\u0027t care about ordering. Then, how can infra work if we want to update several params in order? Because I believe it\u0027s popular pattern to update params one by one(but not yet committed) and then finally commit when user set the all params.\n\nI don\u0027t think it\u0027s workaround. Rather than that, it\u0027s more clear pattern to be able to commit several params at the same time without any race.\n\nSince Infra doesn\u0027t work like that(don\u0027t care about metric update ordering) as Suren pointed out, I\u0027m totally fine with this approach but wanted to say it\u0027s not workaround.",
+      "parentUuid": "9dd9830b_86b7881b",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 25
+      },
+      "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
