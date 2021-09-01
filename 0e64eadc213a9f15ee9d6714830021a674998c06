@@ -33,6 +33,24 @@
       "message": "Well, I think I misunderstood the purpose of this CL. It\u0027s not for the moment the flags are pushed to the device, but for the reboot following that. Then it looks good to me.",
       "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2a7cb17e_87338d36",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-09-01T15:46:07Z",
+      "side": 1,
+      "message": "Correct. This is to prevent multiple reinits when persistent properties are being loaded at boot time. So we postpone reinit until the boot is done and if any relevant property got changed then lmk.reinit will be 0 and we will execute lmkd reinit only one time.",
+      "parentUuid": "8830ac8c_97f185f0",
+      "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
