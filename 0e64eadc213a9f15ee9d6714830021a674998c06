@@ -193,6 +193,54 @@
       },
       "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6d754aea_6254d096",
+        "filename": "lmkd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-09-01T22:15:43Z",
+      "side": 1,
+      "message": "it looks like we started lmkd quite earlier, on `init` trigger\n\nso that was the confusion.\n\nMaybe we can move the \"on init\" stuff here.",
+      "parentUuid": "4e260f52_9dd5ab99",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 25
+      },
+      "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "17c70880_bcad346f",
+        "filename": "lmkd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-09-01T22:15:43Z",
+      "side": 1,
+      "message": "same",
+      "parentUuid": "a25997e7_ed047ac6",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 25
+      },
+      "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
