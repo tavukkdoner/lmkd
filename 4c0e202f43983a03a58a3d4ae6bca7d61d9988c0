@@ -435,6 +435,30 @@
       },
       "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a756c8d9_8e395a3e",
+        "filename": "lmkd.rc",
+        "patchSetId": 7
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-09-01T14:36:22Z",
+      "side": 1,
+      "message": "Posted aosp/1815756 to delay lmkd reinitialization until the boot completes and do it only once if relevant persistent properties got changed during boot. This should solve the issue of reinits during boot.",
+      "parentUuid": "a34fe605_7ace0ca2",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 25
+      },
+      "revId": "4c0e202f43983a03a58a3d4ae6bca7d61d9988c0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
