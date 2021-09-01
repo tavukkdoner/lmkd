@@ -169,6 +169,30 @@
       },
       "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e260f52_9dd5ab99",
+        "filename": "lmkd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-09-01T21:42:23Z",
+      "side": 1,
+      "message": "Which case? When persistent properties are set during boot? We definitely have that case if any experiment is being run and device reboots. You can verify it by running the same test I described in the \"Test:\" section:\n\nadb shell device_config put lmkd_native thrashing_limit_critical 350\nadb shell device_config put lmkd_native thrashing_limit 100\nadb reboot\nadb -b all logcat | grep lmkd\n\nWithout this patch you will see lmkd being reinitialize multiple times during boot. With this patch you will see only one initialization at the end of the boot complete. Reasons why pesistent properties are being set during boot I already explained in my previous reply.",
+      "parentUuid": "95856d43_ff0f99e8",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 25
+      },
+      "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
