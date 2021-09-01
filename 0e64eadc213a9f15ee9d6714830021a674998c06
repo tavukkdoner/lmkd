@@ -145,6 +145,30 @@
       },
       "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "95856d43_ff0f99e8",
+        "filename": "lmkd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-09-01T18:32:03Z",
+      "side": 1,
+      "message": "I understand your change, just feel we may not have the case you are trying to cover here.",
+      "parentUuid": "203c1d2e_1c2972d5",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 25
+      },
+      "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
