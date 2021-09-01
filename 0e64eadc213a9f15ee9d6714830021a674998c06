@@ -121,6 +121,30 @@
       },
       "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "203c1d2e_1c2972d5",
+        "filename": "lmkd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-09-01T18:29:46Z",
+      "side": 1,
+      "message": "\u003eThis would miss the case when persist.device_config.lmkd_native.* changes while sys.boot_completed\u003d0.\n\nyes, as I mentioned, do we have a case this can happen? experiments depends on GMScore, which should only happen after boot_complet, right?",
+      "parentUuid": "c1b077b2_1641592d",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 25
+      },
+      "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
