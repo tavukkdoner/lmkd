@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5a12c4f_4c1035a0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1741425
+      },
+      "writtenOn": "2021-09-01T15:26:36Z",
+      "side": 1,
+      "message": "I\u0027d argue that this CL is not necessary at all. When the server pushes new flags to the device, the device already boots, so boot_completed is always 1. The logic reinit\u003d${boot_completed:-0} never has a chance to set reinit to 0.",
+      "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
