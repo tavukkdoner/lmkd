@@ -97,6 +97,30 @@
       },
       "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1b077b2_1641592d",
+        "filename": "lmkd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-09-01T16:42:39Z",
+      "side": 1,
+      "message": "re: do we have a chance experiments will change those persist property before boot_complete?\nShort answer: Yes\n\nLong answer:\nThese persist properties change in 2 scenarios:\n1. When experiment is activated during device usual operation.\n2. During late-init when it calls load_persist_props. At this point lmkd is already active (by design) and will respond to these property changes.\n\nIn the case 1, setprop lmkd.reinit ${sys.boot_completed:-0} rule will set lmkd.reinit\u003d1 and this will result in an immediate lmkd reinitialization.\n\nIn the case 2, setprop lmkd.reinit ${sys.boot_completed:-0} rule sets lmkd.reinit\u003d0 to delay reinitialization and after boot completes and sys.boot_completed is set to 1, we will reinitialize lmkd one time only.\n\nSo, to answer your question, if these properties are changed before boot_complete, that is the case 2. In this case we set lmkd.reinit\u003d0 and wait for boot to complete and reinitialize lmkd after that.\n\n\nre: we can just do\non property:sys.boot_completed\u003d1 \u0026\u0026 property:persist.device_config.lmkd_native.debug\u003d*\n    setprop lmkd.reinit 1\n\nThis would miss the case when persist.device_config.lmkd_native.* changes while sys.boot_completed\u003d0.",
+      "parentUuid": "19dd2c73_287cb82c",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 25
+      },
+      "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
