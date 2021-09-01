@@ -51,6 +51,52 @@
       "parentUuid": "8830ac8c_97f185f0",
       "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19dd2c73_287cb82c",
+        "filename": "lmkd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-09-01T16:31:37Z",
+      "side": 1,
+      "message": "do we have a chance experiments will change those persist property before boot_complete?\n\nif not, we can save the reinit even it is just once so that we can just do\n\non property:sys.boot_completed\u003d1 \u0026\u0026 property:persist.device_config.lmkd_native.debug\u003d*\n    setprop lmkd.reinit 1",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 25
+      },
+      "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a25997e7_ed047ac6",
+        "filename": "lmkd.rc",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-09-01T16:31:37Z",
+      "side": 1,
+      "message": "do we have a chance experiments will change those persist property before boot_complete?\n\nif not, we can save the reinit (even it is just once, as lmkd will try to load from psrsist if it exists) so that we can just do\n\non property:sys.boot_completed\u003d1 \u0026\u0026 property:persist.device_config.lmkd_native.debug\u003d*\n    setprop lmkd.reinit 1",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 25
+      },
+      "revId": "0e64eadc213a9f15ee9d6714830021a674998c06",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
