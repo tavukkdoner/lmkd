@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "30ecad50_2b2d8883",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2039,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-09-22T17:44:52Z",
+      "side": 1,
+      "message": "I think we need to use SetTaskProfiles(t_pid, profiles, true) for using fd cache, which is equivalent to what set_cpuset_policy did.",
+      "range": {
+        "startLine": 2039,
+        "startChar": 13,
+        "endLine": 2039,
+        "endChar": 45
+      },
+      "revId": "0195bcdba7100c449ed56688121b06c6d699b4d4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
