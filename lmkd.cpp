@@ -167,6 +167,10 @@ static inline void trace_kill_end() {}
 
 #define LMKD_REINIT_PROP "lmkd.reinit"
 
+#define LMKD_MONITOR_PARAM_PATH "/sys/module/lmkd_mon/parameters"
+#define LMKD_MONITOR_PARAM_PID LMKD_MONITOR_PARAM_PATH "/pid"
+#define LMKD_MONITOR_PARAM_ACTIVE LMKD_MONITOR_PARAM_PATH "/active"
+
 /* default to old in-kernel interface if no memory pressure events */
 static bool use_inkernel_interface = true;
 static bool has_inkernel_module;
@@ -221,6 +225,7 @@ static int swap_util_max;
 static int64_t filecache_min_kb;
 static bool use_psi_monitors = false;
 static int kpoll_fd;
+static bool lmkd_monitor_set;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
     { PSI_SOME, 70 },    /* 70ms out of 1sec for partial stall */
     { PSI_SOME, 100 },   /* 100ms out of 1sec for partial stall */
@@ -2201,6 +2206,10 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
 
     trace_kill_end();
 
+    /* Stop lmkd monitor watchdog after the kill */
+    if (lmkd_monitor_set)
+        writefilestring(LMKD_MONITOR_PARAM_ACTIVE, "0", false);
+
     if (r) {
         stop_wait_for_proc_kill(false);
         ALOGE("kill(%d): errno=%d", pid, errno);
@@ -3006,6 +3015,24 @@ static void destroy_mp_psi(enum vmpressure_level level) {
     mpevfd[level] = -1;
 }
 
+static bool setup_lmkd_monitor() {
+    char val[20];
+
+    if (lmkd_monitor_set)
+        return true;
+
+    /* System is still booting, so lmkd_mon driver might not be loaded yet */
+    if (!property_get_int32("sys.boot_completed", 0))
+        return false;
+
+    snprintf(val, sizeof(val), "%d", getpid());
+    ALOGI("writing %s into %s", val, LMKD_MONITOR_PARAM_PID);
+    writefilestring(LMKD_MONITOR_PARAM_PID, val, false);
+    lmkd_monitor_set = true;
+
+    return true;
+}
+
 static bool init_psi_monitors() {
     /*
      * When PSI is used on low-ram devices or on high-end devices without memfree levels
@@ -3021,6 +3048,8 @@ static bool init_psi_monitors() {
         psi_thresholds[VMPRESS_LEVEL_MEDIUM].threshold_ms = psi_partial_stall_ms;
         psi_thresholds[VMPRESS_LEVEL_CRITICAL].threshold_ms = psi_complete_stall_ms;
     }
+
+    setup_lmkd_monitor();
 
     if (!init_mp_psi(VMPRESS_LEVEL_LOW, use_new_strategy)) {
         return false;
@@ -3151,6 +3180,7 @@ static void destroy_monitors() {
         destroy_mp_psi(VMPRESS_LEVEL_CRITICAL);
         destroy_mp_psi(VMPRESS_LEVEL_MEDIUM);
         destroy_mp_psi(VMPRESS_LEVEL_LOW);
+        lmkd_monitor_set = false;
     } else {
         destroy_mp_common(VMPRESS_LEVEL_CRITICAL);
         destroy_mp_common(VMPRESS_LEVEL_MEDIUM);
@@ -3322,6 +3352,8 @@ static void mainloop(void) {
         struct epoll_event events[MAX_EPOLL_EVENTS];
         int nevents;
         int i;
+
+        setup_lmkd_monitor();
 
         if (poll_params.poll_handler) {
             bool poll_now;
