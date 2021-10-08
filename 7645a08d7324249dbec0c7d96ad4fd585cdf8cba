@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b221927b_ca116039",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3026,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-10-08T20:04:16Z",
+      "side": 1,
+      "message": "isn\u0027t the CONFIG is set to Y as a built-in for GKI? so it is guaranteed",
+      "range": {
+        "startLine": 3025,
+        "startChar": 4,
+        "endLine": 3026,
+        "endChar": 21
+      },
+      "revId": "7645a08d7324249dbec0c7d96ad4fd585cdf8cba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cfeafd97_46b55f70",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3030,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-10-08T20:04:16Z",
+      "side": 1,
+      "message": "Do we want to have lmkd_monitor_exist?\n\nin the failure case, we have lmkd_monitor_set set to true, and\nisn\u0027t that will lead to `writefilestring(LMKD_MONITOR_PARAM_ACTIVE, \"0\", false);` called in kill_one_process? That call can be avoided and also the log error every time you kill.",
+      "range": {
+        "startLine": 3030,
+        "startChar": 8,
+        "endLine": 3030,
+        "endChar": 54
+      },
+      "revId": "7645a08d7324249dbec0c7d96ad4fd585cdf8cba",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
