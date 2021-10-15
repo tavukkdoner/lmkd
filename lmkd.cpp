@@ -2501,9 +2501,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
 
     /* Check free swap levels */
     if (swap_free_low_percentage) {
-        if (!swap_low_threshold) {
-            swap_low_threshold = mi.field.total_swap * swap_free_low_percentage / 100;
-        }
+        swap_low_threshold = mi.field.total_swap * swap_free_low_percentage / 100;
         swap_is_low = mi.field.free_swap < swap_low_threshold;
     }
 
