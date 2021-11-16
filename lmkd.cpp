@@ -530,6 +530,7 @@ static struct proc *pidhash[PIDHASH_SZ];
 #define ADJTOSLOT(adj) ((adj) + -OOM_SCORE_ADJ_MIN)
 #define ADJTOSLOT_COUNT (ADJTOSLOT(OOM_SCORE_ADJ_MAX) + 1)
 static struct adjslot_list procadjslot_list[ADJTOSLOT_COUNT];
+static pthread_rwlock_t adjslot_list_lock = PTHREAD_RWLOCK_INITIALIZER;
 
 #define MAX_DISTINCT_OOM_ADJ 32
 #define KILLCNT_INVALID_IDX 0xFF
@@ -921,11 +922,15 @@ static struct adjslot_list *adjslot_tail(struct adjslot_list *head) {
 static void proc_slot(struct proc *procp) {
     int adjslot = ADJTOSLOT(procp->oomadj);
 
+    pthread_rwlock_wrlock(&adjslot_list_lock);
     adjslot_insert(&procadjslot_list[adjslot], &procp->asl);
+    pthread_rwlock_unlock(&adjslot_list_lock);
 }
 
 static void proc_unslot(struct proc *procp) {
+    pthread_rwlock_wrlock(&adjslot_list_lock);
     adjslot_remove(&procp->asl);
+    pthread_rwlock_unlock(&adjslot_list_lock);
 }
 
 static void proc_insert(struct proc *procp) {
@@ -1983,8 +1988,27 @@ static void killinfo_log(struct proc* procp, int min_oom_score, int rss_kb,
     android_log_reset(ctx);
 }
 
-static struct proc *proc_adj_lru(int oomadj) {
+// Note: returned entry is only an anchor and does not hold a valid process info
+static struct proc *proc_adj_head(int oomadj) {
+    return (struct proc *)&procadjslot_list[ADJTOSLOT(oomadj)];
+}
+
+static struct proc *proc_adj_tail(int oomadj) {
     return (struct proc *)adjslot_tail(&procadjslot_list[ADJTOSLOT(oomadj)]);
+}
+
+static struct proc *proc_adj_prev(int oomadj, int pid) {
+    struct adjslot_list *head = &procadjslot_list[ADJTOSLOT(oomadj)];
+    struct adjslot_list *curr = adjslot_tail(&procadjslot_list[ADJTOSLOT(oomadj)]);
+
+    while (curr != head) {
+        if (((struct proc *)curr)->pid == pid) {
+            return (struct proc *)curr->prev;
+        }
+        curr = curr->prev;
+    }
+
+    return NULL;
 }
 
 static struct proc *proc_get_heaviest(int oomadj) {
@@ -2177,6 +2201,117 @@ static void* reaper_main(void*) {
             }
         } else {
             ALOGE("process_mrelease %d failed: %s", pidfd, strerror(errno));
+        }
+    }
+
+    return NULL;
+}
+
+// LMKD watchdog
+#define WATCHDOG_TIMEOUT_SEC 2
+
+static struct {
+    pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+    pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+    int set_cnt = 0;
+    int reset_cnt = 0;
+} watchdog;
+
+static void watchdog_set() {
+    pthread_mutex_lock(&watchdog.mutex);
+    watchdog.set_cnt++;
+    pthread_cond_signal(&watchdog.cond);
+    pthread_mutex_unlock(&watchdog.mutex);
+}
+
+static void watchdog_reset() {
+    pthread_mutex_lock(&watchdog.mutex);
+    watchdog.reset_cnt++;
+    pthread_cond_signal(&watchdog.cond);
+    pthread_mutex_unlock(&watchdog.mutex);
+}
+
+static void kill_nonblocking() {
+    int pid = 0;
+
+    ALOGW("lmkd watchdog timed out!");
+    for (int oom_score = OOM_SCORE_ADJ_MAX; oom_score >= 0;) {
+        struct proc *procp;
+        int pidfd;
+
+        pthread_rwlock_rdlock(&adjslot_list_lock);
+
+        if (!pid) {
+            struct proc *tail = proc_adj_tail(oom_score);
+            // check if the list is empty at this oom_score
+            procp = tail == proc_adj_head(oom_score) ? NULL : tail;
+        } else {
+            procp = proc_adj_prev(oom_score, pid);
+            if (!procp) {
+                // pid was removed, restart at the tail
+                procp = proc_adj_tail(oom_score);
+            } else if (procp == proc_adj_head(oom_score)) {
+                // we looped through all pids at this oom_adj_score, move to the next one
+                procp = NULL;
+            }
+        }
+        if (procp) {
+            pid = procp->pid;
+            pidfd = procp->pidfd;
+        }
+
+        pthread_rwlock_unlock(&adjslot_list_lock);
+
+        if (!procp) {
+            oom_score--;
+            pid = 0;
+            continue;
+        }
+
+        bool killed = (pidfd < 0) ? kill(pid, SIGKILL) == 0 :
+            pidfd_send_signal(pidfd, SIGKILL, NULL, 0) == 0;
+        if (killed) {
+            ALOGW("lmkd watchdog killed process %d, oom_score_adj %d", pid, oom_score);
+            break;
+        }
+    }
+}
+
+static void* watchdog_main(void*) {
+    struct timespec timeout;
+    int reset_cnt;
+
+    for (;;) {
+        // Wait for watchdog to be set
+        pthread_mutex_lock(&watchdog.mutex);
+        while (watchdog.set_cnt == watchdog.reset_cnt) {
+            pthread_cond_wait(&watchdog.cond, &watchdog.mutex);
+        }
+        reset_cnt = watchdog.reset_cnt;
+        pthread_mutex_unlock(&watchdog.mutex);
+
+        while (true) {
+            bool timed_out = false;
+            // Wait for watchdog to either be reset or timeout
+            clock_gettime(CLOCK_REALTIME, &timeout);
+            timeout.tv_sec += WATCHDOG_TIMEOUT_SEC;
+
+            pthread_mutex_lock(&watchdog.mutex);
+            while (reset_cnt == watchdog.reset_cnt) {
+                if (pthread_cond_timedwait(&watchdog.cond, &watchdog.mutex, &timeout) == ETIMEDOUT) {
+                    timed_out = true;
+                    break;
+                }
+            }
+            pthread_mutex_unlock(&watchdog.mutex);
+
+            if (timed_out) {
+                // Kill and keep waiting for the reset for another timeout period
+                kill_nonblocking();
+            } else {
+                // Watchdog was reset
+                break;
+            }
         }
     }
 
@@ -2423,7 +2558,7 @@ static int find_and_kill_process(int min_score_adj, struct kill_info *ki, union 
 
         while (true) {
             procp = choose_heaviest_task ?
-                proc_get_heaviest(i) : proc_adj_lru(i);
+                proc_get_heaviest(i) : proc_adj_tail(i);
 
             if (!procp)
                 break;
@@ -3422,6 +3557,7 @@ static void call_handler(struct event_handler_info* handler_info,
                          struct polling_params *poll_params, uint32_t events) {
     struct timespec curr_tm;
 
+    watchdog_set();
     poll_params->update = POLLING_DO_NOT_CHANGE;
     handler_info->handler(handler_info->data, events, poll_params);
     clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm);
@@ -3453,6 +3589,7 @@ static void call_handler(struct event_handler_info* handler_info,
         }
         break;
     }
+    watchdog_reset();
 }
 
 static void mainloop(void) {
@@ -3534,7 +3671,9 @@ static void mainloop(void) {
             if ((evt->events & EPOLLHUP) && evt->data.ptr) {
                 ALOGI("lmkd data connection dropped");
                 handler_info = (struct event_handler_info*)evt->data.ptr;
+                watchdog_set();
                 ctrl_data_close(handler_info->data);
+                watchdog_reset();
             }
         }
 
@@ -3673,6 +3812,12 @@ int main(int argc, char **argv) {
             if (err_no) {
                 ALOGE("Failed to create the reaper thread %s", strerror(err_no));
             }
+        }
+
+        pthread_t watchdog_thread;
+        int err_no = pthread_create(&watchdog_thread, NULL, watchdog_main, NULL);
+        if (err_no) {
+            ALOGE("Failed to create the watchdog thread %s", strerror(err_no));
         }
 
         mainloop();
