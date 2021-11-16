@@ -39,6 +39,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <shared_mutex>
+
 #include <cutils/properties.h>
 #include <cutils/sockets.h>
 #include <liblmkd_utils.h>
@@ -53,6 +55,7 @@
 
 #include "reaper.h"
 #include "statslog.h"
+#include "watchdog.h"
 
 #define BPF_FD_JUST_USE_INT
 #include "BpfSyscallWrappers.h"
@@ -167,6 +170,8 @@ static inline void trace_kill_end() {}
 #define DEF_COMPLETE_STALL 700
 
 #define LMKD_REINIT_PROP "lmkd.reinit"
+
+#define WATCHDOG_TIMEOUT_SEC 2
 
 /* default to old in-kernel interface if no memory pressure events */
 static bool use_inkernel_interface = true;
@@ -529,6 +534,11 @@ static struct proc *pidhash[PIDHASH_SZ];
 
 #define ADJTOSLOT(adj) ((adj) + -OOM_SCORE_ADJ_MIN)
 #define ADJTOSLOT_COUNT (ADJTOSLOT(OOM_SCORE_ADJ_MAX) + 1)
+
+// protects procadjslot_list from concurrent access
+static std::shared_mutex adjslot_list_lock;
+// WARNING: procadjslot_list should be modified only from the main thread.
+// WARNING: when reading from a non-main thread, adjslot_list_lock read lock should be taken.
 static struct adjslot_list procadjslot_list[ADJTOSLOT_COUNT];
 
 #define MAX_DISTINCT_OOM_ADJ 32
@@ -918,13 +928,18 @@ static struct adjslot_list *adjslot_tail(struct adjslot_list *head) {
     return asl == head ? NULL : asl;
 }
 
+// WARNING: should be modified only from the main thread.
 static void proc_slot(struct proc *procp) {
     int adjslot = ADJTOSLOT(procp->oomadj);
+    std::scoped_lock lock(adjslot_list_lock);
 
     adjslot_insert(&procadjslot_list[adjslot], &procp->asl);
 }
 
+// WARNING: should be modified only from the main thread.
 static void proc_unslot(struct proc *procp) {
+    std::scoped_lock lock(adjslot_list_lock);
+
     adjslot_remove(&procp->asl);
 }
 
@@ -1983,10 +1998,33 @@ static void killinfo_log(struct proc* procp, int min_oom_score, int rss_kb,
     android_log_reset(ctx);
 }
 
-static struct proc *proc_adj_lru(int oomadj) {
+// Note: returned entry is only an anchor and does not hold a valid process info
+// WARNING: when called from a non-main thread, adjslot_list_lock read lock should be taken.
+static struct proc *proc_adj_head(int oomadj) {
+    return (struct proc *)&procadjslot_list[ADJTOSLOT(oomadj)];
+}
+
+// WARNING: when called from a non-main thread, adjslot_list_lock read lock should be taken.
+static struct proc *proc_adj_tail(int oomadj) {
     return (struct proc *)adjslot_tail(&procadjslot_list[ADJTOSLOT(oomadj)]);
 }
 
+// WARNING: when called from a non-main thread, adjslot_list_lock read lock should be taken.
+static struct proc *proc_adj_prev(int oomadj, int pid) {
+    struct adjslot_list *head = &procadjslot_list[ADJTOSLOT(oomadj)];
+    struct adjslot_list *curr = adjslot_tail(&procadjslot_list[ADJTOSLOT(oomadj)]);
+
+    while (curr != head) {
+        if (((struct proc *)curr)->pid == pid) {
+            return (struct proc *)curr->prev;
+        }
+        curr = curr->prev;
+    }
+
+    return NULL;
+}
+
+// WARNING: when called from a non-main thread, adjslot_list_lock read lock should be taken.
 static struct proc *proc_get_heaviest(int oomadj) {
     struct adjslot_list *head = &procadjslot_list[ADJTOSLOT(oomadj)];
     struct adjslot_list *curr = head->next;
@@ -2009,6 +2047,55 @@ static struct proc *proc_get_heaviest(int oomadj) {
     }
     return maxprocp;
 }
+
+static void watchdog_callback() {
+    int pid = 0;
+
+    ALOGW("lmkd watchdog timed out!");
+    for (int oom_score = OOM_SCORE_ADJ_MAX; oom_score >= 0;) {
+        struct proc *procp;
+        int pidfd;
+
+        adjslot_list_lock.lock_shared();
+
+        if (!pid) {
+            struct proc *tail = proc_adj_tail(oom_score);
+            // check if the list is empty at this oom_score
+            procp = tail == proc_adj_head(oom_score) ? NULL : tail;
+        } else {
+            procp = proc_adj_prev(oom_score, pid);
+            if (!procp) {
+                // pid was removed, restart at the tail
+                procp = proc_adj_tail(oom_score);
+            } else if (procp == proc_adj_head(oom_score)) {
+                // we looped through all pids at this oom_adj_score, move to the next one
+                procp = NULL;
+            }
+        }
+        if (procp) {
+            pid = procp->pid;
+            pidfd = procp->pidfd;
+        }
+
+        adjslot_list_lock.unlock_shared();
+
+        // we are not dereferencing procp, so it's safe to check it outside of adjslot_list_lock
+        if (!procp) {
+            oom_score--;
+            pid = 0;
+            continue;
+        }
+
+        bool killed = (pidfd < 0) ? kill(pid, SIGKILL) == 0 :
+            pidfd_send_signal(pidfd, SIGKILL, NULL, 0) == 0;
+        if (killed) {
+            ALOGW("lmkd watchdog killed process %d, oom_score_adj %d", pid, oom_score);
+            break;
+        }
+    }
+}
+
+static Watchdog watchdog(WATCHDOG_TIMEOUT_SEC, watchdog_callback);
 
 static void set_process_group_and_prio(int pid, const std::vector<std::string>& profiles,
                                        int prio) {
@@ -2301,7 +2388,7 @@ static int find_and_kill_process(int min_score_adj, struct kill_info *ki, union 
 
         while (true) {
             procp = choose_heaviest_task ?
-                proc_get_heaviest(i) : proc_adj_lru(i);
+                proc_get_heaviest(i) : proc_adj_tail(i);
 
             if (!procp)
                 break;
@@ -3336,6 +3423,7 @@ static void call_handler(struct event_handler_info* handler_info,
                          struct polling_params *poll_params, uint32_t events) {
     struct timespec curr_tm;
 
+    watchdog.set();
     poll_params->update = POLLING_DO_NOT_CHANGE;
     handler_info->handler(handler_info->data, events, poll_params);
     clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm);
@@ -3367,6 +3455,7 @@ static void call_handler(struct event_handler_info* handler_info,
         }
         break;
     }
+    watchdog.reset();
 }
 
 static void mainloop(void) {
@@ -3448,7 +3537,9 @@ static void mainloop(void) {
             if ((evt->events & EPOLLHUP) && evt->data.ptr) {
                 ALOGI("lmkd data connection dropped");
                 handler_info = (struct event_handler_info*)evt->data.ptr;
+                watchdog.set();
                 ctrl_data_close(handler_info->data);
+                watchdog.reset();
             }
         }
 
@@ -3587,6 +3678,10 @@ int main(int argc, char **argv) {
         if (init_reaper()) {
             ALOGI("Process reaper initialized with %d threads in the pool",
                 reaper.reaper_thread_cnt());
+        }
+
+        if (!watchdog.start()) {
+            ALOGE("Failed to start the watchdog thread");
         }
 
         mainloop();
