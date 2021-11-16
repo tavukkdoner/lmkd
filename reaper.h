@@ -52,6 +52,7 @@ public:
 
     // return 0 on success or error code returned by the syscall
     int kill(const struct target_proc& target);
+    int kill_sync(const struct target_proc& target);
     // below members are used only by reaper_main
     target_proc dequeue_request();
     void request_complete();

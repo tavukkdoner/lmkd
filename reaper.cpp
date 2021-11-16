@@ -215,6 +215,31 @@ int Reaper::kill(const struct target_proc& target) {
     return pidfd_send_signal(target.pidfd, SIGKILL, NULL, 0);
 }
 
+int Reaper::kill_sync(const struct target_proc& target) {
+    /* CAP_KILL required */
+    if (target.pidfd < 0) {
+        return ::kill(target.pid, SIGKILL);
+    }
+
+    int result = pidfd_send_signal(target.pidfd, SIGKILL, NULL, 0);
+    if (result) {
+        ALOGE("pidfd_send_signal %d failed: %s", target.pid, strerror(errno));
+        return result;
+    }
+
+    if (!is_reaping_supported()) {
+        return 0;
+    }
+
+    result = process_mrelease(target.pidfd, 0);
+    if (result) {
+        ALOGE("process_mrelease %d failed: %s", target.pid, strerror(errno));
+        return result;
+    }
+
+    return 0;
+}
+
 Reaper::target_proc Reaper::dequeue_request() {
     struct target_proc target;
     std::unique_lock<std::mutex> lock(mutex_);
