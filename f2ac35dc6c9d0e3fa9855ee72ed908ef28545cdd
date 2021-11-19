@@ -1,0 +1,228 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "16963118_04e58ee4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-11-19T00:42:02Z",
+      "side": 1,
+      "message": "Hey Suren,\n\nI am trying to review the code but keep failed since there are many questions in my head. Some of them came from the my unfamiliarity of LMKD, some of them are readability, some of them are mix up several stuff into one patch. So, first of all, I am trying to clarify my understanding so please bear my dumb questions this time. And I hope you could split the patch step by step. \n\n1. whether the new syscall is supported or not\n2. very basic killing using process_mrelease\n3. optimize it using separate thread since you find the problem\n4. add some ignore_err kinds of clean up stuff to minimize log spam\n\nand so on. Maybe, some of my suggestion wouldn\u0027t make sense since I didn\u0027t understand what you were doing fully but my point is it would be much easier if you stack the patch up step by step from basic to optimize/cleanup. \n\nJust take it as my two cents, no push. Let me try to figure it out further anyway.",
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a1ce9dd_812290d6",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 961,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-11-19T00:42:02Z",
+      "side": 1,
+      "message": "I don\u0027t understand how the process_mrelease could connect the dot here so it\u0027s fine to remove one of condition between two so skip this time.",
+      "range": {
+        "startLine": 961,
+        "startChar": 8,
+        "endLine": 961,
+        "endChar": 26
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "013d0b43_8379fb42",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2064,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-11-19T00:42:02Z",
+      "side": 1,
+      "message": "I am troubled to understand what each variable aims for.",
+      "range": {
+        "startLine": 2061,
+        "startChar": 0,
+        "endLine": 2064,
+        "endChar": 56
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3e013a04_df7cec2d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2066,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-11-19T00:42:02Z",
+      "side": 1,
+      "message": "what does kill_res mean?",
+      "range": {
+        "startLine": 2066,
+        "startChar": 8,
+        "endLine": 2066,
+        "endChar": 16
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b6e1ee95_f474dd79",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2074,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-11-19T00:42:02Z",
+      "side": 1,
+      "message": "I am not sure this is the way Android supports the new syscall. It would bring the expertise from libc folks.",
+      "range": {
+        "startLine": 2074,
+        "startChar": 12,
+        "endLine": 2074,
+        "endChar": 32
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "09b36461_ba7930b2",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2093,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-11-19T00:42:02Z",
+      "side": 1,
+      "message": "Again, res, what does it mean?",
+      "range": {
+        "startLine": 2093,
+        "startChar": 45,
+        "endLine": 2093,
+        "endChar": 48
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e63e547b_8e384f02",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2109,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-11-19T00:42:02Z",
+      "side": 1,
+      "message": "It\u0027s already racy so I think we can move it to 2097 line and just check the busyness without the lock and return earlier.",
+      "range": {
+        "startLine": 2108,
+        "startChar": 0,
+        "endLine": 2109,
+        "endChar": 21
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e90949f_65a34ad1",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2339,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-11-19T00:42:02Z",
+      "side": 1,
+      "message": "Is it also needed by just pidfd_send_signal case? Then, why wasn\u0027t it a problem before?",
+      "range": {
+        "startLine": 2339,
+        "startChar": 12,
+        "endLine": 2339,
+        "endChar": 32
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e9a0dd6_66cc64dc",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2339,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-11-19T00:42:02Z",
+      "side": 1,
+      "message": "How about pid_dup?",
+      "range": {
+        "startLine": 2339,
+        "startChar": 12,
+        "endLine": 2339,
+        "endChar": 18
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "786bb533_00c1a5fc",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2342,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-11-19T00:42:02Z",
+      "side": 1,
+      "message": "Can we have more meaning variable name instead of the single character r? Maybe, ret?",
+      "range": {
+        "startLine": 2342,
+        "startChar": 59,
+        "endLine": 2342,
+        "endChar": 60
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
