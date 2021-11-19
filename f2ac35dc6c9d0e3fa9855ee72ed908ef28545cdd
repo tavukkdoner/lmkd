@@ -20,6 +20,47 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "54a1e93f_eb1bf2e4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-19T01:01:27Z",
+      "side": 1,
+      "message": "Thanks for the review, Minchan! Yes, splitting makes sense, will do that.",
+      "parentUuid": "16963118_04e58ee4",
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eae939e4_917eff1e",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 959,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-19T01:01:27Z",
+      "side": 1,
+      "message": "Actually I should remove this comment since it\u0027s not the case anymore.",
+      "range": {
+        "startLine": 958,
+        "startChar": 24,
+        "endLine": 959,
+        "endChar": 73
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1a1ce9dd_812290d6",
         "filename": "lmkd.cpp",
         "patchSetId": 2
@@ -31,6 +72,30 @@
       "writtenOn": "2021-11-19T00:42:02Z",
       "side": 1,
       "message": "I don\u0027t understand how the process_mrelease could connect the dot here so it\u0027s fine to remove one of condition between two so skip this time.",
+      "range": {
+        "startLine": 961,
+        "startChar": 8,
+        "endLine": 961,
+        "endChar": 26
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9da577c_2a1ed7c4",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 961,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-19T01:01:27Z",
+      "side": 1,
+      "message": "A dup of this FD was passed to process_mrelease, and waiting for process kill to finish also uses that dup, so we can safely close the original one since it\u0027s not used anymore.\nBefore we used to wait on the same FD, so we could not close it until kill notification is received.",
+      "parentUuid": "1a1ce9dd_812290d6",
       "range": {
         "startLine": 961,
         "startChar": 8,
@@ -66,6 +131,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "367d2dd6_146baa47",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2064,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-19T01:01:27Z",
+      "side": 1,
+      "message": "req_mutex/req_cond are used when a new kill request is passed to the reaper thread and to wake it up.\nreq_mutex/req_cond are used to wait for the kill result and to wakeup the main thread waiting for that result to report success/failure.",
+      "parentUuid": "013d0b43_8379fb42",
+      "range": {
+        "startLine": 2061,
+        "startChar": 0,
+        "endLine": 2064,
+        "endChar": 56
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3e013a04_df7cec2d",
         "filename": "lmkd.cpp",
         "patchSetId": 2
@@ -77,6 +166,30 @@
       "writtenOn": "2021-11-19T00:42:02Z",
       "side": 1,
       "message": "what does kill_res mean?",
+      "range": {
+        "startLine": 2066,
+        "startChar": 8,
+        "endLine": 2066,
+        "endChar": 16
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b4b1a1c8_c970285d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2066,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-19T01:01:27Z",
+      "side": 1,
+      "message": "kill_result. Will rename.",
+      "parentUuid": "3e013a04_df7cec2d",
       "range": {
         "startLine": 2066,
         "startChar": 8,
@@ -112,6 +225,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f55f5b3c_fd7c4104",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2074,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-19T01:01:27Z",
+      "side": 1,
+      "message": "I\u0027ll have to define __NR_process_mrelease somewhere in bionic headers but other than that I think this kind of detection is fine.",
+      "parentUuid": "b6e1ee95_f474dd79",
+      "range": {
+        "startLine": 2074,
+        "startChar": 12,
+        "endLine": 2074,
+        "endChar": 32
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "09b36461_ba7930b2",
         "filename": "lmkd.cpp",
         "patchSetId": 2
@@ -135,6 +272,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a573f5da_4abfd413",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2093,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-19T01:01:27Z",
+      "side": 1,
+      "message": "kill_res is kill_result. Will rename.",
+      "parentUuid": "09b36461_ba7930b2",
+      "range": {
+        "startLine": 2093,
+        "startChar": 45,
+        "endLine": 2093,
+        "endChar": 48
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e63e547b_8e384f02",
         "filename": "lmkd.cpp",
         "patchSetId": 2
@@ -146,6 +307,30 @@
       "writtenOn": "2021-11-19T00:42:02Z",
       "side": 1,
       "message": "It\u0027s already racy so I think we can move it to 2097 line and just check the busyness without the lock and return earlier.",
+      "range": {
+        "startLine": 2108,
+        "startChar": 0,
+        "endLine": 2109,
+        "endChar": 21
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b94fd835_b3f3f39f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2109,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-19T01:01:27Z",
+      "side": 1,
+      "message": "Why do you say it\u0027s racy? reaper.pidfd is accessed always under reaper.req_mutex protection.",
+      "parentUuid": "e63e547b_8e384f02",
       "range": {
         "startLine": 2108,
         "startChar": 0,
@@ -202,6 +387,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f738917d_57800c3d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2339,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-19T01:01:27Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "1e9a0dd6_66cc64dc",
+      "range": {
+        "startLine": 2339,
+        "startChar": 12,
+        "endLine": 2339,
+        "endChar": 18
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5f9567f_16d27790",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2339,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-19T01:01:27Z",
+      "side": 1,
+      "message": "Before we were saving this pidfd in last_kill_pid_or_fd and closing it only after waiting for process\u0027 death is done. Now we just dup it so that each thread can safely operate on its own fd.",
+      "parentUuid": "2e90949f_65a34ad1",
+      "range": {
+        "startLine": 2339,
+        "startChar": 12,
+        "endLine": 2339,
+        "endChar": 32
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "786bb533_00c1a5fc",
@@ -215,6 +448,30 @@
       "writtenOn": "2021-11-19T00:42:02Z",
       "side": 1,
       "message": "Can we have more meaning variable name instead of the single character r? Maybe, ret?",
+      "range": {
+        "startLine": 2342,
+        "startChar": 59,
+        "endLine": 2342,
+        "endChar": 60
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b71aa856_0d996a48",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2342,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-19T01:01:27Z",
+      "side": 1,
+      "message": "Yeah, will change. This is what it used to be so I didn\u0027t want to change.",
+      "parentUuid": "786bb533_00c1a5fc",
       "range": {
         "startLine": 2342,
         "startChar": 59,
