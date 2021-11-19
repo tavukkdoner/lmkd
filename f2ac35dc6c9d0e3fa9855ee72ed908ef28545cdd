@@ -227,6 +227,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a17c65e8_c448b281",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2064,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-11-19T01:23:38Z",
+      "side": 1,
+      "message": "Main thread blocks only for the duration of pidfd_send_signal() which should be quick. It needs the result to know if the kill was successful or not.",
+      "parentUuid": "b51c3388_421521b8",
+      "range": {
+        "startLine": 2061,
+        "startChar": 0,
+        "endLine": 2064,
+        "endChar": 56
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3e013a04_df7cec2d",
         "filename": "lmkd.cpp",
         "patchSetId": 2
