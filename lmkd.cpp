@@ -2011,15 +2011,17 @@ static struct proc *proc_get_heaviest(int oomadj) {
 }
 
 static void set_process_group_and_prio(int pid, const std::vector<std::string>& profiles,
-                                       int prio) {
+                                       int prio, bool ignore_err) {
     DIR* d;
     char proc_path[PATH_MAX];
     struct dirent* de;
 
     snprintf(proc_path, sizeof(proc_path), "/proc/%d/task", pid);
     if (!(d = opendir(proc_path))) {
-        ALOGW("Failed to open %s; errno=%d: process pid(%d) might have died", proc_path, errno,
-              pid);
+        if (!ignore_err) {
+            ALOGW("Failed to open %s; errno=%d: process pid(%d) might have died", proc_path, errno,
+                  pid);
+        }
         return;
     }
 
@@ -2030,16 +2032,20 @@ static void set_process_group_and_prio(int pid, const std::vector<std::string>& 
         t_pid = atoi(de->d_name);
 
         if (!t_pid) {
-            ALOGW("Failed to get t_pid for '%s' of pid(%d)", de->d_name, pid);
+            if (!ignore_err) {
+                ALOGW("Failed to get t_pid for '%s' of pid(%d)", de->d_name, pid);
+            }
             continue;
         }
 
-        if (setpriority(PRIO_PROCESS, t_pid, prio) && errno != ESRCH) {
+        if (setpriority(PRIO_PROCESS, t_pid, prio) && errno != ESRCH && !ignore_err) {
             ALOGW("Unable to raise priority of killing t_pid (%d): errno=%d", t_pid, errno);
         }
 
         if (!SetTaskProfiles(t_pid, profiles, true)) {
-            ALOGW("Failed to set task_profiles on pid(%d) t_pid(%d)", pid, t_pid);
+            if (!ignore_err) {
+                ALOGW("Failed to set task_profiles on pid(%d) t_pid(%d)", pid, t_pid);
+            }
             continue;
         }
     }
@@ -2341,9 +2347,8 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
         goto out;
     }
 
-    if (!reaped)
-        set_process_group_and_prio(pid, {"CPUSET_SP_FOREGROUND", "SCHED_SP_FOREGROUND"},
-                                   ANDROID_PRIORITY_HIGHEST);
+    set_process_group_and_prio(pid, {"CPUSET_SP_FOREGROUND", "SCHED_SP_FOREGROUND"},
+                               ANDROID_PRIORITY_HIGHEST, reaped);
 
     last_kill_tm = *tm;
 
