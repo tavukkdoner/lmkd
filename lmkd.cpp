@@ -956,7 +956,7 @@ static int pid_remove(int pid) {
      * Close pidfd here if we are not waiting for corresponding process to die,
      * in which case stop_wait_for_proc_kill() will close the pidfd later
      */
-    if (procp->pidfd >= 0 && procp->pidfd != last_kill_pid_or_fd) {
+    if (procp->pidfd >= 0) {
         close(procp->pidfd);
     }
     free(procp);
@@ -2168,7 +2168,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     int pidfd = procp->pidfd;
     uid_t uid = procp->uid;
     char *taskname;
-    int r;
+    int kill_result;
     int result = -1;
     struct memory_stat *mem_st;
     struct kill_stat kill_st;
@@ -2213,11 +2213,14 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     /* CAP_KILL required */
     if (pidfd < 0) {
         start_wait_for_proc_kill(pid);
-        r = kill(pid, SIGKILL);
+        kill_result = kill(pid, SIGKILL);
     } else {
-        start_wait_for_proc_kill(pidfd);
-        r = pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
-        if (r == 0 && is_reaping_supported() && process_mrelease(pidfd, 0)) {
+        // Need to dup the pidfd because original is closed in pid_remove()
+        int pidfd_dup = dup(pidfd);
+
+        start_wait_for_proc_kill(pidfd_dup);
+        kill_result = pidfd_send_signal(pidfd_dup, SIGKILL, NULL, 0);
+        if (kill_result == 0 && is_reaping_supported() && process_mrelease(pidfd_dup, 0)) {
             reaped = true;
             stop_wait_for_proc_kill(true);
         }
@@ -2225,7 +2228,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
 
     trace_kill_end();
 
-    if (r) {
+    if (kill_result) {
         stop_wait_for_proc_kill(false);
         ALOGE("kill(%d): errno=%d", pid, errno);
         /* Delete process record even when we fail to kill so that we don't get stuck on it */
