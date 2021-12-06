@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "54db6651_23260cfb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-06T18:59:32Z",
+      "side": 1,
+      "message": "Then, please change the description \"process_mrelease to be **successful**\". It gave the impression, \"process_mrelease\" fails since the target process was already gone. \n\n```\nIn order to expedite killing, the time between the kill operation,,\n```",
+      "parentUuid": "64757bcc_2356ada4",
+      "range": {
+        "startLine": 15,
+        "startChar": 48,
+        "endLine": 16,
+        "endChar": 56
+      },
+      "revId": "a79d72dac61fce3914c33016ae50cd278843f6a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e43e8d42_7bd12fd6",
@@ -85,6 +109,30 @@
       "side": 1,
       "message": "I didn\u0027t want to complicate the implementation with multiple reaper threads (which we can still extend in the future). So, right now we have one reaper thread and if it\u0027s busy when we need it them the main thread falls back to the original way of killing - it kills the process and waits for its exit with a timeout.",
       "parentUuid": "e43e8d42_7bd12fd6",
+      "range": {
+        "startLine": 20,
+        "startChar": 27,
+        "endLine": 20,
+        "endChar": 70
+      },
+      "revId": "a79d72dac61fce3914c33016ae50cd278843f6a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "797e61e6_062f6d03",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-06T18:59:32Z",
+      "side": 1,
+      "message": "I thought as-is made code more complicated because it introduced divergent handling, sometimes, reaper, sometimes, main thread..\n\nLet\u0027s think well known producer/consumer model. Here, lmkd main thread is just producer and always asking the killing to reaper, consumer thread. It would need list management but not hard with just single lock and then we will have more consistent handling with simple code. If we really need to handle parallel termination of processes, we could just create one more thread in reap.c, which is scalable and simple.",
+      "parentUuid": "b3b3cbbc_cf852e32",
       "range": {
         "startLine": 20,
         "startChar": 27,
