@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f2af195_3a3e1667",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2350,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-06T18:10:20Z",
+      "side": 1,
+      "message": "Adding ignore_err in this function is not pretty. Rather than, can\u0027t we move set_process_group_and_prio is called only when we don\u0027t support process_mrelease?",
+      "range": {
+        "startLine": 2350,
+        "startChar": 4,
+        "endLine": 2350,
+        "endChar": 30
+      },
+      "revId": "8c2bfa2d7986f9321e29fc8950e653c27d90379a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
