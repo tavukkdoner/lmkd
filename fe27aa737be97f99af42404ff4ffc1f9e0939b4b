@@ -34,6 +34,24 @@
       "parentUuid": "d42d345c_675ae859",
       "revId": "fe27aa737be97f99af42404ff4ffc1f9e0939b4b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "61ceecaf_e177187a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-06T17:49:22Z",
+      "side": 1,
+      "message": "No, you were right. I thought \"process reaping\" meant process_mrelease, but you were talking about reap_thread for next CL. In this case, it would be great if you mentioned it explicitly. \n\n\"This CL is preparing for next reap_thread CL feature\".",
+      "parentUuid": "7b8c79d5_51f8664e",
+      "revId": "fe27aa737be97f99af42404ff4ffc1f9e0939b4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
