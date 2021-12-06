@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d42d345c_675ae859",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-06T17:20:10Z",
+      "side": 1,
+      "message": "Hmm, looks like previous CL has a bug without this CL? If so, we should merge it into previous CL since each CL should be self-contained for buildable, not buggy but are fine for some of inefficiency.",
+      "revId": "fe27aa737be97f99af42404ff4ffc1f9e0939b4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
