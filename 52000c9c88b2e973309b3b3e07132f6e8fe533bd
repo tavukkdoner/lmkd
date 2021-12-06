@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "aba58b4d_69e4783e",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2215,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-06T17:28:07Z",
+      "side": 1,
+      "message": "The function uses different parameters depending on the value of pidfd. Do you prefer to have something like this?\n\nstart_wait_for_proc_kill(pidfd \u003c 0 ? pid : pidfd);\nif (pidfd \u003c 0)\n        r \u003d kill(pid, SIGKILL);\nelse {\n        r \u003d pidfd_send_signal(pidfd, SIGKILL, NULL, 0);\n...\n}\n\nIt basically checks the same (pidfd \u003c 0) condition twice.",
+      "parentUuid": "ae2d87cc_6f8c2508",
+      "range": {
+        "startLine": 2215,
+        "startChar": 8,
+        "endLine": 2215,
+        "endChar": 38
+      },
+      "revId": "52000c9c88b2e973309b3b3e07132f6e8fe533bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "96669851_aad19e7e",
         "filename": "lmkd.cpp",
         "patchSetId": 1
@@ -37,6 +61,30 @@
       "writtenOn": "2021-12-06T17:17:47Z",
       "side": 1,
       "message": "Since process_mrelease can fail, we could move it into process_mrelease.",
+      "range": {
+        "startLine": 2220,
+        "startChar": 22,
+        "endLine": 2220,
+        "endChar": 42
+      },
+      "revId": "52000c9c88b2e973309b3b3e07132f6e8fe533bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e44b124b_ccf5a5cf",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2220,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-06T17:28:07Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "96669851_aad19e7e",
       "range": {
         "startLine": 2220,
         "startChar": 22,
@@ -60,6 +108,30 @@
       "writtenOn": "2021-12-06T17:17:47Z",
       "side": 1,
       "message": "let\u0027s move this common function into 2227 line.\n\nif (r) {\n  stop_wait_for_proc_kill(false);\n} else if (reaped) {\n  stop_wait_for_proc_kill(true);\n} else {\n  // otherwise, it will be handled in XXX.\n}",
+      "range": {
+        "startLine": 2222,
+        "startChar": 12,
+        "endLine": 2222,
+        "endChar": 42
+      },
+      "revId": "52000c9c88b2e973309b3b3e07132f6e8fe533bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6cd15a5_6de6b148",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2222,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-06T17:28:07Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "2818831a_83e993d5",
       "range": {
         "startLine": 2222,
         "startChar": 12,
