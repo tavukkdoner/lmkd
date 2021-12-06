@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83ba6dfc_66d3bf3b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-06T18:13:43Z",
+      "side": 1,
+      "message": "What\u0027s the problem process_mrelease fails since the target was already terminated?",
+      "range": {
+        "startLine": 15,
+        "startChar": 48,
+        "endLine": 16,
+        "endChar": 56
+      },
+      "revId": "a79d72dac61fce3914c33016ae50cd278843f6a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e43e8d42_7bd12fd6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-06T18:13:43Z",
+      "side": 1,
+      "message": "Please write down rationale here why we should still relies on the cpu prio boosting instead of lmkd reap thread. I was thinking \"just reap queue and then multiple reaper thread could get it from the queue and handle it in parallel\".",
+      "range": {
+        "startLine": 20,
+        "startChar": 27,
+        "endLine": 20,
+        "endChar": 70
+      },
+      "revId": "a79d72dac61fce3914c33016ae50cd278843f6a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
