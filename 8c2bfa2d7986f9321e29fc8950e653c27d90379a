@@ -46,6 +46,30 @@
       },
       "revId": "8c2bfa2d7986f9321e29fc8950e653c27d90379a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f574fb96_d0f84f5c",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2350,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-06T18:31:29Z",
+      "side": 1,
+      "message": "That\u0027s fine. My concern is adding ingore_err in the function. How much the error log is meaningful? Can\u0027t we remove the error log entirely from the function? Of if it\u0027s meaningful, how often the error log show up with reaper? IOW, it it worth to optimize it? I see LMKD source code gets more complicated with dependency here and there among logic without good abstraction so I am asking \"let\u0027s think how we could avoid the ignore_err stuff\" since we will not love every functions will have that kinds of unrelated argument of the function even though we are easily tempted.",
+      "parentUuid": "946b07a6_b8b938ad",
+      "range": {
+        "startLine": 2350,
+        "startChar": 4,
+        "endLine": 2350,
+        "endChar": 30
+      },
+      "revId": "8c2bfa2d7986f9321e29fc8950e653c27d90379a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
