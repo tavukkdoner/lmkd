@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "64757bcc_2356ada4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-06T18:46:12Z",
+      "side": 1,
+      "message": "process_mrelease can reap the memory of the process more efficiently due to its high priority. Therefore memory will be released faster if process_mrelease can catch the process before it\u0027s considered gone.",
+      "parentUuid": "83ba6dfc_66d3bf3b",
+      "range": {
+        "startLine": 15,
+        "startChar": 48,
+        "endLine": 16,
+        "endChar": 56
+      },
+      "revId": "a79d72dac61fce3914c33016ae50cd278843f6a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e43e8d42_7bd12fd6",
         "filename": "/COMMIT_MSG",
         "patchSetId": 3
@@ -37,6 +61,30 @@
       "writtenOn": "2021-12-06T18:13:43Z",
       "side": 1,
       "message": "Please write down rationale here why we should still relies on the cpu prio boosting instead of lmkd reap thread. I was thinking \"just reap queue and then multiple reaper thread could get it from the queue and handle it in parallel\".",
+      "range": {
+        "startLine": 20,
+        "startChar": 27,
+        "endLine": 20,
+        "endChar": 70
+      },
+      "revId": "a79d72dac61fce3914c33016ae50cd278843f6a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3b3cbbc_cf852e32",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-06T18:46:12Z",
+      "side": 1,
+      "message": "I didn\u0027t want to complicate the implementation with multiple reaper threads (which we can still extend in the future). So, right now we have one reaper thread and if it\u0027s busy when we need it them the main thread falls back to the original way of killing - it kills the process and waits for its exit with a timeout.",
+      "parentUuid": "e43e8d42_7bd12fd6",
       "range": {
         "startLine": 20,
         "startChar": 27,
