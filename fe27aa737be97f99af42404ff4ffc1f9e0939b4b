@@ -16,6 +16,24 @@
       "message": "Hmm, looks like previous CL has a bug without this CL? If so, we should merge it into previous CL since each CL should be self-contained for buildable, not buggy but are fine for some of inefficiency.",
       "revId": "fe27aa737be97f99af42404ff4ffc1f9e0939b4b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7b8c79d5_51f8664e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-06T17:29:49Z",
+      "side": 1,
+      "message": "Why do you think the previous CL has a bug? It reaps the memory in the main thread, so there is no issue with reusing the same pidfd without duping it. Am I missing something?",
+      "parentUuid": "d42d345c_675ae859",
+      "revId": "fe27aa737be97f99af42404ff4ffc1f9e0939b4b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
