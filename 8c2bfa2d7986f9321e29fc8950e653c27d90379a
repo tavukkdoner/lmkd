@@ -22,6 +22,30 @@
       },
       "revId": "8c2bfa2d7986f9321e29fc8950e653c27d90379a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "946b07a6_b8b938ad",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2350,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-06T18:13:56Z",
+      "side": 1,
+      "message": "I think we want to increase killed process priority even if process_mrelease() is supported because both tasks (the killed task and the reaper thread) can work on releasing memory in parallel.",
+      "parentUuid": "4f2af195_3a3e1667",
+      "range": {
+        "startLine": 2350,
+        "startChar": 4,
+        "endLine": 2350,
+        "endChar": 30
+      },
+      "revId": "8c2bfa2d7986f9321e29fc8950e653c27d90379a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
