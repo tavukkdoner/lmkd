@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae2d87cc_6f8c2508",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2215,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-06T17:17:47Z",
+      "side": 1,
+      "message": "let\u0027s move this common function into 2212.",
+      "range": {
+        "startLine": 2215,
+        "startChar": 8,
+        "endLine": 2215,
+        "endChar": 38
+      },
+      "revId": "52000c9c88b2e973309b3b3e07132f6e8fe533bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96669851_aad19e7e",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2220,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-06T17:17:47Z",
+      "side": 1,
+      "message": "Since process_mrelease can fail, we could move it into process_mrelease.",
+      "range": {
+        "startLine": 2220,
+        "startChar": 22,
+        "endLine": 2220,
+        "endChar": 42
+      },
+      "revId": "52000c9c88b2e973309b3b3e07132f6e8fe533bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2818831a_83e993d5",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2222,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-06T17:17:47Z",
+      "side": 1,
+      "message": "let\u0027s move this common function into 2227 line.\n\nif (r) {\n  stop_wait_for_proc_kill(false);\n} else if (reaped) {\n  stop_wait_for_proc_kill(true);\n} else {\n  // otherwise, it will be handled in XXX.\n}",
+      "range": {
+        "startLine": 2222,
+        "startChar": 12,
+        "endLine": 2222,
+        "endChar": 42
+      },
+      "revId": "52000c9c88b2e973309b3b3e07132f6e8fe533bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
