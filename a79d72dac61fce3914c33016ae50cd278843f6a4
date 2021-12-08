@@ -141,6 +141,30 @@
       },
       "revId": "a79d72dac61fce3914c33016ae50cd278843f6a4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "237e141f_e0e212bc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-08T18:43:19Z",
+      "side": 1,
+      "message": "We do occasionally need parallel killing when killing takes longer than the timeout and we want to stop waiting and kill again. If I follow consumer/producer model we would need a thread pool. If we try to dynamically grow that thread pool it will be problematic because we need to add threads at the time of memory pressure, so might need allocations which can fail. So, more opportunities for a failure.\n\nIMHO the current mechanism of using reaper thread for one process only and if it\u0027s still busy main thread doing the killing without reaping is much simpler and will handle those occasional cases when the kill times out. WDYT?",
+      "parentUuid": "797e61e6_062f6d03",
+      "range": {
+        "startLine": 20,
+        "startChar": 27,
+        "endLine": 20,
+        "endChar": 70
+      },
+      "revId": "a79d72dac61fce3914c33016ae50cd278843f6a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
