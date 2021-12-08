@@ -165,6 +165,30 @@
       },
       "revId": "a79d72dac61fce3914c33016ae50cd278843f6a4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89b1d1c1_0ed25b75",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-08T18:58:59Z",
+      "side": 1,
+      "message": "If we need multiple killing in parallel, we could set up threads pool in advance up to max cpu number. We don\u0027t need to create them on the fly.\nI still believe the approach is better for both code and scalability point of view.",
+      "parentUuid": "237e141f_e0e212bc",
+      "range": {
+        "startLine": 20,
+        "startChar": 27,
+        "endLine": 20,
+        "endChar": 70
+      },
+      "revId": "a79d72dac61fce3914c33016ae50cd278843f6a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
