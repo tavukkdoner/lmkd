@@ -189,6 +189,30 @@
       },
       "revId": "a79d72dac61fce3914c33016ae50cd278843f6a4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d2c2208_30e582ca",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-08T19:03:18Z",
+      "side": 1,
+      "message": "Ok, that seems like a good option. Let me experiment with it. Thanks!",
+      "parentUuid": "89b1d1c1_0ed25b75",
+      "range": {
+        "startLine": 20,
+        "startChar": 27,
+        "endLine": 20,
+        "endChar": 70
+      },
+      "revId": "a79d72dac61fce3914c33016ae50cd278843f6a4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
