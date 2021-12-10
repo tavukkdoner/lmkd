@@ -2047,6 +2047,8 @@ static void set_process_group_and_prio(int pid, const std::vector<std::string>& 
 }
 
 // LMKD reaper
+static int cpu_count;
+
 static struct {
     // req_mutex and req_cond are used to wakeup the reaper thread.
     pthread_mutex_t req_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -2054,12 +2056,15 @@ static struct {
     // repl_mutex and repl_cond are used to wakeup the main thread waiting for the kill result.
     pthread_mutex_t repl_mutex = PTHREAD_MUTEX_INITIALIZER;
     pthread_cond_t repl_cond = PTHREAD_COND_INITIALIZER;
-    // req_mutex protects pidfd access.
-    int pidfd = -1;
+    // req_mutex protects pidfd_queue and active_pos access.
+    int pidfd_queue_size = 0;
+    int *pidfd_queue;
+    int active_pos = -1;
     // kill_result and kill_result_ready do not need access protection because main thread issues
     // only one kill request at a time.
     int kill_result;
     atomic_int kill_result_ready = ATOMIC_VAR_INIT(0);
+    pthread_t* thread_pool;
 } reaper;
 
 #ifndef __NR_process_mrelease
@@ -2088,6 +2093,16 @@ static bool is_reaping_supported() {
     return reap_support == SUPPORTED;
 }
 
+// Should be called under reaper.req_mutex protection
+static int get_free_queue_pos() {
+    for (int pos = 0; pos < reaper.pidfd_queue_size; pos++) {
+        if (reaper.pidfd_queue[pos] == -1) {
+            return pos;
+        }
+    }
+    return -1;
+}
+
 static bool reaper_kill(int pidfd, int *kill_result) {
     if (pidfd == -1) {
         return false;
@@ -2098,17 +2113,18 @@ static bool reaper_kill(int pidfd, int *kill_result) {
     }
 
     pthread_mutex_lock(&reaper.req_mutex);
-    bool busy = (reaper.pidfd != -1);
-    if (!busy) {
+    int free_pos = get_free_queue_pos();
+    if (free_pos != -1) {
         // Duplicate pidfd because the original one is used for waiting
-        reaper.pidfd = dup(pidfd);
+        reaper.pidfd_queue[free_pos] = dup(pidfd);
+        reaper.active_pos = free_pos;
         atomic_store(&reaper.kill_result_ready, 0);
         // Wake up reaper thread
         pthread_cond_signal(&reaper.req_cond);
     }
     pthread_mutex_unlock(&reaper.req_mutex);
 
-    if (busy)
+    if (free_pos == -1)
         return false;
 
     // Timeout is used in case we miss the signal from reaper_main.
@@ -2135,23 +2151,32 @@ static bool reaper_kill(int pidfd, int *kill_result) {
     return true;
 }
 
-static int get_reap_target() {
+static int get_reap_target(int& target_pos) {
+    int pidfd;
+
     pthread_mutex_lock(&reaper.req_mutex);
-    reaper.pidfd = -1;
-    while (reaper.pidfd < 0) {
+    if (target_pos != -1) {
+        // free previously used queue entry
+        reaper.pidfd_queue[target_pos] = -1;
+    }
+    while (reaper.active_pos < 0) {
         pthread_cond_wait(&reaper.req_cond, &reaper.req_mutex);
     }
+    target_pos = reaper.active_pos;
+    reaper.active_pos = -1;
+    pidfd = reaper.pidfd_queue[target_pos];
     pthread_mutex_unlock(&reaper.req_mutex);
 
-    return reaper.pidfd;
+    return pidfd;
 }
 
 static void* reaper_main(void*) {
     struct timespec start_tm, end_tm;
     int pidfd, res;
+    int target_pos = -1;
 
     for (;;) {
-        pidfd = get_reap_target();
+        pidfd = get_reap_target(target_pos);
         if (pidfd < 0) {
             continue;
         }
@@ -3669,11 +3694,31 @@ int main(int argc, char **argv) {
                 ALOGW("set SCHED_FIFO failed %s", strerror(errno));
             }
         }
-        pthread_t reaper_thread;
         if (is_reaping_supported()) {
-            int err_no = pthread_create(&reaper_thread, NULL, reaper_main, NULL);
-            if (err_no) {
-                ALOGE("Failed to create the reaper thread %s", strerror(err_no));
+            int reaper_thread_cnt = 0;
+
+            cpu_count = get_nprocs();
+            reaper.thread_pool =
+                    static_cast<pthread_t*>(malloc(sizeof(pthread_t) * cpu_count));
+            for (int i = 0; i < cpu_count; i++) {
+                int err_no = pthread_create(&reaper.thread_pool[i], NULL, reaper_main, NULL);
+                if (err_no) {
+                    ALOGE("Failed to create the reaper thread %s", strerror(err_no));
+                } else {
+                    reaper_thread_cnt++;
+                }
+            }
+            if (reaper_thread_cnt) {
+                ALOGI("Number of reaper threads in the pool: %d", reaper_thread_cnt);
+
+                reaper.pidfd_queue_size = reaper_thread_cnt;
+                reaper.pidfd_queue =
+                        static_cast<int*>(malloc(sizeof(int) * reaper.pidfd_queue_size));
+                for (int pos = 0; pos < reaper.pidfd_queue_size; pos++) {
+                    reaper.pidfd_queue[pos] = -1;
+                }
+            } else {
+                ALOGE("No reaper threads in the pool");
             }
         }
 
