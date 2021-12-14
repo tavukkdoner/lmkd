@@ -380,6 +380,30 @@
       },
       "revId": "90c136687801614bfb454f75952446bbb975d5cc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15409cc6_7dfb1ec4",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3700,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-14T23:40:36Z",
+      "side": 1,
+      "message": "I was planning to reuse the same call you had in kill_one_process for the victim process:\n\nset_process_group_and_prio(tid, {\"CPUSET_SP_FOREGROUND\", \"SCHED_SP_FOREGROUND\"}, ANDROID_PRIORITY_HIGHEST)\n\nIs that the best option to ensure quick memory release?",
+      "parentUuid": "a618bacc_1e4c0bc5",
+      "range": {
+        "startLine": 3700,
+        "startChar": 12,
+        "endLine": 3700,
+        "endChar": 21
+      },
+      "revId": "90c136687801614bfb454f75952446bbb975d5cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
