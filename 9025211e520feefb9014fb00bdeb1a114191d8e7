@@ -115,6 +115,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8d64dbe1_d25bd95d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2052,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-12-14T23:46:29Z",
+      "side": 1,
+      "message": "we already linked to those libraries, so probably not a big jump. What I can tell is if we have plan to port this back to kernel, then make it more C like is probably beneficial for that potential.",
+      "parentUuid": "8e7237cc_42724b1d",
+      "range": {
+        "startLine": 2052,
+        "startChar": 4,
+        "endLine": 2052,
+        "endChar": 19
+      },
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3041b468_1d2cde81",
         "filename": "lmkd.cpp",
         "patchSetId": 4
@@ -455,6 +479,30 @@
       "side": 1,
       "message": "I think we need a separate indicator since it\u0027s a different failure condition.\nIn the next patch this case handled naturally. If all threads in the pool fail to create the pool size will be 0 and the reaper_kill() will return false. Something similar is needed here. I\u0027ll fix that. Thanks!",
       "parentUuid": "c8bee84d_70d41055",
+      "range": {
+        "startLine": 3675,
+        "startChar": 12,
+        "endLine": 3677,
+        "endChar": 13
+      },
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4ae1e3f_2eca206e",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3677,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-12-14T23:46:29Z",
+      "side": 1,
+      "message": "sgtm, as long as we handle the case.",
+      "parentUuid": "015c705c_9abd3277",
       "range": {
         "startLine": 3675,
         "startChar": 12,
