@@ -74,6 +74,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "621a0287_6eeddcba",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2116,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-14T22:00:09Z",
+      "side": 1,
+      "message": "Ok, I see what you mean.\nIn that case I think I don\u0027t even need a queue here because main thread submits processes for reaping one-by-one. I just need an additional counter to keep track of how many reaper threads are active to handle the case when all threads are busy (currently get_free_queue_pos() will return -1 in this case). So, previous reaper.pidfd should be just fine here.",
+      "parentUuid": "d25a41f5_40560b08",
+      "range": {
+        "startLine": 2116,
+        "startChar": 19,
+        "endLine": 2116,
+        "endChar": 37
+      },
+      "revId": "90c136687801614bfb454f75952446bbb975d5cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "26c6ff54_6f1e7c02",
         "filename": "lmkd.cpp",
         "patchSetId": 1
@@ -145,6 +169,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d078da63_dfbd30df",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2154,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-14T22:00:09Z",
+      "side": 1,
+      "message": "Previously used reaper.pidfd should be enough here. No queue is needed since main thread submits one job at a time and waits for the reaper thread to pick it up before proceeding.",
+      "parentUuid": "1d2cbec8_a8736cec",
+      "range": {
+        "startLine": 2154,
+        "startChar": 11,
+        "endLine": 2154,
+        "endChar": 26
+      },
+      "revId": "90c136687801614bfb454f75952446bbb975d5cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2c30fab2_003f7542",
         "filename": "lmkd.cpp",
         "patchSetId": 1
@@ -204,6 +252,30 @@
       "side": 1,
       "message": "Still, we need to be careful on little cores. If we put the target on little core, it would be slow which is not intended from expedite kill.",
       "parentUuid": "03f4ddef_1de9cf1f",
+      "range": {
+        "startLine": 3700,
+        "startChar": 12,
+        "endLine": 3700,
+        "endChar": 21
+      },
+      "revId": "90c136687801614bfb454f75952446bbb975d5cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c0087b3_74f5af2d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3700,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-14T22:00:09Z",
+      "side": 1,
+      "message": "I think CPUSET_SP_FOREGROUND should prevent the threads from running on little cores. Am I missing something?",
+      "parentUuid": "5df8eaf7_eca7ea1d",
       "range": {
         "startLine": 3700,
         "startChar": 12,
