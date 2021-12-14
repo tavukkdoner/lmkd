@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b2b9c09_2d4b06dd",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2116,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-14T18:21:45Z",
+      "side": 1,
+      "message": "Can\u0027t you use some dynamic data structure here the language supports instead of raw static array?\n\nSo the producer just add new victim into the queue and that\u0027s all.",
+      "range": {
+        "startLine": 2116,
+        "startChar": 19,
+        "endLine": 2116,
+        "endChar": 37
+      },
+      "revId": "90c136687801614bfb454f75952446bbb975d5cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "26c6ff54_6f1e7c02",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2154,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-14T18:21:45Z",
+      "side": 1,
+      "message": "Here, each thread just get the victim from the queue in FIFO order.\nOtherwise, just sleep if there is no target in the queue.",
+      "range": {
+        "startLine": 2154,
+        "startChar": 11,
+        "endLine": 2154,
+        "endChar": 26
+      },
+      "revId": "90c136687801614bfb454f75952446bbb975d5cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c30fab2_003f7542",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3700,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-14T18:21:45Z",
+      "side": 1,
+      "message": "What happens if cores has many little cores?\n\nWhat we want to achieve here is fast killing but defer to little cores wouldn\u0027t be opposite.\n\nOther questions: the threads LMKD create are also high-priority inherited thread?",
+      "range": {
+        "startLine": 3700,
+        "startChar": 12,
+        "endLine": 3700,
+        "endChar": 21
+      },
+      "revId": "90c136687801614bfb454f75952446bbb975d5cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
