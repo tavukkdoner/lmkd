@@ -67,6 +67,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fa395c4f_8c386008",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2118,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-12-14T20:43:49Z",
+      "side": 1,
+      "message": "wall clock is subject to change, this has lead to device frozen in the past,\n\nWe have pthread_cond_clockwait which supports CLOCK_MONOTONIC\n\nalso see https://reviews.llvm.org/rG5e37d7f9ff257ec62d733d3d94b11f03e0fe51ca for using the new API in C++",
+      "range": {
+        "startLine": 2118,
+        "startChar": 18,
+        "endLine": 2118,
+        "endChar": 32
+      },
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4e695db4_02d44f5c",
         "filename": "lmkd.cpp",
         "patchSetId": 4
