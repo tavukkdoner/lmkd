@@ -356,6 +356,30 @@
       },
       "revId": "90c136687801614bfb454f75952446bbb975d5cc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a618bacc_1e4c0bc5",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3700,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-12-14T23:38:36Z",
+      "side": 1,
+      "message": "You probably want SCHED_SP_FOREGROUND to have prefer_idle or latency_sensitive, why we need those on big cores?",
+      "parentUuid": "c77619a6_5d1481cd",
+      "range": {
+        "startLine": 3700,
+        "startChar": 12,
+        "endLine": 3700,
+        "endChar": 21
+      },
+      "revId": "90c136687801614bfb454f75952446bbb975d5cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
