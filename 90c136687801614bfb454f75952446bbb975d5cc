@@ -217,6 +217,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "457af910_1ceaa817",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2154,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-14T22:22:59Z",
+      "side": 1,
+      "message": "What prevents the main thread from just requesting and continuing is the fact that main thread should know whether the kill was successful or not before proceeding (did pidfd_send_signal() succeed or not). That\u0027s why we use reaper.kill_result to return that information back to the main thread. If the kill fails, main thread should immediately try to find another kill target and kill again.",
+      "parentUuid": "04e45b13_1b747a92",
+      "range": {
+        "startLine": 2154,
+        "startChar": 11,
+        "endLine": 2154,
+        "endChar": 26
+      },
+      "revId": "90c136687801614bfb454f75952446bbb975d5cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2c30fab2_003f7542",
         "filename": "lmkd.cpp",
         "patchSetId": 1
