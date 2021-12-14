@@ -1,0 +1,28 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6d758699_6e57ec85",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2329,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-12-14T23:48:58Z",
+      "side": 1,
+      "message": "similarly for s/pthread_cond_timedwait/pthread_cond_clockwait",
+      "parentUuid": "2b4a5d7c_d981d44c",
+      "range": {
+        "startLine": 2329,
+        "startChar": 0,
+        "endLine": 2329,
+        "endChar": 101
+      },
+      "revId": "74e518d299db6e10b1a633235c389a1ba5779f67",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
