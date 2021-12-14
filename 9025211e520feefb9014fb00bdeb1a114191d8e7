@@ -18,6 +18,29 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5466a418_82fdd100",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2052,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-12-14T20:48:51Z",
+      "side": 1,
+      "message": "any reason we don\u0027t use condition_variable from c++? any obvious additional overhead?",
+      "range": {
+        "startLine": 2052,
+        "startChar": 4,
+        "endLine": 2052,
+        "endChar": 19
+      },
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3041b468_1d2cde81",
@@ -319,6 +342,29 @@
       "side": 1,
       "message": "How about we use a goto:\n\nif (res) {\n  ALOGE(\"pidfd_send_signal %d failed: %s\", pidfd, strerror(errno));\n  goto skip;\n}\nif (process_mrelease()) {\n  ALOGE(\"process_mrelease %d failed: %s\", pidfd, strerror(errno));\n  goto skip;\n}\n...\nskip:\n  close(pidfd);\n  \n?",
       "parentUuid": "33a72e99_fb2779f4",
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c8bee84d_70d41055",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3677,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-12-14T20:48:51Z",
+      "side": 1,
+      "message": "in the error case, should we  set vreap_support \u003d UNSUPPORTED; ?",
+      "range": {
+        "startLine": 3675,
+        "startChar": 12,
+        "endLine": 3677,
+        "endChar": 13
+      },
       "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
