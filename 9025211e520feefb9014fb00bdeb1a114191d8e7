@@ -1,0 +1,147 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a23e738f_4d627eb8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-14T18:10:26Z",
+      "side": 1,
+      "message": "I still need to review next patch so I don\u0027t know how you refactor the producer/consumer model in next patch. I think this patch wouldn\u0027t be needed if you change the model into pool in next patch. Just land producer/consumer model here with a thread.\n\nActually, I expected you coded like this.\n\nmain thread:\nvictim \u003d get_victim_process;\nadd_victim_to_killpool(victim);\n\nkill thread:\nwhile ()\n{\n   victim \u003d get_victim_process();\n   kill_victim and process_mrelease   \n}\n\nThe kill thread is just one in this patch and you may add threadpool in next patch.\n\n",
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3041b468_1d2cde81",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2102,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-14T18:10:26Z",
+      "side": 1,
+      "message": "Please consider something like this\n\npthread_mutex_lock(\u0026reaper.req_mutex)\nif ((reaper.pidfd !\u003d -1)) {\n  pthread_mutex_unlock(\u0026reaper.req_mutex);\n  return false;\n}\n\nreaper.pidfd \u003d dup(pidfd);\n..\n..\n\nearly bailout makes code more readable, IMHO.",
+      "range": {
+        "startLine": 2102,
+        "startChar": 4,
+        "endLine": 2102,
+        "endChar": 16
+      },
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e695db4_02d44f5c",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2141,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-14T18:10:26Z",
+      "side": 1,
+      "message": "Why do you need this check with while loop? If so, please comment on it.",
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "972fffe3_2190dd8e",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2154,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-14T18:10:26Z",
+      "side": 1,
+      "message": "I think get_reap_target doesn\u0027t need to be a function. Just inline them here which makes code more clear to read.",
+      "range": {
+        "startLine": 2154,
+        "startChar": 16,
+        "endLine": 2154,
+        "endChar": 31
+      },
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4e6271c_eec96556",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2155,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-14T18:10:26Z",
+      "side": 1,
+      "message": "get_reap_target loops forever if pidfd is minus value so I think we don\u0027t have chance to get here.",
+      "range": {
+        "startLine": 2155,
+        "startChar": 12,
+        "endLine": 2155,
+        "endChar": 17
+      },
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "96571e55_08574b9d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2168,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-14T18:10:26Z",
+      "side": 1,
+      "message": "I think it\u0027s overkill since I don\u0027t see the lock is highly contended.",
+      "range": {
+        "startLine": 2167,
+        "startChar": 0,
+        "endLine": 2168,
+        "endChar": 85
+      },
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33a72e99_fb2779f4",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2171,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-14T18:10:26Z",
+      "side": 1,
+      "message": "let\u0027s cut down nested if conditions. The early cut off condition among several conditions makes code easier to understand since we don\u0027t need to consider several options as we are going through the code.\n\nIf you are concerning about the duplicated close function in each condition, we could move it to first line in the while loop with introducing a boolean.\n\nif (res) {\n  ALOGE(\"pidfd_send_signal %d failed: %s\", pidfd, strerror(errno));\n  close(pidfd);\n  continue;\n}\n\nif (process_mrelease()) {\n  ALOGE(\"process_mrelease %d failed: %s\", pidfd, strerror(errno));\n  close(pidfd);\n  continue;\n}\n\n..",
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
