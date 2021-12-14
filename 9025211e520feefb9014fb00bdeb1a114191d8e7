@@ -67,6 +67,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "506c06c3_b95db750",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2052,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-14T21:10:09Z",
+      "side": 1,
+      "message": "My view is I agree lmkd as much as not \"blockable\" but don\u0027t agree keep lmkd as small as possible, esp, if you concerned about c++ classes.\nRather than that, I vote code more clear/clean if we achieve it from c++ concepts/libraries.",
+      "parentUuid": "5da54638_61b2f895",
+      "range": {
+        "startLine": 2052,
+        "startChar": 4,
+        "endLine": 2052,
+        "endChar": 19
+      },
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3041b468_1d2cde81",
         "filename": "lmkd.cpp",
         "patchSetId": 4
