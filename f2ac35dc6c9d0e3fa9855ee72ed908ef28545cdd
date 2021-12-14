@@ -320,6 +320,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7a77667a_572f8f89",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2066,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-14T19:32:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4d875ad5_84b395df",
+      "range": {
+        "startLine": 2066,
+        "startChar": 8,
+        "endLine": 2066,
+        "endChar": 16
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b6e1ee95_f474dd79",
@@ -547,6 +571,30 @@
       "side": 1,
       "message": "My race was different context and now I understood what you meant. \nActually, I prefer early bailing out in that case even though we need to add unlock  code two places.\n\nmutex_lock\nbusy \u003d ...\nif (busy) {\n  mutex_unlock\n  return false;\n}\nmain logic:\nmutex_unlock\n\nJust nitpick. up to you.",
       "parentUuid": "b94fd835_b3f3f39f",
+      "range": {
+        "startLine": 2108,
+        "startChar": 0,
+        "endLine": 2109,
+        "endChar": 21
+      },
+      "revId": "f2ac35dc6c9d0e3fa9855ee72ed908ef28545cdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1aa3b804_c3f1dd2d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2109,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-14T19:32:29Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c5210305_e5d37a4c",
       "range": {
         "startLine": 2108,
         "startChar": 0,

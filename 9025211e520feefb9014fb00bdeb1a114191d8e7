@@ -43,6 +43,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "23ee157c_8af90899",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2102,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-14T19:32:29Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "3041b468_1d2cde81",
+      "range": {
+        "startLine": 2102,
+        "startChar": 4,
+        "endLine": 2102,
+        "endChar": 16
+      },
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4e695db4_02d44f5c",
         "filename": "lmkd.cpp",
         "patchSetId": 4
@@ -54,6 +78,24 @@
       "writtenOn": "2021-12-14T18:10:26Z",
       "side": 1,
       "message": "Why do you need this check with while loop? If so, please comment on it.",
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "823ce5d4_6ba38f3a",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2141,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-14T19:32:29Z",
+      "side": 1,
+      "message": "This is a standard way of using pthread_cond_wait() to handle spurious wakeups (see: https://pubs.opengroup.org/onlinepubs/009604599/functions/pthread_cond_timedwait.html). Don\u0027t think we need a comment because the pattern is very standard.",
+      "parentUuid": "4e695db4_02d44f5c",
       "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -81,6 +123,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba3d5332_7de87e97",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2154,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-14T19:32:29Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "972fffe3_2190dd8e",
+      "range": {
+        "startLine": 2154,
+        "startChar": 16,
+        "endLine": 2154,
+        "endChar": 31
+      },
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e4e6271c_eec96556",
@@ -94,6 +160,30 @@
       "writtenOn": "2021-12-14T18:10:26Z",
       "side": 1,
       "message": "get_reap_target loops forever if pidfd is minus value so I think we don\u0027t have chance to get here.",
+      "range": {
+        "startLine": 2155,
+        "startChar": 12,
+        "endLine": 2155,
+        "endChar": 17
+      },
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f59f5056_92b4d75f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2155,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-14T19:32:29Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e4e6271c_eec96556",
       "range": {
         "startLine": 2155,
         "startChar": 12,
@@ -129,6 +219,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1ff463bf_0ec59a6c",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2168,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-14T19:32:29Z",
+      "side": 1,
+      "message": "It does make a difference in how many times process_mrelease can catch the process before it goes away when I was testing, so I prefer to keep it this way.",
+      "parentUuid": "96571e55_08574b9d",
+      "range": {
+        "startLine": 2167,
+        "startChar": 0,
+        "endLine": 2168,
+        "endChar": 85
+      },
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "33a72e99_fb2779f4",
         "filename": "lmkd.cpp",
         "patchSetId": 4
@@ -140,6 +254,24 @@
       "writtenOn": "2021-12-14T18:10:26Z",
       "side": 1,
       "message": "let\u0027s cut down nested if conditions. The early cut off condition among several conditions makes code easier to understand since we don\u0027t need to consider several options as we are going through the code.\n\nIf you are concerning about the duplicated close function in each condition, we could move it to first line in the while loop with introducing a boolean.\n\nif (res) {\n  ALOGE(\"pidfd_send_signal %d failed: %s\", pidfd, strerror(errno));\n  close(pidfd);\n  continue;\n}\n\nif (process_mrelease()) {\n  ALOGE(\"process_mrelease %d failed: %s\", pidfd, strerror(errno));\n  close(pidfd);\n  continue;\n}\n\n..",
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a56fa6ba_2ab7d6dd",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2171,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-14T19:32:29Z",
+      "side": 1,
+      "message": "How about we use a goto:\n\nif (res) {\n  ALOGE(\"pidfd_send_signal %d failed: %s\", pidfd, strerror(errno));\n  goto skip;\n}\nif (process_mrelease()) {\n  ALOGE(\"process_mrelease %d failed: %s\", pidfd, strerror(errno));\n  goto skip;\n}\n...\nskip:\n  close(pidfd);\n  \n?",
+      "parentUuid": "33a72e99_fb2779f4",
       "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
