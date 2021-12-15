@@ -404,6 +404,30 @@
       },
       "revId": "90c136687801614bfb454f75952446bbb975d5cc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1bf5dc5a_74feb059",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3700,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-12-15T00:12:53Z",
+      "side": 1,
+      "message": "\u003e I was planning to reuse the same call you had in kill_one_process for the victim process:\n\u003e \n\u003e set_process_group_and_prio(tid, {\"CPUSET_SP_FOREGROUND\", \"SCHED_SP_FOREGROUND\"}, ANDROID_PRIORITY_HIGHEST)\n\u003e \n\u003e Is that the best option to ensure quick memory release?\n\n\n\nnormally we kill background apps so its cpuset is limited, so my change is to remove the restriction to get a better latency.\n\nCPUSET_SP_TOP_APP is probably faster and makes sense given you have thread number matching with core number. The concern however, is contention with current top-app. \n\nSCHED_SP_FOREGROUND is also needed to spread task to idle cores aggressively.",
+      "parentUuid": "15409cc6_7dfb1ec4",
+      "range": {
+        "startLine": 3700,
+        "startChar": 12,
+        "endLine": 3700,
+        "endChar": 21
+      },
+      "revId": "90c136687801614bfb454f75952446bbb975d5cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
