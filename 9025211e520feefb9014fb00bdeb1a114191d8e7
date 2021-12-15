@@ -139,6 +139,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d8c8047c_c410edb6",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2052,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-15T00:23:01Z",
+      "side": 1,
+      "message": "For me, either way is fine if we could improve code more clear.",
+      "parentUuid": "8d64dbe1_d25bd95d",
+      "range": {
+        "startLine": 2052,
+        "startChar": 4,
+        "endLine": 2052,
+        "endChar": 19
+      },
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3041b468_1d2cde81",
         "filename": "lmkd.cpp",
         "patchSetId": 4
