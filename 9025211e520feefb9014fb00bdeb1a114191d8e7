@@ -468,6 +468,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fc2dc81e_4672bd8a",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2171,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-15T16:45:46Z",
+      "side": 1,
+      "message": "Yeah, I prefer goto style as kernel has proved how it\u0027s simple/efficient for error handling. I was just hesitant for android userspace c++ programming style doesn\u0027t allow it. If it\u0027s fine, yeah, I vote +1.",
+      "parentUuid": "a56fa6ba_2ab7d6dd",
+      "revId": "9025211e520feefb9014fb00bdeb1a114191d8e7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c8bee84d_70d41055",
         "filename": "lmkd.cpp",
         "patchSetId": 4
