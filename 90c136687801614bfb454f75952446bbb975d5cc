@@ -452,6 +452,30 @@
       },
       "revId": "90c136687801614bfb454f75952446bbb975d5cc",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7764c0a4_65b77aa2",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3700,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2021-12-15T05:32:04Z",
+      "side": 1,
+      "message": "actually those threads are RT right? so setting ANDROID_PRIORITY_HIGHEST doens\u0027t make sense here, and also the sched_policy may not even needed.",
+      "parentUuid": "2bcff2b1_f02fc9f0",
+      "range": {
+        "startLine": 3700,
+        "startChar": 12,
+        "endLine": 3700,
+        "endChar": 21
+      },
+      "revId": "90c136687801614bfb454f75952446bbb975d5cc",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
