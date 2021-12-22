@@ -46,6 +46,30 @@
       },
       "revId": "0f437dbf47da9f7fe7dba38cce0ae88d44598cf3",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9755d655_ca02c698",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2252,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-22T17:40:42Z",
+      "side": 1,
+      "message": "I should probably add the explanation I provided to Kalesh\u0027s question as a comment here.",
+      "parentUuid": "0d6ced64_ff73f394",
+      "range": {
+        "startLine": 2252,
+        "startChar": 8,
+        "endLine": 2252,
+        "endChar": 34
+      },
+      "revId": "0f437dbf47da9f7fe7dba38cce0ae88d44598cf3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

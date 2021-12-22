@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "24fa8850_dfc46ef3",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2234,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-22T17:40:42Z",
+      "side": 1,
+      "message": "Correct. stop_wait_for_proc_kill(false) will be called from kill_fail_handler() if kill failed and stop_wait_for_proc_kill(true) will be called from kill_done_handler() if kill succeeded and when process is dead. One of these events will happen.",
+      "parentUuid": "078cc1fe_ea52d5f4",
+      "revId": "2bd7f01fe5acf0e179213b787fb1e0733940b02d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3d2e61f8_7d765439",
         "filename": "lmkd.cpp",
         "patchSetId": 4
@@ -43,6 +61,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2a97f9ae_b4840713",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3184,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-22T17:40:42Z",
+      "side": 1,
+      "message": "That\u0027s what I had before but then we would have to teach Reaper about `struct epoll_event`, `static struct event_handler_info`, `kill_fail_handler` and other related mechanisms. I thought this way it would be cleaner.",
+      "parentUuid": "3d2e61f8_7d765439",
+      "range": {
+        "startLine": 3184,
+        "startChar": 0,
+        "endLine": 3184,
+        "endChar": 27
+      },
+      "revId": "2bd7f01fe5acf0e179213b787fb1e0733940b02d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "48bcef1f_14fd69aa",
         "filename": "reaper.cpp",
         "patchSetId": 4
@@ -54,6 +96,30 @@
       "writtenOn": "2021-12-22T00:41:14Z",
       "side": 1,
       "message": "nit: {}",
+      "range": {
+        "startLine": 91,
+        "startChar": 90,
+        "endLine": 92,
+        "endChar": 1
+      },
+      "revId": "2bd7f01fe5acf0e179213b787fb1e0733940b02d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e9bf6bd7_957d70ec",
+        "filename": "reaper.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-22T17:40:42Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "48bcef1f_14fd69aa",
       "range": {
         "startLine": 91,
         "startChar": 90,
