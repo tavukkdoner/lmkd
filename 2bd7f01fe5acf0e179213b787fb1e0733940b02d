@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "078cc1fe_ea52d5f4",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2234,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2021-12-22T00:41:14Z",
+      "side": 1,
+      "message": "stop_wait_for_proc_kill happens when there is an event on comm_fd from the reaper threads (false) or when there is an event on pidfd (true)?",
+      "revId": "2bd7f01fe5acf0e179213b787fb1e0733940b02d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d2e61f8_7d765439",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3184,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2021-12-22T00:41:14Z",
+      "side": 1,
+      "message": "Can we move to reaper class?\n\nif (reaper.init(kill_failed_hinfo))\n   maxevents++;",
+      "range": {
+        "startLine": 3184,
+        "startChar": 0,
+        "endLine": 3184,
+        "endChar": 27
+      },
+      "revId": "2bd7f01fe5acf0e179213b787fb1e0733940b02d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "48bcef1f_14fd69aa",
+        "filename": "reaper.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2021-12-22T00:41:14Z",
+      "side": 1,
+      "message": "nit: {}",
+      "range": {
+        "startLine": 91,
+        "startChar": 90,
+        "endLine": 92,
+        "endChar": 1
+      },
+      "revId": "2bd7f01fe5acf0e179213b787fb1e0733940b02d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
