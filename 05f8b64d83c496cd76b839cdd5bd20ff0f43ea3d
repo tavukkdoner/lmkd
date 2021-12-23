@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c79795b3_bf8d61ef",
+        "filename": "watchdog.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-23T19:03:09Z",
+      "side": 1,
+      "message": "It will not return immediately but rather wait for another timeout duration and kill again until lmkd unblocks. That\u0027s what the comment above is trying to describe. If it\u0027s too cryptic, maybe I need to change it?",
+      "parentUuid": "6d0c65e9_4bf1210f",
+      "range": {
+        "startLine": 38,
+        "startChar": 22,
+        "endLine": 38,
+        "endChar": 29
+      },
+      "revId": "05f8b64d83c496cd76b839cdd5bd20ff0f43ea3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c00c3d31_2a83f016",
         "filename": "watchdog.cpp",
         "patchSetId": 7
@@ -37,6 +61,30 @@
       "writtenOn": "2021-12-23T18:21:27Z",
       "side": 1,
       "message": "nit: Can drop the while loop:\n\ncond_.wait(lock, [this] { return set_cnt !\u003d reset_cnt_; });",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 5
+      },
+      "revId": "05f8b64d83c496cd76b839cdd5bd20ff0f43ea3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4fc0470d_af0cb76f",
+        "filename": "watchdog.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-23T19:03:09Z",
+      "side": 1,
+      "message": "I had this with predicates but noticed that the code size grows by several KBs when I do that vs a while loop. Since the code is pretty simple I decided to use the while loop.",
+      "parentUuid": "c00c3d31_2a83f016",
       "range": {
         "startLine": 69,
         "startChar": 0,
@@ -72,6 +120,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "197f2a1b_cf43115c",
+        "filename": "watchdog.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-23T19:03:09Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "92aec8dd_7aeed5cd",
+      "range": {
+        "startLine": 76,
+        "startChar": 26,
+        "endLine": 76,
+        "endChar": 32
+      },
+      "revId": "05f8b64d83c496cd76b839cdd5bd20ff0f43ea3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "cbb91e58_4d937a65",
         "filename": "watchdog.cpp",
         "patchSetId": 7
@@ -95,6 +167,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "94a53895_0d9ea762",
+        "filename": "watchdog.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-23T19:03:09Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "cbb91e58_4d937a65",
+      "range": {
+        "startLine": 79,
+        "startChar": 33,
+        "endLine": 79,
+        "endChar": 39
+      },
+      "revId": "05f8b64d83c496cd76b839cdd5bd20ff0f43ea3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9a7f1a98_eb9052d5",
         "filename": "watchdog.cpp",
         "patchSetId": 7
@@ -106,6 +202,30 @@
       "writtenOn": "2021-12-23T18:21:27Z",
       "side": 1,
       "message": "We can simplify with cpp11 syntax:\n\nstd::unique_lock\u003cstd::mutex\u003e lock(mutex_);\n\nreturn cond_.wait_for(lock, std::chrono::seconds(timeout_), [this] { return reset_cnt_ !\u003d reset_cnt; });",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 16
+      },
+      "revId": "05f8b64d83c496cd76b839cdd5bd20ff0f43ea3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce87150b_cc9c042f",
+        "filename": "watchdog.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-23T19:03:09Z",
+      "side": 1,
+      "message": "ditto",
+      "parentUuid": "9a7f1a98_eb9052d5",
       "range": {
         "startLine": 76,
         "startChar": 0,
