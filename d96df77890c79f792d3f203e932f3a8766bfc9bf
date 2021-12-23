@@ -22,6 +22,30 @@
       },
       "revId": "d96df77890c79f792d3f203e932f3a8766bfc9bf",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60a3f6f6_f8d239e2",
+        "filename": "reaper.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-23T18:56:09Z",
+      "side": 1,
+      "message": "This is the standard pattern for signalling to avoid races. See discussion in https://stackoverflow.com/questions/4544234/calling-pthread-cond-signal-without-locking-mutex for explanation.",
+      "parentUuid": "dbde7d8f_a3eea5cb",
+      "range": {
+        "startLine": 177,
+        "startChar": 4,
+        "endLine": 177,
+        "endChar": 20
+      },
+      "revId": "d96df77890c79f792d3f203e932f3a8766bfc9bf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
