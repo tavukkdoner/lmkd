@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "72b716a5_fd793422",
+        "filename": "watchdog.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-23T20:36:15Z",
+      "side": 1,
+      "message": "Correct.",
+      "parentUuid": "a205ac0a_eb0a3277",
+      "range": {
+        "startLine": 38,
+        "startChar": 22,
+        "endLine": 38,
+        "endChar": 29
+      },
+      "revId": "05f8b64d83c496cd76b839cdd5bd20ff0f43ea3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c00c3d31_2a83f016",
@@ -190,6 +214,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0ec7487_2c65e05d",
+        "filename": "watchdog.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-23T20:36:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "197f2a1b_cf43115c",
+      "range": {
+        "startLine": 76,
+        "startChar": 26,
+        "endLine": 76,
+        "endChar": 32
+      },
+      "revId": "05f8b64d83c496cd76b839cdd5bd20ff0f43ea3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cbb91e58_4d937a65",
@@ -227,6 +275,30 @@
       "side": 1,
       "message": "Ack",
       "parentUuid": "cbb91e58_4d937a65",
+      "range": {
+        "startLine": 79,
+        "startChar": 33,
+        "endLine": 79,
+        "endChar": 39
+      },
+      "revId": "05f8b64d83c496cd76b839cdd5bd20ff0f43ea3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c11ddfe4_9384e2b7",
+        "filename": "watchdog.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-23T20:36:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "94a53895_0d9ea762",
       "range": {
         "startLine": 79,
         "startChar": 33,
