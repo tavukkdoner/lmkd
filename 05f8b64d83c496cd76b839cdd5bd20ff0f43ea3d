@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a205ac0a_eb0a3277",
+        "filename": "watchdog.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2021-12-23T19:58:20Z",
+      "side": 1,
+      "message": "Ack. So it is intended behavior we keep killing until the unblock happens.",
+      "parentUuid": "c79795b3_bf8d61ef",
+      "range": {
+        "startLine": 38,
+        "startChar": 22,
+        "endLine": 38,
+        "endChar": 29
+      },
+      "revId": "05f8b64d83c496cd76b839cdd5bd20ff0f43ea3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c00c3d31_2a83f016",
@@ -85,6 +109,30 @@
       "side": 1,
       "message": "I had this with predicates but noticed that the code size grows by several KBs when I do that vs a while loop. Since the code is pretty simple I decided to use the while loop.",
       "parentUuid": "c00c3d31_2a83f016",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 5
+      },
+      "revId": "05f8b64d83c496cd76b839cdd5bd20ff0f43ea3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5bf3a029_70d57d0a",
+        "filename": "watchdog.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2021-12-23T19:58:20Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4fc0470d_af0cb76f",
       "range": {
         "startLine": 69,
         "startChar": 0,
@@ -226,6 +274,30 @@
       "side": 1,
       "message": "ditto",
       "parentUuid": "9a7f1a98_eb9052d5",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 16
+      },
+      "revId": "05f8b64d83c496cd76b839cdd5bd20ff0f43ea3d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "762ed138_497e1e75",
+        "filename": "watchdog.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2021-12-23T19:58:20Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ce87150b_cc9c042f",
       "range": {
         "startLine": 76,
         "startChar": 0,
