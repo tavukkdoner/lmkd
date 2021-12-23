@@ -36,6 +36,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c467abef_d86d8771",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2234,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2021-12-23T18:37:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "24fa8850_dfc46ef3",
+      "revId": "2bd7f01fe5acf0e179213b787fb1e0733940b02d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3d2e61f8_7d765439",
@@ -73,6 +91,30 @@
       "side": 1,
       "message": "That\u0027s what I had before but then we would have to teach Reaper about `struct epoll_event`, `static struct event_handler_info`, `kill_fail_handler` and other related mechanisms. I thought this way it would be cleaner.",
       "parentUuid": "3d2e61f8_7d765439",
+      "range": {
+        "startLine": 3184,
+        "startChar": 0,
+        "endLine": 3184,
+        "endChar": 27
+      },
+      "revId": "2bd7f01fe5acf0e179213b787fb1e0733940b02d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "825d16bf_1b0a2ad2",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3184,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2021-12-23T18:37:21Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "2a97f9ae_b4840713",
       "range": {
         "startLine": 3184,
         "startChar": 0,
