@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "31e456ad_41555326",
+        "filename": "reaper.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1584799
+      },
+      "writtenOn": "2021-12-28T23:59:08Z",
+      "side": 1,
+      "message": "Shouldn\u0027t you call mutex_.unlock() before returning?",
+      "range": {
+        "startLine": 167,
+        "startChar": 15,
+        "endLine": 167,
+        "endChar": 20
+      },
+      "revId": "d96df77890c79f792d3f203e932f3a8766bfc9bf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "dbde7d8f_a3eea5cb",
         "filename": "reaper.cpp",
         "patchSetId": 6
