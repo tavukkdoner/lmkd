@@ -67,6 +67,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b99b95a7_7eb1b46d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2126,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T23:34:59Z",
+      "side": 1,
+      "message": "What reaper is doing just returns pid and main thread just prints it as error. Since reaper could know when it fail, I think we can move the report logic into reaper and keep only stop_wait_for_proc_kill and poll_params-\u003eupdate here in main thread. With that, we could get rid of get_failed_kill_pid function.",
+      "parentUuid": "6fe0d87b_f4fb43fe",
+      "range": {
+        "startLine": 2123,
+        "startChar": 0,
+        "endLine": 2126,
+        "endChar": 5
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "dacb93b1_897af64c",
         "filename": "lmkd.cpp",
         "patchSetId": 8
@@ -102,6 +126,30 @@
       "side": 1,
       "message": "We need both because we need pidfd to issue the syscall and pid to report the process in the logs (we use pids in all reports).\nI can change to `struct target_proc` though see no real difference.",
       "parentUuid": "dacb93b1_897af64c",
+      "range": {
+        "startLine": 2214,
+        "startChar": 32,
+        "endLine": 2214,
+        "endChar": 42
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "543b96f4_e6d5d42d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2214,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T23:34:59Z",
+      "side": 1,
+      "message": "To me, it sounds like that struct target_proc represents them as single parameter which means fields in the structure are coupled each other, which is exactly the case here. With that, code reader doesn\u0027t need to figure it out how the request_kill function handles two parameters independently(after reading, Oh, they are just same lifetime, tightly coupled!!)",
+      "parentUuid": "625a39a3_179cad85",
       "range": {
         "startLine": 2214,
         "startChar": 32,
@@ -161,6 +209,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4a3d74ea_8c616d4a",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2219,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T23:34:59Z",
+      "side": 1,
+      "message": "I wanted to say that. IOW, renaming the reaper with killer. The killer abstract how it could kill. Sometimes, it could use signal, sometimes, process_mrelease. Main thread doesn\u0027t need to understand how the killer will do. So divide the role clear and decouple more and more.",
+      "parentUuid": "19236311_a31b0f3b",
+      "range": {
+        "startLine": 2219,
+        "startChar": 26,
+        "endLine": 2219,
+        "endChar": 43
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ef696e30_6af7e36a",
         "filename": "lmkd.cpp",
         "patchSetId": 8
@@ -196,6 +268,30 @@
       "side": 1,
       "message": "Yeah, if we are moving the whole killing logic into reaper then sure, that makes sense.",
       "parentUuid": "ef696e30_6af7e36a",
+      "range": {
+        "startLine": 2234,
+        "startChar": 0,
+        "endLine": 2239,
+        "endChar": 5
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "470084e9_760e8c6f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2239,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T23:34:59Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "616f7ad3_809d799f",
       "range": {
         "startLine": 2234,
         "startChar": 0,
@@ -243,6 +339,30 @@
       "side": 1,
       "message": "Kalesh had the same question. init_reaper sets up epoll controls which are not reaper-specific but rather details of how main thread waits for the events. If we move all that into reaper we would have to teach reaper about `struct epoll_event`, `struct event_handler_info`, etc. All these details have nothing to do with process reaping and would introduce more dependencies between reaper and structures main thread uses. So I decided to keep them separate from the reaper.",
       "parentUuid": "89a60b77_9d486c3e",
+      "range": {
+        "startLine": 3587,
+        "startChar": 12,
+        "endLine": 3587,
+        "endChar": 23
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "269764d5_892def45",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3587,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T23:34:59Z",
+      "side": 1,
+      "message": "If we need to communicate between main thread and reaper thread, what we need here is \n\nfd \u003d setup_channel() /* To communicate between main thread and reaper */\nreaper.init(fd)\n\nIOW, to me, the communication channel setup is main thread\u0027s role since it\u0027s client of reaper and creating number of threads and notification are reaper\u0027s role.",
+      "parentUuid": "d2eda7a7_e1177187",
       "range": {
         "startLine": 3587,
         "startChar": 12,
