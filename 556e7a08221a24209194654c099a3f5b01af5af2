@@ -1,0 +1,251 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1bf760c_1aa47356",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T19:51:55Z",
+      "side": 1,
+      "message": "I hope we can disconnect dependency main thread and reaper thread if possible.\nOnce it figures out, will review further. ",
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e49bf52b_e549b017",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2126,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T19:51:55Z",
+      "side": 1,
+      "message": "Why couldn\u0027t we move this into reaper?  Can\u0027t we disconnect dependency main thread and reaper thread?",
+      "range": {
+        "startLine": 2123,
+        "startChar": 0,
+        "endLine": 2126,
+        "endChar": 5
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dacb93b1_897af64c",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2214,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T19:51:55Z",
+      "side": 1,
+      "message": "If we decouple main thread and reaper thread, we don\u0027t need to pass two id for a single process, I guess. I might be wrong. If we really need both, let\u0027s abstract it to a single structure instead of two parameters. \n\nstruct target_proc {\n  int pid;\n  int pid_fd;\n}",
+      "range": {
+        "startLine": 2214,
+        "startChar": 32,
+        "endLine": 2214,
+        "endChar": 42
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "97c88649_71588e62",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2219,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T19:51:55Z",
+      "side": 1,
+      "message": "Why can\u0027t we handle this in request_kill function in reaper class? IOW, reaper could choose the strategy by itself.",
+      "range": {
+        "startLine": 2219,
+        "startChar": 26,
+        "endLine": 2219,
+        "endChar": 43
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef696e30_6af7e36a",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2239,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T19:51:55Z",
+      "side": 1,
+      "message": "It also can move to reaper so if reaper select pidfd_send_signal approach, it can change target\u0027s priority, too.",
+      "range": {
+        "startLine": 2234,
+        "startChar": 0,
+        "endLine": 2239,
+        "endChar": 5
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89a60b77_9d486c3e",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3587,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T19:51:55Z",
+      "side": 1,
+      "message": "How about reaper.init()?\n\nIOW, we can hide all init step in reaper class.",
+      "range": {
+        "startLine": 3587,
+        "startChar": 12,
+        "endLine": 3587,
+        "endChar": 23
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a336f3d2_9dc96ef1",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3589,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T19:51:55Z",
+      "side": 1,
+      "message": "reaper.reaper is redundant.\n\nHow about reaper.thread_count()?",
+      "range": {
+        "startLine": 3589,
+        "startChar": 23,
+        "endLine": 3589,
+        "endChar": 40
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5dbc92b6_ffb36d91",
+        "filename": "reaper.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T19:51:55Z",
+      "side": 1,
+      "message": "How about \"target_proc\"?",
+      "range": {
+        "startLine": 53,
+        "startChar": 19,
+        "endLine": 53,
+        "endChar": 30
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c3098594_9b78c540",
+        "filename": "reaper.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T19:51:55Z",
+      "side": 1,
+      "message": "You can just use debug_logs_enabled_ instead of introducing a function.\n\nAnd how about debug_enabled_?",
+      "range": {
+        "startLine": 64,
+        "startChar": 20,
+        "endLine": 64,
+        "endChar": 38
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "75d6cb61_c28a060a",
+        "filename": "reaper.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T19:51:55Z",
+      "side": 1,
+      "message": "If you don\u0027t mind, let\u0027s use goto \n\ngoto close_pidfd;\n\n..\n..\nreaper-\u003erequest_complete();\nclose_pidfd:\n  close(proc.pidfd);",
+      "range": {
+        "startLine": 71,
+        "startChar": 12,
+        "endLine": 71,
+        "endChar": 29
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31070704_8ea55442",
+        "filename": "reaper.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2021-12-29T19:51:55Z",
+      "side": 1,
+      "message": "We are in Reaper class so prefix reaper is redundant. Let\u0027s use \"thread_count_\"\n\nPersonally, I prefer nr_threads, nr_cpus following kernel programming. Up to you.",
+      "range": {
+        "startLine": 135,
+        "startChar": 4,
+        "endLine": 135,
+        "endChar": 10
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
