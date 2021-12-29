@@ -43,6 +43,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6fe0d87b_f4fb43fe",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2126,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-29T21:59:48Z",
+      "side": 1,
+      "message": "I\u0027m unclear what you want to move into reaper?\nkill_fail_handler is the function which is called when reaper thread wants to report to the main thread that kill has failed. If we want to move this whole logic into reaper thread then we would have to introduce additional locking and teach reaper about main thread\u0027s internal structures are variables. stop_wait_for_proc_kill() operates on variables like last_kill_pid_or_fd and epollfd used by the main thread only. If you are suggesting to call it from the reaper thread then we would need to introduce additional locks here and provide reaper thread access to these variable. I think that would introduce more dependencies instead of reducing them.",
+      "parentUuid": "e49bf52b_e549b017",
+      "range": {
+        "startLine": 2123,
+        "startChar": 0,
+        "endLine": 2126,
+        "endChar": 5
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "dacb93b1_897af64c",
         "filename": "lmkd.cpp",
         "patchSetId": 8
@@ -54,6 +78,30 @@
       "writtenOn": "2021-12-29T19:51:55Z",
       "side": 1,
       "message": "If we decouple main thread and reaper thread, we don\u0027t need to pass two id for a single process, I guess. I might be wrong. If we really need both, let\u0027s abstract it to a single structure instead of two parameters. \n\nstruct target_proc {\n  int pid;\n  int pid_fd;\n}",
+      "range": {
+        "startLine": 2214,
+        "startChar": 32,
+        "endLine": 2214,
+        "endChar": 42
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "625a39a3_179cad85",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2214,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-29T21:59:48Z",
+      "side": 1,
+      "message": "We need both because we need pidfd to issue the syscall and pid to report the process in the logs (we use pids in all reports).\nI can change to `struct target_proc` though see no real difference.",
+      "parentUuid": "dacb93b1_897af64c",
       "range": {
         "startLine": 2214,
         "startChar": 32,
@@ -89,6 +137,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "19236311_a31b0f3b",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2219,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-29T21:59:48Z",
+      "side": 1,
+      "message": "We could, but then the reaper becomes more than a reaper. It becomes the actual killer which might do reaping as well. This is doable, not sure if it\u0027s really better though. I wanted to keep reaper for reaping only.",
+      "parentUuid": "97c88649_71588e62",
+      "range": {
+        "startLine": 2219,
+        "startChar": 26,
+        "endLine": 2219,
+        "endChar": 43
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ef696e30_6af7e36a",
         "filename": "lmkd.cpp",
         "patchSetId": 8
@@ -100,6 +172,30 @@
       "writtenOn": "2021-12-29T19:51:55Z",
       "side": 1,
       "message": "It also can move to reaper so if reaper select pidfd_send_signal approach, it can change target\u0027s priority, too.",
+      "range": {
+        "startLine": 2234,
+        "startChar": 0,
+        "endLine": 2239,
+        "endChar": 5
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "616f7ad3_809d799f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2239,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-29T21:59:48Z",
+      "side": 1,
+      "message": "Yeah, if we are moving the whole killing logic into reaper then sure, that makes sense.",
+      "parentUuid": "ef696e30_6af7e36a",
       "range": {
         "startLine": 2234,
         "startChar": 0,
@@ -135,6 +231,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d2eda7a7_e1177187",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3587,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-29T21:59:48Z",
+      "side": 1,
+      "message": "Kalesh had the same question. init_reaper sets up epoll controls which are not reaper-specific but rather details of how main thread waits for the events. If we move all that into reaper we would have to teach reaper about `struct epoll_event`, `struct event_handler_info`, etc. All these details have nothing to do with process reaping and would introduce more dependencies between reaper and structures main thread uses. So I decided to keep them separate from the reaper.",
+      "parentUuid": "89a60b77_9d486c3e",
+      "range": {
+        "startLine": 3587,
+        "startChar": 12,
+        "endLine": 3587,
+        "endChar": 23
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a336f3d2_9dc96ef1",
         "filename": "lmkd.cpp",
         "patchSetId": 8
@@ -146,6 +266,30 @@
       "writtenOn": "2021-12-29T19:51:55Z",
       "side": 1,
       "message": "reaper.reaper is redundant.\n\nHow about reaper.thread_count()?",
+      "range": {
+        "startLine": 3589,
+        "startChar": 23,
+        "endLine": 3589,
+        "endChar": 40
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0f3713b_24cd3d46",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3589,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-29T21:59:48Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "a336f3d2_9dc96ef1",
       "range": {
         "startLine": 3589,
         "startChar": 23,
