@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5996dfe1_99a25d73",
+        "filename": "reaper.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-29T00:05:00Z",
+      "side": 1,
+      "message": "Good catch! I forgot to add it after replacing unique_lock with direct mutex_.lock() for more granular locking control. Will fix.",
+      "parentUuid": "31e456ad_41555326",
+      "range": {
+        "startLine": 167,
+        "startChar": 15,
+        "endLine": 167,
+        "endChar": 20
+      },
+      "revId": "d96df77890c79f792d3f203e932f3a8766bfc9bf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "dbde7d8f_a3eea5cb",
         "filename": "reaper.cpp",
         "patchSetId": 6
