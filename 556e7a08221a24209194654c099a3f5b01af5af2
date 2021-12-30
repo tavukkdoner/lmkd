@@ -89,6 +89,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "be05d01c_f98bd367",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2126,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-30T00:05:34Z",
+      "side": 1,
+      "message": "Oh, I see what you mean. Just moving the ALOGE(\"Failed to kill process %d\", pid); into the reaper thread. Yes, we can do that.",
+      "parentUuid": "b99b95a7_7eb1b46d",
+      "range": {
+        "startLine": 2123,
+        "startChar": 0,
+        "endLine": 2126,
+        "endChar": 5
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dacb93b1_897af64c",
@@ -160,6 +184,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8952da77_72e104d1",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2214,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-30T00:05:34Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "543b96f4_e6d5d42d",
+      "range": {
+        "startLine": 2214,
+        "startChar": 32,
+        "endLine": 2214,
+        "endChar": 42
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "97c88649_71588e62",
@@ -221,6 +269,30 @@
       "side": 1,
       "message": "I wanted to say that. IOW, renaming the reaper with killer. The killer abstract how it could kill. Sometimes, it could use signal, sometimes, process_mrelease. Main thread doesn\u0027t need to understand how the killer will do. So divide the role clear and decouple more and more.",
       "parentUuid": "19236311_a31b0f3b",
+      "range": {
+        "startLine": 2219,
+        "startChar": 26,
+        "endLine": 2219,
+        "endChar": 43
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "48976c49_ed567dcf",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2219,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-30T00:05:34Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4a3d74ea_8c616d4a",
       "range": {
         "startLine": 2219,
         "startChar": 26,
@@ -363,6 +435,30 @@
       "side": 1,
       "message": "If we need to communicate between main thread and reaper thread, what we need here is \n\nfd \u003d setup_channel() /* To communicate between main thread and reaper */\nreaper.init(fd)\n\nIOW, to me, the communication channel setup is main thread\u0027s role since it\u0027s client of reaper and creating number of threads and notification are reaper\u0027s role.",
       "parentUuid": "d2eda7a7_e1177187",
+      "range": {
+        "startLine": 3587,
+        "startChar": 12,
+        "endLine": 3587,
+        "endChar": 23
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "43da5e9f_67c28b30",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3587,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-30T00:05:34Z",
+      "side": 1,
+      "message": "IOW you are suggesting to move Reaper::setup_thread_comm()/Reaper::drop_thread_comm() into main.cpp and rename Reaper::create_thread_pool() into Reaper::init() with additional FD parameter?\n\nFrom your comment it sounded like you want to hide more of this setup into the reaper class but this way we will be moving things from reaper into main. I want to make sure I understood correctly before making the change. Please confirm.",
+      "parentUuid": "269764d5_892def45",
       "range": {
         "startLine": 3587,
         "startChar": 12,
