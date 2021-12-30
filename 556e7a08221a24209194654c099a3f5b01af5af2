@@ -376,6 +376,52 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3c36f757_e5e1dbe0",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3192,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-30T18:58:07Z",
+      "side": 1,
+      "message": "Create the pipe here instead of inside the reaper.",
+      "range": {
+        "startLine": 3192,
+        "startChar": 4,
+        "endLine": 3192,
+        "endChar": 45
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dbd38b49_8be26415",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3209,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-30T18:58:07Z",
+      "side": 1,
+      "message": "rename into reaper::init(int fd);",
+      "range": {
+        "startLine": 3209,
+        "startChar": 16,
+        "endLine": 3209,
+        "endChar": 34
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "89a60b77_9d486c3e",
         "filename": "lmkd.cpp",
         "patchSetId": 8
@@ -469,6 +515,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "251809de_2e73692b",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3587,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-30T18:58:07Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "43da5e9f_67c28b30",
+      "range": {
+        "startLine": 3587,
+        "startChar": 12,
+        "endLine": 3587,
+        "endChar": 23
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a336f3d2_9dc96ef1",
@@ -518,6 +588,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "dc043ad4_5d78485b",
+        "filename": "reaper.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-30T18:58:07Z",
+      "side": 1,
+      "message": "need C++ cast here.",
+      "range": {
+        "startLine": 51,
+        "startChar": 21,
+        "endLine": 51,
+        "endChar": 31
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5dbc92b6_ffb36d91",
         "filename": "reaper.cpp",
         "patchSetId": 8
@@ -529,6 +622,30 @@
       "writtenOn": "2021-12-29T19:51:55Z",
       "side": 1,
       "message": "How about \"target_proc\"?",
+      "range": {
+        "startLine": 53,
+        "startChar": 19,
+        "endLine": 53,
+        "endChar": 30
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8377b509_111e00c8",
+        "filename": "reaper.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-30T18:58:07Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "5dbc92b6_ffb36d91",
       "range": {
         "startLine": 53,
         "startChar": 19,
@@ -564,6 +681,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e4904ffc_7fa98468",
+        "filename": "reaper.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-30T18:58:07Z",
+      "side": 1,
+      "message": "will rename as debug_enabled()",
+      "parentUuid": "c3098594_9b78c540",
+      "range": {
+        "startLine": 64,
+        "startChar": 20,
+        "endLine": 64,
+        "endChar": 38
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "75d6cb61_c28a060a",
         "filename": "reaper.cpp",
         "patchSetId": 8
@@ -575,6 +716,30 @@
       "writtenOn": "2021-12-29T19:51:55Z",
       "side": 1,
       "message": "If you don\u0027t mind, let\u0027s use goto \n\ngoto close_pidfd;\n\n..\n..\nreaper-\u003erequest_complete();\nclose_pidfd:\n  close(proc.pidfd);",
+      "range": {
+        "startLine": 71,
+        "startChar": 12,
+        "endLine": 71,
+        "endChar": 29
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "030c5489_07122245",
+        "filename": "reaper.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-30T18:58:07Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "75d6cb61_c28a060a",
       "range": {
         "startLine": 71,
         "startChar": 12,
@@ -598,6 +763,30 @@
       "writtenOn": "2021-12-29T19:51:55Z",
       "side": 1,
       "message": "We are in Reaper class so prefix reaper is redundant. Let\u0027s use \"thread_count_\"\n\nPersonally, I prefer nr_threads, nr_cpus following kernel programming. Up to you.",
+      "range": {
+        "startLine": 135,
+        "startChar": 4,
+        "endLine": 135,
+        "endChar": 10
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "89b6a100_51a2b7d9",
+        "filename": "reaper.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2021-12-30T18:58:07Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "31070704_8ea55442",
       "range": {
         "startLine": 135,
         "startChar": 4,
