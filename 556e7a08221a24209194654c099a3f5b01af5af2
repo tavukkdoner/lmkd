@@ -113,6 +113,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "91830761_a7d3a235",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 2126,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-02T20:49:04Z",
+      "side": 1,
+      "message": "Now I remember the additional function of get_failed_kill_pid(). It\u0027s used to read the data from the communication pipe and clear the data so that epoll_wait() can sleep. Sort of acknowledgement that the notification was received.",
+      "parentUuid": "be05d01c_f98bd367",
+      "range": {
+        "startLine": 2123,
+        "startChar": 0,
+        "endLine": 2126,
+        "endChar": 5
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dacb93b1_897af64c",
@@ -397,6 +421,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fddb62fc_1f84184d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3192,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-02T20:49:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3c36f757_e5e1dbe0",
+      "range": {
+        "startLine": 3192,
+        "startChar": 4,
+        "endLine": 3192,
+        "endChar": 45
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dbd38b49_8be26415",
@@ -410,6 +458,30 @@
       "writtenOn": "2021-12-30T18:58:07Z",
       "side": 1,
       "message": "rename into reaper::init(int fd);",
+      "range": {
+        "startLine": 3209,
+        "startChar": 16,
+        "endLine": 3209,
+        "endChar": 34
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "99387eaa_fd778aa8",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 3209,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-02T20:49:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dbd38b49_8be26415",
       "range": {
         "startLine": 3209,
         "startChar": 16,
@@ -609,6 +681,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "221e7ed9_9c4b8d11",
+        "filename": "reaper.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-02T20:49:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dc043ad4_5d78485b",
+      "range": {
+        "startLine": 51,
+        "startChar": 21,
+        "endLine": 51,
+        "endChar": 31
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5dbc92b6_ffb36d91",
@@ -703,6 +799,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8e01309a_351f49d7",
+        "filename": "reaper.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-02T20:49:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e4904ffc_7fa98468",
+      "range": {
+        "startLine": 64,
+        "startChar": 20,
+        "endLine": 64,
+        "endChar": 38
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "75d6cb61_c28a060a",
@@ -740,6 +860,30 @@
       "side": 1,
       "message": "Ack",
       "parentUuid": "75d6cb61_c28a060a",
+      "range": {
+        "startLine": 71,
+        "startChar": 12,
+        "endLine": 71,
+        "endChar": 29
+      },
+      "revId": "556e7a08221a24209194654c099a3f5b01af5af2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c593f68_81b95ac1",
+        "filename": "reaper.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-02T20:49:04Z",
+      "side": 1,
+      "message": "I checked",
+      "parentUuid": "030c5489_07122245",
       "range": {
         "startLine": 71,
         "startChar": 12,
