@@ -1,0 +1,153 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b90282f1_ae708a6f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-01-04T17:05:01Z",
+      "side": 1,
+      "message": "Much better than old and now just minor comments.\n\nWe could make code better later, especially, communication stuff. ;-)\nThanks.",
+      "revId": "5540340aff9f02ece8c88f7564f8aeacee568fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be9ebc6d_8c7746aa",
+        "filename": "lmkd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 2081,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-01-04T17:05:01Z",
+      "side": 1,
+      "message": "Let\u0027s put some comment why we need to read pin here even though it isn\u0027t used in the function. It would help to understand code with no question.",
+      "revId": "5540340aff9f02ece8c88f7564f8aeacee568fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0daced9c_7a346e4e",
+        "filename": "reaper.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-01-04T17:05:01Z",
+      "side": 1,
+      "message": "As stated, system could include little cores but LMKD doesn\u0027t want to run the job there so we\u0027d like to limit the little core? (I have no idea how we could know system CPU configuration nicely ;()or just simple, let\u0027s start as two threads in multiple core system. What do you think?",
+      "range": {
+        "startLine": 113,
+        "startChar": 20,
+        "endLine": 113,
+        "endChar": 30
+      },
+      "revId": "5540340aff9f02ece8c88f7564f8aeacee568fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa512069_ebb85e26",
+        "filename": "reaper.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-01-04T17:05:01Z",
+      "side": 1,
+      "message": "It was initialized in constructor.",
+      "range": {
+        "startLine": 116,
+        "startChar": 4,
+        "endLine": 116,
+        "endChar": 20
+      },
+      "revId": "5540340aff9f02ece8c88f7564f8aeacee568fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ae6d370_298d10d5",
+        "filename": "reaper.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-01-04T17:05:01Z",
+      "side": 1,
+      "message": "Is it doable? If thread_cnt is zero at init, shouldn\u0027t we make the failure?",
+      "range": {
+        "startLine": 177,
+        "startChar": 8,
+        "endLine": 177,
+        "endChar": 20
+      },
+      "revId": "5540340aff9f02ece8c88f7564f8aeacee568fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "490a89e8_58cd4938",
+        "filename": "reaper.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-01-04T17:05:01Z",
+      "side": 1,
+      "message": "I\u0027m little confused. Maybe, dumb question. If the main thread is waiting, it means the fd isn\u0027t disappeared. Why do we need to dup the fd, though?",
+      "range": {
+        "startLine": 188,
+        "startChar": 0,
+        "endLine": 188,
+        "endChar": 86
+      },
+      "revId": "5540340aff9f02ece8c88f7564f8aeacee568fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "18519c7c_e11838f4",
+        "filename": "reaper.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-01-04T17:05:01Z",
+      "side": 1,
+      "message": "Just return int.",
+      "range": {
+        "startLine": 53,
+        "startChar": 14,
+        "endLine": 53,
+        "endChar": 19
+      },
+      "revId": "5540340aff9f02ece8c88f7564f8aeacee568fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
