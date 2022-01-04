@@ -16,6 +16,24 @@
       "message": "Do we need watchdog class for this? Why can\u0027t we use just a timer instance?\n\nWhenever LMKD is dealing with events, it could set up the timer in prologue and then remove the timer in epilogue. If it takes to handle the event too long, the timer will be triggered and then find an victim and asking to kill it to the reaper. \nDo I miss something here?",
       "revId": "1bfbc279d6a521dc6a05a86aae8c0e00dde6bb9e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ad1f211_8cd268ea",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-04T18:28:34Z",
+      "side": 1,
+      "message": "I considered using settimer syscall but it would interrupt the main thread when the signal is delivered (see: https://man7.org/linux/man-pages/man7/signal.7.html). What I want to do here is to keep the main thread execution intact and just generate additional kill whenever that execution takes longer than expected.",
+      "parentUuid": "5f01713a_eb51c942",
+      "revId": "1bfbc279d6a521dc6a05a86aae8c0e00dde6bb9e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
