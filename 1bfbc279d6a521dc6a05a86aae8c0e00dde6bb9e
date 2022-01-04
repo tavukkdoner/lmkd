@@ -34,6 +34,24 @@
       "parentUuid": "5f01713a_eb51c942",
       "revId": "1bfbc279d6a521dc6a05a86aae8c0e00dde6bb9e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6bc952d1_2c0bcf08",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-04T18:35:20Z",
+      "side": 1,
+      "message": "One more important point. In the case when the main thread gets into an uninterruptible sleep, I think the signal will not be delivered until that sleep is over. So, that would render the watchdog useless for that kind of blockage.",
+      "parentUuid": "6ad1f211_8cd268ea",
+      "revId": "1bfbc279d6a521dc6a05a86aae8c0e00dde6bb9e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
