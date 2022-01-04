@@ -52,6 +52,47 @@
       "parentUuid": "6ad1f211_8cd268ea",
       "revId": "1bfbc279d6a521dc6a05a86aae8c0e00dde6bb9e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "69cdffcf_1a25cc0b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 16
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-01-04T20:05:23Z",
+      "side": 1,
+      "message": "timer_create supports SIGEV_THREAD_ID based on man page. If I understand correctly, it will wake up a specific thread when the timer is expired. Then, we could create a thread who will just kill target under heavy memory pressure(iow, watchdog_thread). And main would just setup/teardown the timer in the event handler.",
+      "parentUuid": "6bc952d1_2c0bcf08",
+      "revId": "1bfbc279d6a521dc6a05a86aae8c0e00dde6bb9e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e24f3b1_b8cf1eeb",
+        "filename": "lmkd.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 2075,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-01-04T20:05:23Z",
+      "side": 1,
+      "message": "I think it\u0027s worth to factor out by struct target_proc find_victim function.",
+      "range": {
+        "startLine": 2053,
+        "startChar": 0,
+        "endLine": 2075,
+        "endChar": 0
+      },
+      "revId": "1bfbc279d6a521dc6a05a86aae8c0e00dde6bb9e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
