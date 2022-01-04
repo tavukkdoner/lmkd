@@ -35,6 +35,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "185206f2_11bbb960",
+        "filename": "lmkd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 2081,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-04T17:41:48Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "be9ebc6d_8c7746aa",
+      "revId": "5540340aff9f02ece8c88f7564f8aeacee568fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0daced9c_7a346e4e",
@@ -60,6 +78,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5b595e89_21c2174e",
+        "filename": "reaper.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-04T17:41:48Z",
+      "side": 1,
+      "message": "Sounds good. This would minimize the overhead from additional threads which are mostly asleep. I haven\u0027t seen more than 2 threads active at the same time even during stress test.",
+      "parentUuid": "0daced9c_7a346e4e",
+      "range": {
+        "startLine": 113,
+        "startChar": 20,
+        "endLine": 113,
+        "endChar": 30
+      },
+      "revId": "5540340aff9f02ece8c88f7564f8aeacee568fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fa512069_ebb85e26",
         "filename": "reaper.cpp",
         "patchSetId": 11
@@ -71,6 +113,30 @@
       "writtenOn": "2022-01-04T17:05:01Z",
       "side": 1,
       "message": "It was initialized in constructor.",
+      "range": {
+        "startLine": 116,
+        "startChar": 4,
+        "endLine": 116,
+        "endChar": 20
+      },
+      "revId": "5540340aff9f02ece8c88f7564f8aeacee568fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9fc7a7d_33d8e3b7",
+        "filename": "reaper.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-04T17:41:48Z",
+      "side": 1,
+      "message": "Ack. I\u0027ll add a check here to err out if init() was called before. That\u0027s not done today but just as a precaution I think that would be good.",
+      "parentUuid": "fa512069_ebb85e26",
       "range": {
         "startLine": 116,
         "startChar": 4,
@@ -106,6 +172,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a2316058_db468ff2",
+        "filename": "reaper.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-04T17:41:48Z",
+      "side": 1,
+      "message": "If kernel does not support process_mrelease() then reaper.is_reaping_supported() is false and init_reaper() will not call reaper.init(). The thread_cnt_ is 0 in that case and reaper::kill() will know to use kill()/pidfd_send_signal() directly (as before) instead of reaper threads. Keeps things unchanged when run with older kernels.",
+      "parentUuid": "5ae6d370_298d10d5",
+      "range": {
+        "startLine": 177,
+        "startChar": 8,
+        "endLine": 177,
+        "endChar": 20
+      },
+      "revId": "5540340aff9f02ece8c88f7564f8aeacee568fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "490a89e8_58cd4938",
         "filename": "reaper.cpp",
         "patchSetId": 11
@@ -129,6 +219,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8b2b21a8_39d338db",
+        "filename": "reaper.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-04T17:41:48Z",
+      "side": 1,
+      "message": "If we use the same FD we would have to synchronize it\u0027s close(fd) between main and reaper threads with some kind of refcounting+mutual exclusion. By dup\u0027ing we remove that necessity.",
+      "parentUuid": "490a89e8_58cd4938",
+      "range": {
+        "startLine": 188,
+        "startChar": 0,
+        "endLine": 188,
+        "endChar": 86
+      },
+      "revId": "5540340aff9f02ece8c88f7564f8aeacee568fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "18519c7c_e11838f4",
         "filename": "reaper.h",
         "patchSetId": 11
@@ -140,6 +254,30 @@
       "writtenOn": "2022-01-04T17:05:01Z",
       "side": 1,
       "message": "Just return int.",
+      "range": {
+        "startLine": 53,
+        "startChar": 14,
+        "endLine": 53,
+        "endChar": 19
+      },
+      "revId": "5540340aff9f02ece8c88f7564f8aeacee568fdf",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "62f94107_262e7011",
+        "filename": "reaper.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-04T17:41:48Z",
+      "side": 1,
+      "message": "Ah, correct. Forgot to change the comment after changing the return type.",
+      "parentUuid": "18519c7c_e11838f4",
       "range": {
         "startLine": 53,
         "startChar": 14,
