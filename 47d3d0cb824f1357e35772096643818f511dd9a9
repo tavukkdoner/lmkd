@@ -70,6 +70,30 @@
       },
       "revId": "47d3d0cb824f1357e35772096643818f511dd9a9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5c111566_5ee45e50",
+        "filename": "lmkd.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 2084,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-01-05T19:43:55Z",
+      "side": 1,
+      "message": "How about kill(bool sync) rather than another variant? \nIMHO, boolean would be worth being part of API argument.",
+      "parentUuid": "0fdeabc0_f79afb9b",
+      "range": {
+        "startLine": 2084,
+        "startChar": 22,
+        "endLine": 2084,
+        "endChar": 39
+      },
+      "revId": "47d3d0cb824f1357e35772096643818f511dd9a9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
