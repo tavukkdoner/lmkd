@@ -16,6 +16,52 @@
       "message": "Looks much better now.",
       "revId": "d944f74396a2b3e458cce5bca810a622eb22c9e0",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0d6e07c_0d3f0a56",
+        "filename": "lmkd.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 2073,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-01-05T22:58:12Z",
+      "side": 1,
+      "message": "probably with logd compression we are much better with system log. but do we need this in event log just in case for analysis. maybe some counter as well.",
+      "range": {
+        "startLine": 2073,
+        "startChar": 4,
+        "endLine": 2073,
+        "endChar": 38
+      },
+      "revId": "d944f74396a2b3e458cce5bca810a622eb22c9e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4c1bc060_60a50285",
+        "filename": "watchdog.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-01-05T22:58:12Z",
+      "side": 1,
+      "message": "can we give the thread a name? pthread_setname_np",
+      "range": {
+        "startLine": 59,
+        "startChar": 4,
+        "endLine": 59,
+        "endChar": 5
+      },
+      "revId": "d944f74396a2b3e458cce5bca810a622eb22c9e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
