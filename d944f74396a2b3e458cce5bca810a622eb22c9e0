@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "1145bf57_8c915d02",
+        "filename": "lmkd.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 2073,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-05T23:16:40Z",
+      "side": 1,
+      "message": "By \"event log\" do you mean the same as killinfo logs?",
+      "parentUuid": "a0d6e07c_0d3f0a56",
+      "range": {
+        "startLine": 2073,
+        "startChar": 4,
+        "endLine": 2073,
+        "endChar": 38
+      },
+      "revId": "d944f74396a2b3e458cce5bca810a622eb22c9e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "4c1bc060_60a50285",
@@ -54,6 +78,30 @@
       "writtenOn": "2022-01-05T22:58:12Z",
       "side": 1,
       "message": "can we give the thread a name? pthread_setname_np",
+      "range": {
+        "startLine": 59,
+        "startChar": 4,
+        "endLine": 59,
+        "endChar": 5
+      },
+      "revId": "d944f74396a2b3e458cce5bca810a622eb22c9e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "262967d6_0c8bcdc4",
+        "filename": "watchdog.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-05T23:16:40Z",
+      "side": 1,
+      "message": "Good idea. Probably the same for reaper threads.",
+      "parentUuid": "4c1bc060_60a50285",
       "range": {
         "startLine": 59,
         "startChar": 4,
