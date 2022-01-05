@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b6c03135_3cbcc752",
+        "filename": "lmkd.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-01-05T17:34:34Z",
+      "side": 1,
+      "message": "Just nit: \"WARNING mark\" here looks like too much. Just normal comment would carry the attention enough. up to you. :)",
+      "range": {
+        "startLine": 534,
+        "startChar": 3,
+        "endLine": 534,
+        "endChar": 11
+      },
+      "revId": "d582f4b55ac14c05d2d82be54b8ca1b6ba08eb7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fa7209b1_f3159ca0",
+        "filename": "lmkd.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-01-05T17:34:34Z",
+      "side": 1,
+      "message": "Personally, I prefer just action for the lock rather than place.\n\n\"Updating of the procadjslot_list need to hold the lock as exclusive while reader of the list is okay to hold the lock as shared.\"",
+      "range": {
+        "startLine": 534,
+        "startChar": 12,
+        "endLine": 534,
+        "endChar": 73
+      },
+      "revId": "d582f4b55ac14c05d2d82be54b8ca1b6ba08eb7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8222329b_ca48a337",
+        "filename": "lmkd.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 3420,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-01-05T17:34:34Z",
+      "side": 1,
+      "message": "nit: How about start/stop instead of set/reset? I thought it would be more straightforward to understand.",
+      "range": {
+        "startLine": 3420,
+        "startChar": 13,
+        "endLine": 3420,
+        "endChar": 18
+      },
+      "revId": "d582f4b55ac14c05d2d82be54b8ca1b6ba08eb7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
