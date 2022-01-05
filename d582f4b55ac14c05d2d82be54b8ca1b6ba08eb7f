@@ -47,6 +47,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d754323_03f4b090",
+        "filename": "lmkd.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-05T17:54:40Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "fa7209b1_f3159ca0",
+      "range": {
+        "startLine": 534,
+        "startChar": 12,
+        "endLine": 534,
+        "endChar": 73
+      },
+      "revId": "d582f4b55ac14c05d2d82be54b8ca1b6ba08eb7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c726b0b3_62d11faa",
+        "filename": "lmkd.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-05T17:54:40Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "b6c03135_3cbcc752",
+      "range": {
+        "startLine": 534,
+        "startChar": 3,
+        "endLine": 534,
+        "endChar": 11
+      },
+      "revId": "d582f4b55ac14c05d2d82be54b8ca1b6ba08eb7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8222329b_ca48a337",
@@ -60,6 +108,30 @@
       "writtenOn": "2022-01-05T17:34:34Z",
       "side": 1,
       "message": "nit: How about start/stop instead of set/reset? I thought it would be more straightforward to understand.",
+      "range": {
+        "startLine": 3420,
+        "startChar": 13,
+        "endLine": 3420,
+        "endChar": 18
+      },
+      "revId": "d582f4b55ac14c05d2d82be54b8ca1b6ba08eb7f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "112786fb_6360683c",
+        "filename": "lmkd.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 3420,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-05T17:54:40Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "8222329b_ca48a337",
       "range": {
         "startLine": 3420,
         "startChar": 13,
