@@ -46,6 +46,30 @@
       },
       "revId": "47d3d0cb824f1357e35772096643818f511dd9a9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0fdeabc0_f79afb9b",
+        "filename": "lmkd.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 2084,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-05T18:57:25Z",
+      "side": 1,
+      "message": "Ah, now I remember why I could not use reaper here. Since the kill might happen asynchronously in one of the reaper threads, we don\u0027t get immediate result whether the kill was successful or not and will break our of this loop instead of trying to kill another process when the kill fails. However we can use process_mrelease here. I can add another reaper function Reaped::kill_sync() to kill process synchronously and use it here.",
+      "parentUuid": "0d34c9d1_5ff79a6b",
+      "range": {
+        "startLine": 2084,
+        "startChar": 22,
+        "endLine": 2084,
+        "endChar": 39
+      },
+      "revId": "47d3d0cb824f1357e35772096643818f511dd9a9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
