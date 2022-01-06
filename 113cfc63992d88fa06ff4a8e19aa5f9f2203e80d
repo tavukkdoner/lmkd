@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0df3324e_10a870f1",
+        "filename": "reaper.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-06T17:33:27Z",
+      "side": 1,
+      "message": "According to https://man7.org/linux/man-pages/man3/pthread_setname_np.3.html it\u0027s should be 16",
+      "range": {
+        "startLine": 114,
+        "startChar": 14,
+        "endLine": 114,
+        "endChar": 16
+      },
+      "revId": "113cfc63992d88fa06ff4a8e19aa5f9f2203e80d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
