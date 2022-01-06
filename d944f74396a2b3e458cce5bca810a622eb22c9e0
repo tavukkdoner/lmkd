@@ -91,6 +91,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "822e0a10_67fb0ba4",
+        "filename": "lmkd.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 2073,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-06T01:32:26Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "1145bf57_8c915d02",
+      "range": {
+        "startLine": 2073,
+        "startChar": 4,
+        "endLine": 2073,
+        "endChar": 38
+      },
+      "revId": "d944f74396a2b3e458cce5bca810a622eb22c9e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "4c1bc060_60a50285",
         "filename": "watchdog.cpp",
         "patchSetId": 24
@@ -126,6 +150,30 @@
       "side": 1,
       "message": "Good idea. Probably the same for reaper threads.",
       "parentUuid": "4c1bc060_60a50285",
+      "range": {
+        "startLine": 59,
+        "startChar": 4,
+        "endLine": 59,
+        "endChar": 5
+      },
+      "revId": "d944f74396a2b3e458cce5bca810a622eb22c9e0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27009ebe_4c721923",
+        "filename": "watchdog.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-01-06T01:32:26Z",
+      "side": 1,
+      "message": "Done. Also added names to the reaper threads in the previous patch.",
+      "parentUuid": "262967d6_0c8bcdc4",
       "range": {
         "startLine": 59,
         "startChar": 4,
