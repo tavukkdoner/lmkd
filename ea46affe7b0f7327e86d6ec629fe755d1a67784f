@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8ad4b1f3_399463eb",
+        "filename": "tests/lmkd_tests.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-01T02:18:41Z",
+      "side": 1,
+      "message": "Good idea",
+      "parentUuid": "0fb393ad_93622598",
+      "range": {
+        "startLine": 118,
+        "startChar": 58,
+        "endLine": 118,
+        "endChar": 74
+      },
+      "revId": "ea46affe7b0f7327e86d6ec629fe755d1a67784f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "66c6955f_c0a9fefa",
         "filename": "tests/lmkd_tests.cpp",
         "patchSetId": 4
@@ -37,6 +61,30 @@
       "writtenOn": "2022-02-01T02:07:30Z",
       "side": 1,
       "message": "Do we want rfind() here and below? In the event that there were previous kills, we want the last occurrence from logcat?",
+      "range": {
+        "startLine": 188,
+        "startChar": 32,
+        "endLine": 188,
+        "endChar": 36
+      },
+      "revId": "ea46affe7b0f7327e86d6ec629fe755d1a67784f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "416486dc_4a739616",
+        "filename": "tests/lmkd_tests.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-01T02:18:41Z",
+      "side": 1,
+      "message": "We do check later on for pid_kill_tag which includes pid of the process to skip kill reports of other processes but yes, with rfind we probably will find the right kill faster. Will change.",
+      "parentUuid": "66c6955f_c0a9fefa",
       "range": {
         "startLine": 188,
         "startChar": 32,
