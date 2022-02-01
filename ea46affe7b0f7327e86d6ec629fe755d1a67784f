@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7730cb8_c3f2b1a8",
+        "filename": "tests/lmkd_tests.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-01T19:42:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8ad4b1f3_399463eb",
+      "range": {
+        "startLine": 118,
+        "startChar": 58,
+        "endLine": 118,
+        "endChar": 74
+      },
+      "revId": "ea46affe7b0f7327e86d6ec629fe755d1a67784f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "66c6955f_c0a9fefa",
@@ -109,6 +133,30 @@
       "side": 1,
       "message": "Maybe we can just have logcat return only for that PID:\n\nlogcat -d -s \u0027lowmemorykiller:I\u0027 -e \"Kill.*(XXXX)\\|Process.XXXX.was\"\n\n\n// pid \u003d XXXX",
       "parentUuid": "416486dc_4a739616",
+      "range": {
+        "startLine": 188,
+        "startChar": 32,
+        "endLine": 188,
+        "endChar": 36
+      },
+      "revId": "ea46affe7b0f7327e86d6ec629fe755d1a67784f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9dfd63a7_fb4d0411",
+        "filename": "tests/lmkd_tests.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-01T19:42:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b202c5db_5e908154",
       "range": {
         "startLine": 188,
         "startChar": 32,
