@@ -93,6 +93,30 @@
       },
       "revId": "ea46affe7b0f7327e86d6ec629fe755d1a67784f",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b202c5db_5e908154",
+        "filename": "tests/lmkd_tests.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2022-02-01T02:33:01Z",
+      "side": 1,
+      "message": "Maybe we can just have logcat return only for that PID:\n\nlogcat -d -s \u0027lowmemorykiller:I\u0027 -e \"Kill.*(XXXX)\\|Process.XXXX.was\"\n\n\n// pid \u003d XXXX",
+      "parentUuid": "416486dc_4a739616",
+      "range": {
+        "startLine": 188,
+        "startChar": 32,
+        "endLine": 188,
+        "endChar": 36
+      },
+      "revId": "ea46affe7b0f7327e86d6ec629fe755d1a67784f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
