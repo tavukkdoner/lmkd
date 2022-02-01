@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0fb393ad_93622598",
+        "filename": "tests/lmkd_tests.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2022-02-01T02:07:30Z",
+      "side": 1,
+      "message": "Can we make it:\n\nlogcat -d -s \u0027lowmemorykiller:I\u0027 -e \u0027Kill\\|Process\u0027\n\nso we don\u0027t end up storing too much of the logcat dump and I think it will simplify the parsing a bit too.",
+      "range": {
+        "startLine": 118,
+        "startChar": 58,
+        "endLine": 118,
+        "endChar": 74
+      },
+      "revId": "ea46affe7b0f7327e86d6ec629fe755d1a67784f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66c6955f_c0a9fefa",
+        "filename": "tests/lmkd_tests.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2022-02-01T02:07:30Z",
+      "side": 1,
+      "message": "Do we want rfind() here and below? In the event that there were previous kills, we want the last occurrence from logcat?",
+      "range": {
+        "startLine": 188,
+        "startChar": 32,
+        "endLine": 188,
+        "endChar": 36
+      },
+      "revId": "ea46affe7b0f7327e86d6ec629fe755d1a67784f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
