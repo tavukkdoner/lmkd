@@ -82,19 +82,19 @@ int create_memcg(uid_t uid, pid_t pid) {
     int tasks_file;
     int written;
 
-    snprintf(buf, sizeof(buf), "/dev/memcg/apps/uid_%u", uid);
+    snprintf(buf, sizeof(buf), "/sys/fs/cgroup/uid_%u", uid);
     if (mkdir(buf, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) < 0 &&
         errno != EEXIST) {
         return -1;
     }
 
-    snprintf(buf, sizeof(buf), "/dev/memcg/apps/uid_%u/pid_%u", uid, pid);
+    snprintf(buf, sizeof(buf), "/sys/fs/cgroup/uid_%u/pid_%u", uid, pid);
     if (mkdir(buf, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) < 0 &&
         errno != EEXIST) {
         return -1;
     }
 
-    snprintf(buf, sizeof(buf), "/dev/memcg/apps/uid_%u/pid_%u/tasks", uid, pid);
+    snprintf(buf, sizeof(buf), "/sys/fs/cgroup/uid_%u/pid_%u/tasks", uid, pid);
     tasks_file = open(buf, O_WRONLY);
     if (tasks_file < 0) {
         return -2;
