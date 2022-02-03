@@ -17,10 +17,23 @@
 #ifndef _LIBLMKD_UTILS_H_
 #define _LIBLMKD_UTILS_H_
 
+#include <optional>
+#include <string>
 #include <sys/cdefs.h>
 #include <sys/types.h>
 
 #include <lmkd.h>
+
+struct MemcgInfo {
+    std::string path;     // Controller root directory: /dev/memcg (v1) or /sys/fs/cgroup (v2).
+    std::string apps_dir; // Path of the apps subdirectory (v1) or the root directory (v2).
+    uint32_t version;     // Cgroup version (1 or 2).
+};
+
+/*
+ * Returns information about the cgroup memory controller.
+ */
+std::optional<MemcgInfo> get_memcg_info();
 
 __BEGIN_DECLS
 
@@ -61,6 +74,8 @@ enum update_props_result {
  */
 enum update_props_result lmkd_update_props(int sock);
 
+__END_DECLS
+
 /*
  * Creates memcg directory for given process.
  * On success returns 0.
@@ -69,8 +84,6 @@ enum update_props_result lmkd_update_props(int sock);
  * -3 is returned if tasks file write operation failed.
  * In the case of error errno is set appropriately.
  */
-int create_memcg(uid_t uid, pid_t pid);
-
-__END_DECLS
+int create_memcg(const std::string& memcg_apps_dir, uid_t uid, pid_t pid);
 
 #endif /* _LIBLMKD_UTILS_H_ */
