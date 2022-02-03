@@ -105,7 +105,9 @@ class LmkdTest : public ::testing::Test {
                 << "Failed to communicate with lmkd, err=" << strerror(errno);
         GTEST_LOG_(INFO) << "Target process " << pid << " launched";
         if (property_get_bool("ro.config.low_ram", false)) {
-            ASSERT_FALSE(create_memcg(uid, pid) != 0)
+            std::optional<MemcgInfo> memcg_info = get_memcg_info();
+            ASSERT_TRUE(memcg_info.has_value());
+            ASSERT_EQ(create_memcg(memcg_info->apps_dir, uid, pid), 0)
                     << "Target process " << pid << " failed to create a cgroup";
         }
     }

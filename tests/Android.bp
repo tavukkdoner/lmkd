@@ -21,8 +21,9 @@ cc_test {
 
     shared_libs: [
         "libbase",
-        "liblog",
         "libcutils",
+        "liblog",
+        "libprocessgroup",
     ],
 
     static_libs: [
@@ -51,8 +52,9 @@ cc_test {
 
     shared_libs: [
         "libbase",
-        "liblog",
         "libcutils",
+        "liblog",
+        "libprocessgroup",
     ],
 
     static_libs: [
