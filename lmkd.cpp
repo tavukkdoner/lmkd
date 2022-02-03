@@ -85,9 +85,9 @@ static inline void trace_kill_end() {}
 #define __unused __attribute__((__unused__))
 #endif
 
-#define MEMCG_SYSFS_PATH "/dev/memcg/"
-#define MEMCG_MEMORY_USAGE "/dev/memcg/memory.usage_in_bytes"
-#define MEMCG_MEMORYSW_USAGE "/dev/memcg/memory.memsw.usage_in_bytes"
+#define MEMCG_V1_SYSFS_PATH "/dev/memcg/apps/"
+#define MEMCG_V1_MEMORY_USAGE "/dev/memcg/memory.usage_in_bytes"
+#define MEMCG_V1_MEMORYSW_USAGE "/dev/memcg/memory.memsw.usage_in_bytes"
 #define ZONEINFO_PATH "/proc/zoneinfo"
 #define MEMINFO_PATH "/proc/meminfo"
 #define VMSTAT_PATH "/proc/vmstat"
@@ -1181,13 +1181,12 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
             soft_limit_mult = 64;
         }
 
-        snprintf(path, sizeof(path), MEMCG_SYSFS_PATH
-                 "apps/uid_%d/pid_%d/memory.soft_limit_in_bytes",
-                 params.uid, params.pid);
+        snprintf(path, sizeof(path), "%s/uid_%d/pid_%d/%s", memcg_apps_dir(), params.uid,
+                 params.pid, using_memcg_v2() ? "memory.low" : "memory.soft_limit_in_bytes");
         snprintf(val, sizeof(val), "%d", soft_limit_mult * EIGHT_MEGA);
 
         /*
-         * system_server process has no memcg under /dev/memcg/apps but should be
+         * system_server process has no memcg under memcg_apps_dir() but should be
          * registered with lmkd. This is the best way so far to identify it.
          */
         is_system_server = (params.oomadj == SYSTEM_ADJ &&
@@ -2785,6 +2784,13 @@ no_kill:
 }
 
 static void mp_event_common(int data, uint32_t events, struct polling_params *poll_params) {
+    // The implementation of this function relies on memcg statistics that are only available in the
+    // v1 cgroup hierarchy.
+    if (using_memcg_v2()) {
+        ALOGE("%s only supports the v1 cgroup hierarchy", __func__);
+        return;
+    }
+
     unsigned long long evcount;
     int64_t mem_usage, memsw_usage;
     int64_t mem_pressure;
@@ -2797,11 +2803,11 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
     int min_score_adj;
     int minfree = 0;
     static struct reread_data mem_usage_file_data = {
-        .filename = MEMCG_MEMORY_USAGE,
+        .filename = MEMCG_V1_MEMORY_USAGE,
         .fd = -1,
     };
     static struct reread_data memsw_usage_file_data = {
-        .filename = MEMCG_MEMORYSW_USAGE,
+        .filename = MEMCG_V1_MEMORYSW_USAGE,
         .fd = -1,
     };
     static struct wakeup_info wi;
@@ -3067,10 +3073,13 @@ static void destroy_mp_psi(enum vmpressure_level level) {
 static bool init_psi_monitors() {
     /*
      * When PSI is used on low-ram devices or on high-end devices without memfree levels
-     * use new kill strategy based on zone watermarks, free swap and thrashing stats
+     * use new kill strategy based on zone watermarks, free swap and thrashing stats.
+     * Also use the new strategy if memcg has been mounted in the v2 cgroups hiearchy since
+     * the old strategy relies on memcg attributes that are not available in the v2 cgroups
+     * hiearchy.
      */
-    bool use_new_strategy =
-        GET_LMK_PROPERTY(bool, "use_new_strategy", low_ram_device || !use_minfree_levels);
+    bool use_new_strategy = GET_LMK_PROPERTY(
+            bool, "use_new_strategy", low_ram_device || !use_minfree_levels || using_memcg_v2());
 
     /* In default PSI mode override stall amounts using system properties */
     if (use_new_strategy) {
@@ -3096,6 +3105,13 @@ static bool init_psi_monitors() {
 }
 
 static bool init_mp_common(enum vmpressure_level level) {
+    // The implementation of this function relies on memcg statistics that are only available in the
+    // v1 cgroup hierarchy.
+    if (using_memcg_v2()) {
+        ALOGE("%s: global monitoring is only available for the v1 cgroup hierarchy", __func__);
+        return false;
+    }
+
     int mpfd;
     int evfd;
     int evctlfd;
@@ -3106,13 +3122,13 @@ static bool init_mp_common(enum vmpressure_level level) {
     const char *levelstr = level_name[level_idx];
 
     /* gid containing AID_SYSTEM required */
-    mpfd = open(MEMCG_SYSFS_PATH "memory.pressure_level", O_RDONLY | O_CLOEXEC);
+    mpfd = open(MEMCG_V1_SYSFS_PATH "memory.pressure_level", O_RDONLY | O_CLOEXEC);
     if (mpfd < 0) {
         ALOGI("No kernel memory.pressure_level support (errno=%d)", errno);
         goto err_open_mpfd;
     }
 
-    evctlfd = open(MEMCG_SYSFS_PATH "cgroup.event_control", O_WRONLY | O_CLOEXEC);
+    evctlfd = open(MEMCG_V1_SYSFS_PATH "cgroup.event_control", O_WRONLY | O_CLOEXEC);
     if (evctlfd < 0) {
         ALOGI("No kernel memory cgroup event control (errno=%d)", errno);
         goto err_open_evctlfd;
