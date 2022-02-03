@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "32d44c73_f6974e74",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-03T02:02:44Z",
+      "side": 1,
+      "message": "The test is disabled on the failing branch. Let\u0027s wait and see if it causes any other failures before reverting. I\u0027ll investigate the reasons it fails on  git_sc-v2-dev-plus-aosp",
+      "revId": "978438c1317e200ba8b0031f6bac8ccf074a4765",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
