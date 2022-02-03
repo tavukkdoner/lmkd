@@ -85,9 +85,7 @@ static inline void trace_kill_end() {}
 #define __unused __attribute__((__unused__))
 #endif
 
-#define MEMCG_SYSFS_PATH "/dev/memcg/"
-#define MEMCG_MEMORY_USAGE "/dev/memcg/memory.usage_in_bytes"
-#define MEMCG_MEMORYSW_USAGE "/dev/memcg/memory.memsw.usage_in_bytes"
+#define MEMCG_SYSFS_PATH "/sys/fs/cgroup/"
 #define ZONEINFO_PATH "/proc/zoneinfo"
 #define MEMINFO_PATH "/proc/meminfo"
 #define VMSTAT_PATH "/proc/vmstat"
@@ -1181,19 +1179,20 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
             soft_limit_mult = 64;
         }
 
-        snprintf(path, sizeof(path), MEMCG_SYSFS_PATH
-                 "apps/uid_%d/pid_%d/memory.soft_limit_in_bytes",
-                 params.uid, params.pid);
+        snprintf(path, sizeof(path), MEMCG_SYSFS_PATH "uid_%d/pid_%d/memory.low", params.uid,
+                 params.pid);
         snprintf(val, sizeof(val), "%d", soft_limit_mult * EIGHT_MEGA);
 
         /*
-         * system_server process has no memcg under /dev/memcg/apps but should be
-         * registered with lmkd. This is the best way so far to identify it.
+         * Do not set the memory.low limit for the system_server process.
+         * This is the best way so far to identify it.
          */
         is_system_server = (params.oomadj == SYSTEM_ADJ &&
                             (pwdrec = getpwnam("system")) != NULL &&
                             params.uid == pwdrec->pw_uid);
-        writefilestring(path, val, !is_system_server);
+        if (!is_system_server) {
+            writefilestring(path, val, true);
+        }
     }
 
     procp = pid_lookup(params.pid);
@@ -2360,7 +2359,7 @@ static int find_and_kill_process(int min_score_adj, struct kill_info *ki, union 
     return killed_size;
 }
 
-static int64_t get_memory_usage(struct reread_data *file_data) {
+static int64_t __unused get_memory_usage(struct reread_data* file_data) {
     int64_t mem_usage;
     char *buf;
 
@@ -2784,7 +2783,15 @@ no_kill:
     }
 }
 
-static void mp_event_common(int data, uint32_t events, struct polling_params *poll_params) {
+static void mp_event_common(int __unused data, uint32_t __unused events,
+                            struct polling_params* __unused poll_params) {
+#if 1
+    ALOGE("%s only supports the v1 cgroup hierarchy", __func__);
+#else
+    // The code below relies on memcg statistics that are only available in the v1 cgroup hierarchy.
+    static const char* MEMCG_MEMORY_USAGE = "/dev/memcg/memory.usage_in_bytes";
+    static const char* MEMCG_MEMORYSW_USAGE = "/dev/memcg/memory.memsw.usage_in_bytes";
+
     unsigned long long evcount;
     int64_t mem_usage, memsw_usage;
     int64_t mem_pressure;
@@ -3018,6 +3025,7 @@ do_kill:
         /* pause polling if we are waiting for process death notification */
         poll_params->update = POLLING_PAUSE;
     }
+#endif
 }
 
 static bool init_mp_psi(enum vmpressure_level level, bool use_new_strategy) {
@@ -3066,11 +3074,11 @@ static void destroy_mp_psi(enum vmpressure_level level) {
 
 static bool init_psi_monitors() {
     /*
-     * When PSI is used on low-ram devices or on high-end devices without memfree levels
-     * use new kill strategy based on zone watermarks, free swap and thrashing stats
+     * Use the new kill strategy based on zone watermarks, free swap and thrashing stats by default
+     * since the old strategy relies on memcg parameters that are not available in the cgroup v2
+     * hierarchy.
      */
-    bool use_new_strategy =
-        GET_LMK_PROPERTY(bool, "use_new_strategy", low_ram_device || !use_minfree_levels);
+    bool use_new_strategy = GET_LMK_PROPERTY(bool, "use_new_strategy", true);
 
     /* In default PSI mode override stall amounts using system properties */
     if (use_new_strategy) {
@@ -3095,7 +3103,11 @@ static bool init_psi_monitors() {
     return true;
 }
 
-static bool init_mp_common(enum vmpressure_level level) {
+static bool init_mp_common(enum vmpressure_level __unused level) {
+#if 1
+    ALOGE("%s: global monitoring is only available for the v1 cgroup hierarchy", __func__);
+    return false;
+#else
     int mpfd;
     int evfd;
     int evctlfd;
@@ -3160,6 +3172,7 @@ err_open_evctlfd:
     close(mpfd);
 err_open_mpfd:
     return false;
+#endif
 }
 
 static void destroy_mp_common(enum vmpressure_level level) {
