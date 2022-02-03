@@ -22,8 +22,9 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include <liblmkd_utils.h>
 #include <cutils/sockets.h>
+#include <liblmkd_utils.h>
+#include <processgroup/processgroup.h>
 
 int lmkd_connect() {
     return socket_local_client("lmkd",
@@ -77,24 +78,45 @@ enum update_props_result lmkd_update_props(int sock) {
     return params.result == 0 ? UPDATE_PROPS_SUCCESS : UPDATE_PROPS_FAIL;
 }
 
-int create_memcg(uid_t uid, pid_t pid) {
+std::optional<MemcgInfo> get_memcg_info() {
+    std::string cgroupv2_path, memcg_path;
+
+    if (!CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, &cgroupv2_path) ||
+        !CgroupGetControllerPath("memory", &memcg_path)) {
+        return std::nullopt;
+    }
+
+    MemcgInfo result{
+            .path = memcg_path,
+            .apps_dir = memcg_path,
+            .version = memcg_path == cgroupv2_path ? 2U : 1U,
+    };
+
+    if (result.version == 1) {
+        result.apps_dir += "/apps";
+    }
+
+    return result;
+}
+
+int create_memcg(const std::string& memcg_apps_dir, uid_t uid, pid_t pid) {
     char buf[256];
     int tasks_file;
     int written;
 
-    snprintf(buf, sizeof(buf), "/dev/memcg/apps/uid_%u", uid);
+    snprintf(buf, sizeof(buf), "%s/uid_%u", memcg_apps_dir.c_str(), uid);
     if (mkdir(buf, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) < 0 &&
         errno != EEXIST) {
         return -1;
     }
 
-    snprintf(buf, sizeof(buf), "/dev/memcg/apps/uid_%u/pid_%u", uid, pid);
+    snprintf(buf, sizeof(buf), "%s/uid_%u/pid_%u", memcg_apps_dir.c_str(), uid, pid);
     if (mkdir(buf, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) < 0 &&
         errno != EEXIST) {
         return -1;
     }
 
-    snprintf(buf, sizeof(buf), "/dev/memcg/apps/uid_%u/pid_%u/tasks", uid, pid);
+    snprintf(buf, sizeof(buf), "%s/uid_%u/pid_%u/tasks", memcg_apps_dir.c_str(), uid, pid);
     tasks_file = open(buf, O_WRONLY);
     if (tasks_file < 0) {
         return -2;
@@ -108,4 +130,3 @@ int create_memcg(uid_t uid, pid_t pid) {
 
     return (written < 0) ? -3 : 0;
 }
-

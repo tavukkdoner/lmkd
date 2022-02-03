@@ -1182,13 +1182,17 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
             soft_limit_mult = 64;
         }
 
-        snprintf(path, sizeof(path), MEMCG_SYSFS_PATH
-                 "apps/uid_%d/pid_%d/memory.soft_limit_in_bytes",
-                 params.uid, params.pid);
+        std::optional<MemcgInfo> memcg_info = get_memcg_info();
+        if (!memcg_info.has_value()) {
+            ALOGE("Could not find the memory cgroup controller");
+            return;
+        }
+        snprintf(path, sizeof(path), "%s/uid_%d/pid_%d/%s", memcg_info->apps_dir.c_str(),
+                 params.uid, params.pid, "memory.soft_limit_in_bytes");
         snprintf(val, sizeof(val), "%d", soft_limit_mult * EIGHT_MEGA);
 
         /*
-         * system_server process has no memcg under /dev/memcg/apps but should be
+         * system_server process has no memcg under the memcg apps dir but should be
          * registered with lmkd. This is the best way so far to identify it.
          */
         is_system_server = (params.oomadj == SYSTEM_ADJ &&

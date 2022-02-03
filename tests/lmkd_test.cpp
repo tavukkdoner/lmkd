@@ -276,8 +276,10 @@ void runMemStressTest() {
             data->allocated = 0;
             data->finished = false;
             if (property_get_bool("ro.config.low_ram", false)) {
-                ASSERT_FALSE(create_memcg(uid, pid) != 0)
-                    << "Child [pid=" << pid << "] failed to create a cgroup";
+                std::optional<MemcgInfo> memcg_info = get_memcg_info();
+                ASSERT_TRUE(memcg_info.has_value());
+                ASSERT_EQ(create_memcg(memcg_info->apps_dir, uid, pid), 0)
+                        << "Child [pid=" << pid << "] failed to create a cgroup";
             }
             signal_state(ssync, STATE_CHILD_READY);
             wait_for_state(ssync, STATE_PARENT_READY);
