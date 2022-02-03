@@ -15,6 +15,7 @@
  */
 
 #include <errno.h>
+#include <fstream>
 #include <fcntl.h>
 #include <sys/cdefs.h>
 #include <sys/stat.h>
@@ -77,24 +78,47 @@ enum update_props_result lmkd_update_props(int sock) {
     return params.result == 0 ? UPDATE_PROPS_SUCCESS : UPDATE_PROPS_FAIL;
 }
 
-int create_memcg(uid_t uid, pid_t pid) {
+static bool __using_memcg_v2() {
+    std::ifstream is("/sys/fs/cgroup/cgroup.controllers");
+    std::string ctlr;
+
+    while (is >> ctlr) {
+        if (ctlr == "memory") {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool using_memcg_v2() {
+    static const bool using_v2 = __using_memcg_v2();
+
+    return using_v2;
+}
+
+const char* memcg_apps_dir() {
+  return using_memcg_v2() ? "/sys/fs/cgroup" : "/dev/memcg/apps";
+}
+
+int create_memcg(const char* memcg_apps_dir, uid_t uid, pid_t pid) {
     char buf[256];
     int tasks_file;
     int written;
 
-    snprintf(buf, sizeof(buf), "/dev/memcg/apps/uid_%u", uid);
+    snprintf(buf, sizeof(buf), "%s/uid_%u", memcg_apps_dir, uid);
     if (mkdir(buf, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) < 0 &&
         errno != EEXIST) {
         return -1;
     }
 
-    snprintf(buf, sizeof(buf), "/dev/memcg/apps/uid_%u/pid_%u", uid, pid);
+    snprintf(buf, sizeof(buf), "%s/uid_%u/pid_%u", memcg_apps_dir, uid, pid);
     if (mkdir(buf, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) < 0 &&
         errno != EEXIST) {
         return -1;
     }
 
-    snprintf(buf, sizeof(buf), "/dev/memcg/apps/uid_%u/pid_%u/tasks", uid, pid);
+    snprintf(buf, sizeof(buf), "%s/uid_%u/pid_%u/tasks", memcg_apps_dir, uid, pid);
     tasks_file = open(buf, O_WRONLY);
     if (tasks_file < 0) {
         return -2;
@@ -108,4 +132,3 @@ int create_memcg(uid_t uid, pid_t pid) {
 
     return (written < 0) ? -3 : 0;
 }
-

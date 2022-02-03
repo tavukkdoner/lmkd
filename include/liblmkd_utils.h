@@ -62,6 +62,17 @@ enum update_props_result {
 enum update_props_result lmkd_update_props(int sock);
 
 /*
+ * Returns true if and only if the memory controller has been mounted in the v2 cgroups hierarchy.
+ */
+bool using_memcg_v2();
+
+/*
+ * Returns the name of the memcg apps directory. That directory name is /dev/memcg/apps when using
+ * the v1 cgroup hierarchy or /sys/fs/cgroup when using the v2 cgroups hierarchy.
+ */
+const char* memcg_apps_dir();
+
+/*
  * Creates memcg directory for given process.
  * On success returns 0.
  * -1 is returned if path creation failed.
@@ -69,7 +80,7 @@ enum update_props_result lmkd_update_props(int sock);
  * -3 is returned if tasks file write operation failed.
  * In the case of error errno is set appropriately.
  */
-int create_memcg(uid_t uid, pid_t pid);
+int create_memcg(const char* memcg_apps_dir, uid_t uid, pid_t pid);
 
 __END_DECLS
 
