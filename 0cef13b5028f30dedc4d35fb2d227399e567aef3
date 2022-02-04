@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fce4db88_0c664408",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-04T01:42:01Z",
+      "side": 1,
+      "message": "Migrating memcg to cgroups v2 is a much bigger task.\nInstead of changing one hardcoded path to another we should be using API functions CgroupGetControllerPath() and CgroupGetAttributePath() from https://cs.android.com/android/platform/superproject/+/master:system/core/libprocessgroup/include/processgroup/processgroup.h.\n\nI added some comments with links to clarify that. In couple places I suggest using CgroupGetAttributePathForTask(). It would work but I plan to introduce a new function CgroupGetAttributePathForProcess() which will accept uid and pid and be more applicable for these usecases.\n",
+      "revId": "0cef13b5028f30dedc4d35fb2d227399e567aef3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b42d5a4_d4bd058c",
+        "filename": "liblmkd_utils.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-04T01:42:01Z",
+      "side": 1,
+      "message": "This function should replicate what createProcessGroup() does here: https://cs.android.com/android/platform/superproject/+/master:system/core/libprocessgroup/processgroup.cpp;l\u003d485 using CgroupGetControllerPath() for get the path to either \"memory\" cgroup (for the case v1 hierarchy is used) or CGROUPV2_CONTROLLER_NAME (for v2 hierarchy).",
+      "range": {
+        "startLine": 80,
+        "startChar": 4,
+        "endLine": 80,
+        "endChar": 16
+      },
+      "revId": "0cef13b5028f30dedc4d35fb2d227399e567aef3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "586b4872_34d7d575",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1183,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-04T01:42:01Z",
+      "side": 1,
+      "message": "This should be a combination of MemSoftLimit attribute https://cs.android.com/android/platform/superproject/+/master:system/core/libprocessgroup/profiles/task_profiles.json;l\u003d26 and CgroupGetAttributePathForTask().",
+      "range": {
+        "startLine": 1182,
+        "startChar": 7,
+        "endLine": 1183,
+        "endChar": 29
+      },
+      "revId": "0cef13b5028f30dedc4d35fb2d227399e567aef3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f70ff8b1_083617c9",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2788,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-04T01:42:01Z",
+      "side": 1,
+      "message": "Vendors can chose to override default cgroup.json file from the vendor partition, mount memcg v1 and keep using the old strategy (some vendors do use it). We can\u0027t discount that case. If we could then we would simply remove this code.",
+      "range": {
+        "startLine": 2788,
+        "startChar": 0,
+        "endLine": 2788,
+        "endChar": 5
+      },
+      "revId": "0cef13b5028f30dedc4d35fb2d227399e567aef3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a2d23a0_0f109d1d",
+        "filename": "statslog.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-04T01:42:01Z",
+      "side": 1,
+      "message": "This would require a new attribute definition similar to here: https://cs.android.com/android/platform/superproject/+/master:system/core/libprocessgroup/profiles/task_profiles.json;l\u003d26 and CgroupGetAttributePathForTask().",
+      "range": {
+        "startLine": 95,
+        "startChar": 0,
+        "endLine": 95,
+        "endChar": 81
+      },
+      "revId": "0cef13b5028f30dedc4d35fb2d227399e567aef3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

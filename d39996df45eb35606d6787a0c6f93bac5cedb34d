@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7dcc7b40_b58713d4",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-04T01:42:01Z",
+      "side": 0,
+      "message": "For these ones we need to define new attributes like these: https://cs.android.com/android/platform/superproject/+/master:system/core/libprocessgroup/profiles/task_profiles.json;l\u003d26 and use CgroupGetAttributePath() to get the right path.",
+      "range": {
+        "startLine": 89,
+        "startChar": 0,
+        "endLine": 90,
+        "endChar": 69
+      },
+      "revId": "d39996df45eb35606d6787a0c6f93bac5cedb34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
