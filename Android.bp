@@ -56,6 +56,9 @@ cc_library_static {
     shared_libs: [
         "liblog",
     ],
+    static_libs: [
+        "liblmkd_utils",
+    ],
 }
 
 cc_library_static {
