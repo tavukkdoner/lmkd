@@ -30,6 +30,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <liblmkd_utils.h>
+
 #ifdef LMKD_LOG_STATS
 
 #define STRINGIFY(x) STRINGIFY_INTERNAL(x)
@@ -89,7 +91,7 @@ static int memory_stat_from_cgroup(struct memory_stat* mem_st, int pid, uid_t ui
     FILE *fp;
     char buf[PATH_MAX];
 
-    snprintf(buf, sizeof(buf), MEMCG_PROCESS_MEMORY_STAT_PATH, uid, pid);
+    snprintf(buf, sizeof(buf), "%s/uid_%u/pid_%d/memory.stat", memcg_apps_dir(), uid, pid);
 
     fp = fopen(buf, "r");
 
