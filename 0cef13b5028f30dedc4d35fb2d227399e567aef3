@@ -41,6 +41,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ceecca65_f0657fea",
+        "filename": "liblmkd_utils.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-08T17:13:58Z",
+      "side": 1,
+      "message": "lmkd is independent of libprocessgroup. I want to keep lmkd independent because the approach of both software components is different: for lmkd it is important not to trigger any page faults when resolving an out-of-memory condition while allocating memory from libprocessgroup is fine.",
+      "parentUuid": "0b42d5a4_d4bd058c",
+      "range": {
+        "startLine": 80,
+        "startChar": 4,
+        "endLine": 80,
+        "endChar": 16
+      },
+      "revId": "0cef13b5028f30dedc4d35fb2d227399e567aef3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "586b4872_34d7d575",
@@ -54,6 +78,30 @@
       "writtenOn": "2022-02-04T01:42:01Z",
       "side": 1,
       "message": "This should be a combination of MemSoftLimit attribute https://cs.android.com/android/platform/superproject/+/master:system/core/libprocessgroup/profiles/task_profiles.json;l\u003d26 and CgroupGetAttributePathForTask().",
+      "range": {
+        "startLine": 1182,
+        "startChar": 7,
+        "endLine": 1183,
+        "endChar": 29
+      },
+      "revId": "0cef13b5028f30dedc4d35fb2d227399e567aef3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "109512be_007b9b11",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1183,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-08T17:13:58Z",
+      "side": 1,
+      "message": "lmkd is independent of libprocessgroup. I want to keep lmkd independent because the approach of both software components is different: for lmkd it is important not to trigger any page faults when resolving an out-of-memory condition while allocating memory from libprocessgroup is fine.",
+      "parentUuid": "586b4872_34d7d575",
       "range": {
         "startLine": 1182,
         "startChar": 7,
@@ -87,6 +135,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "45d1e393_e313ed7c",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2788,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-08T17:13:58Z",
+      "side": 1,
+      "message": "I have modified this patch such that lmkd now supports both the v1 and v2 cgroup hierarchies.",
+      "parentUuid": "f70ff8b1_083617c9",
+      "range": {
+        "startLine": 2788,
+        "startChar": 0,
+        "endLine": 2788,
+        "endChar": 5
+      },
+      "revId": "0cef13b5028f30dedc4d35fb2d227399e567aef3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1a2d23a0_0f109d1d",
@@ -100,6 +172,30 @@
       "writtenOn": "2022-02-04T01:42:01Z",
       "side": 1,
       "message": "This would require a new attribute definition similar to here: https://cs.android.com/android/platform/superproject/+/master:system/core/libprocessgroup/profiles/task_profiles.json;l\u003d26 and CgroupGetAttributePathForTask().",
+      "range": {
+        "startLine": 95,
+        "startChar": 0,
+        "endLine": 95,
+        "endChar": 81
+      },
+      "revId": "0cef13b5028f30dedc4d35fb2d227399e567aef3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a8da4228_015f849c",
+        "filename": "statslog.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-08T17:13:58Z",
+      "side": 1,
+      "message": "lmkd is independent of libprocessgroup. I want to keep lmkd independent because the approach of both software components is different: for lmkd it is important not to trigger any page faults when resolving an out-of-memory condition while allocating memory from libprocessgroup is fine.",
+      "parentUuid": "1a2d23a0_0f109d1d",
       "range": {
         "startLine": 95,
         "startChar": 0,

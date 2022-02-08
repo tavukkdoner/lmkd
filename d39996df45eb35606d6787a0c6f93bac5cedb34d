@@ -22,6 +22,30 @@
       },
       "revId": "d39996df45eb35606d6787a0c6f93bac5cedb34d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b026088_5a5740a0",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-08T17:13:58Z",
+      "side": 0,
+      "message": "lmkd is independent of libprocessgroup. I want to keep lmkd independent because the approach of both software components is different: for lmkd it is important not to trigger any page faults when resolving an out-of-memory condition while allocating memory from libprocessgroup is fine.",
+      "parentUuid": "7dcc7b40_b58713d4",
+      "range": {
+        "startLine": 89,
+        "startChar": 0,
+        "endLine": 90,
+        "endChar": 69
+      },
+      "revId": "d39996df45eb35606d6787a0c6f93bac5cedb34d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
