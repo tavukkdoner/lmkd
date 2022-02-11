@@ -218,6 +218,7 @@ static int thrashing_limit_decay_pct;
 static int thrashing_critical_pct;
 static int swap_util_max;
 static int64_t filecache_min_kb;
+static int64_t stall_limit_critical;
 static bool use_psi_monitors = false;
 static int kpoll_fd;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
@@ -1915,6 +1916,37 @@ static int vmstat_parse(union vmstat *vs) {
     return 0;
 }
 
+static int psi_parse(struct reread_data *file_data, struct psi_stats stats[], bool full) {
+    char *buf;
+    char *save_ptr;
+    char *line;
+
+    if ((buf = reread_file(file_data)) == NULL) {
+        return -1;
+    }
+
+    line = strtok_r(buf, "\n", &save_ptr);
+    if (parse_psi_line(line, PSI_SOME, stats)) {
+        return -1;
+    }
+    if (full) {
+        line = strtok_r(NULL, "\n", &save_ptr);
+        if (parse_psi_line(line, PSI_FULL, stats)) {
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+static int psi_parse_mem(struct psi_data *psi_data) {
+    static struct reread_data file_data = {
+        .filename = PSI_PATH_MEMORY,
+        .fd = -1,
+    };
+    return psi_parse(&file_data, psi_data->mem_stats, true);
+}
+
 enum wakeup_reason {
     Event,
     Polling
@@ -2500,6 +2532,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
 
     union meminfo mi;
     union vmstat vs;
+    struct psi_data psi_data;
     struct timespec curr_tm;
     int64_t thrashing = 0;
     bool swap_is_low = false;
@@ -2515,6 +2548,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     int64_t swap_low_threshold;
     long since_thrashing_reset_ms;
     int64_t workingset_refault_file;
+    bool psi_breached = false;
 
     if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
         ALOGE("Failed to get current time");
@@ -2647,6 +2681,9 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     /* Find out which watermark is breached if any */
     wmark = get_lowest_watermark(&mi, &watermarks);
 
+    if (!psi_parse_mem(&psi_data)) {
+        psi_breached = psi_data.mem_stats[PSI_FULL].avg10 > (float)stall_limit_critical;
+    }
     /*
      * TODO: move this logic into a separate function
      * Decide if killing a process is necessary and record the reason
@@ -2674,7 +2711,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
             "kB < %" PRId64 "kB) and thrashing (%" PRId64 "%%)",
             mi.field.free_swap * page_k, swap_low_threshold * page_k, thrashing);
         /* Do not kill perceptible apps unless below min watermark or heavily thrashing */
-        if (wmark > WMARK_MIN && thrashing < thrashing_critical_pct) {
+        if (wmark > WMARK_MIN && thrashing < thrashing_critical_pct && !psi_breached) {
             min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
         }
         check_filecache = true;
@@ -2685,7 +2722,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
             PRId64 "kB < %" PRId64 "kB)", wmark < WMARK_LOW ? "min" : "low",
             mi.field.free_swap * page_k, swap_low_threshold * page_k);
         /* Do not kill perceptible apps unless below min watermark or heavily thrashing */
-        if (wmark > WMARK_MIN && thrashing < thrashing_critical_pct) {
+        if (wmark > WMARK_MIN && thrashing < thrashing_critical_pct && !psi_breached) {
             min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
         }
     } else if (wmark < WMARK_HIGH && swap_util_max < 100 &&
@@ -2705,7 +2742,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
             PRId64 "%%)", wmark < WMARK_LOW ? "min" : "low", thrashing);
         cut_thrashing_limit = true;
         /* Do not kill perceptible apps unless thrashing at critical levels */
-        if (thrashing < thrashing_critical_pct) {
+        if (thrashing < thrashing_critical_pct && !psi_breached) {
             min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
         }
         check_filecache = true;
@@ -2716,7 +2753,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
             PRId64 "%%)", thrashing);
         cut_thrashing_limit = true;
         /* Do not kill perceptible apps unless thrashing at critical levels */
-        if (thrashing < thrashing_critical_pct) {
+        if (thrashing < thrashing_critical_pct && !psi_breached) {
             min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
         }
         check_filecache = true;
@@ -2729,7 +2766,9 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
             snprintf(kill_desc, sizeof(kill_desc),
                 "filecache is low (%" PRId64 "kB < %" PRId64 "kB) after thrashing",
                 file_lru_kb, filecache_min_kb);
-            min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
+            if (!psi_breached) {
+                min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
+            }
         } else {
             /* File cache is big enough, stop checking */
             check_filecache = false;
@@ -3601,6 +3640,7 @@ static void update_props() {
         thrashing_limit_pct * 2));
     swap_util_max = clamp(0, 100, GET_LMK_PROPERTY(int32, "swap_util_max", 100));
     filecache_min_kb = GET_LMK_PROPERTY(int64, "filecache_min_kb", 0);
+    stall_limit_critical = GET_LMK_PROPERTY(int64, "stall_limit_critical", 100);
 
     reaper.enable_debug(debug_process_killing);
 }
