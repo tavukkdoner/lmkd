@@ -91,6 +91,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c0b8ed5f_76a3309c",
+        "filename": "liblmkd_utils.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-14T23:46:51Z",
+      "side": 1,
+      "message": "I meant to say \"there is no reason not to share the code\"",
+      "parentUuid": "2684fb13_ed3c35d7",
+      "range": {
+        "startLine": 80,
+        "startChar": 4,
+        "endLine": 80,
+        "endChar": 16
+      },
+      "revId": "0cef13b5028f30dedc4d35fb2d227399e567aef3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "586b4872_34d7d575",
         "filename": "lmkd.cpp",
         "patchSetId": 2
