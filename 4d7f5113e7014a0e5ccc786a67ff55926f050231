@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "57194d67_a0714707",
+        "filename": "statslog.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-14T23:50:59Z",
+      "side": 1,
+      "message": "If we want to minimize dependencies on libprocessgroup we could pass the memcg path as a parameter here and in stats_read_memory_stat().",
+      "range": {
+        "startLine": 94,
+        "startChar": 63,
+        "endLine": 94,
+        "endChar": 77
+      },
+      "revId": "4d7f5113e7014a0e5ccc786a67ff55926f050231",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
