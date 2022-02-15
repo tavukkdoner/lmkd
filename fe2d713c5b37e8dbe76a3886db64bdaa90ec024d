@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e42de3a_f5f81e87",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-15T00:14:52Z",
+      "side": 1,
+      "message": "Ignore this comment. I decided it\u0027s not very relevant to this patch and deleted it but looks like some part survived...",
+      "parentUuid": "483cf46e_75d1356a",
+      "revId": "fe2d713c5b37e8dbe76a3886db64bdaa90ec024d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c12441c9_0bd1ee10",
