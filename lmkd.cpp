@@ -1185,7 +1185,8 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
             return;
         }
         snprintf(path, sizeof(path), "%s/uid_%d/pid_%d/%s", memcg_info->apps_dir.c_str(),
-                 params.uid, params.pid, "memory.soft_limit_in_bytes");
+                 params.uid, params.pid,
+                 memcg_info->version == 2 ? "memory.low" : "memory.soft_limit_in_bytes");
         snprintf(val, sizeof(val), "%d", soft_limit_mult * EIGHT_MEGA);
 
         /*
@@ -2789,7 +2790,20 @@ no_kill:
     }
 }
 
+static bool using_memcg_v2() {
+    std::optional<MemcgInfo> memcg_info = get_memcg_info();
+
+    return memcg_info.has_value() && memcg_info->version == 2;
+}
+
 static void mp_event_common(int data, uint32_t events, struct polling_params *poll_params) {
+    // The implementation of this function relies on memcg statistics that are only available in the
+    // v1 cgroup hierarchy.
+    if (using_memcg_v2()) {
+        ALOGE("%s only supports the v1 cgroup hierarchy", __func__);
+        return;
+    }
+
     unsigned long long evcount;
     int64_t mem_usage, memsw_usage;
     int64_t mem_pressure;
@@ -3075,10 +3089,13 @@ static void destroy_mp_psi(enum vmpressure_level level) {
 static bool init_psi_monitors() {
     /*
      * When PSI is used on low-ram devices or on high-end devices without memfree levels
-     * use new kill strategy based on zone watermarks, free swap and thrashing stats
+     * use new kill strategy based on zone watermarks, free swap and thrashing stats.
+     * Also use the new strategy if memcg has been mounted in the v2 cgroups hiearchy since
+     * the old strategy relies on memcg attributes that are not available in the v2 cgroups
+     * hiearchy.
      */
-    bool use_new_strategy =
-        GET_LMK_PROPERTY(bool, "use_new_strategy", low_ram_device || !use_minfree_levels);
+    bool use_new_strategy = GET_LMK_PROPERTY(
+            bool, "use_new_strategy", low_ram_device || !use_minfree_levels || using_memcg_v2());
 
     /* In default PSI mode override stall amounts using system properties */
     if (use_new_strategy) {
@@ -3104,6 +3121,13 @@ static bool init_psi_monitors() {
 }
 
 static bool init_mp_common(enum vmpressure_level level) {
+    // The implementation of this function relies on memcg statistics that are only available in the
+    // v1 cgroup hierarchy.
+    if (using_memcg_v2()) {
+        ALOGE("%s: global monitoring is only available for the v1 cgroup hierarchy", __func__);
+        return false;
+    }
+
     int mpfd;
     int evfd;
     int evctlfd;
