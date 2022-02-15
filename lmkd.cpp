@@ -3154,13 +3154,33 @@ static void destroy_mp_psi(enum vmpressure_level level) {
     mpevfd[level] = -1;
 }
 
+static bool __using_memcg_v1() {
+    std::string cgroupv2_path, memcg_path;
+
+    if (!CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, &cgroupv2_path) ||
+        !CgroupGetControllerPath("memory", &memcg_path)) {
+        return true;
+    }
+
+    return cgroupv2_path != memcg_path;
+}
+
+static bool using_memcg_v1() {
+    static bool using_v1 = __using_memcg_v1();
+
+    return using_v1;
+}
+
 static bool init_psi_monitors() {
     /*
      * When PSI is used on low-ram devices or on high-end devices without memfree levels
-     * use new kill strategy based on zone watermarks, free swap and thrashing stats
+     * use new kill strategy based on zone watermarks, free swap and thrashing stats.
+     * Also use the new strategy if memcg has not been mounted in the v1 cgroups hiearchy since
+     * the old strategy relies on memcg attributes that are available only in the v1 cgroups
+     * hiearchy.
      */
-    bool use_new_strategy =
-        GET_LMK_PROPERTY(bool, "use_new_strategy", low_ram_device || !use_minfree_levels);
+    bool use_new_strategy = GET_LMK_PROPERTY(
+            bool, "use_new_strategy", low_ram_device || !use_minfree_levels || !using_memcg_v1());
 
     /* In default PSI mode override stall amounts using system properties */
     if (use_new_strategy) {
@@ -3186,6 +3206,13 @@ static bool init_psi_monitors() {
 }
 
 static bool init_mp_common(enum vmpressure_level level) {
+    // The implementation of this function relies on memcg statistics that are only available in the
+    // v1 cgroup hierarchy.
+    if (!using_memcg_v1()) {
+        ALOGE("%s: global monitoring is only available for the v1 cgroup hierarchy", __func__);
+        return false;
+    }
+
     int mpfd;
     int evfd;
     int evctlfd;
