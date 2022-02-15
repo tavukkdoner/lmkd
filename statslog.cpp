@@ -34,6 +34,7 @@
 
 #include <android-base/file.h>
 #include <android-base/stringprintf.h>
+#include <processgroup/processgroup.h>
 
 using ::android::base::ReadFileToString;
 using ::android::base::StringPrintf;
@@ -93,8 +94,13 @@ static void memory_stat_parse_line(const char* line, struct memory_stat* mem_st)
         mem_st->swap_in_bytes = value;
 }
 
-static int memory_stat_from_cgroup(struct memory_stat* mem_st, int pid, uid_t uid) {
-    const std::string path = StringPrintf(MEMCG_PROCESS_MEMORY_STAT_PATH, uid, pid);
+static int memory_stat_from_cgroup(struct memory_stat* mem_st, int pid, uid_t uid __unused) {
+    std::string path;
+    if (!CgroupGetAttributePathForTask("MemStats", pid, &path)) {
+        ALOGE("Querying MemStats path failed");
+        return -1;
+    }
+
     std::ifstream is(path, std::ios::in);
     if (!is) {
         return -1;
