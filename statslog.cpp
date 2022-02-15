@@ -30,6 +30,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <liblmkd_utils.h>
+
 #ifdef LMKD_LOG_STATS
 
 #define STRINGIFY(x) STRINGIFY_INTERNAL(x)
@@ -88,8 +90,14 @@ static void memory_stat_parse_line(char* line, struct memory_stat* mem_st) {
 static int memory_stat_from_cgroup(struct memory_stat* mem_st, int pid, uid_t uid) {
     FILE *fp;
     char buf[PATH_MAX];
+    std::optional<MemcgInfo> memcg_info = get_memcg_info();
 
-    snprintf(buf, sizeof(buf), MEMCG_PROCESS_MEMORY_STAT_PATH, uid, pid);
+    if (!memcg_info.has_value()) {
+        return -1;
+    }
+
+    snprintf(buf, sizeof(buf), "%s/uid_%u/pid_%d/memory.stat", memcg_info->apps_dir.c_str(), uid,
+             pid);
 
     fp = fopen(buf, "r");
 
