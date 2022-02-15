@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "483cf46e_75d1356a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-15T00:11:16Z",
+      "side": 1,
+      "message": "Actually, now this reminds me the history of how memcg got leaked into lmkd. lmkd used to be completely unaware of memcgs. Then Android Go team introduced",
+      "revId": "fe2d713c5b37e8dbe76a3886db64bdaa90ec024d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c12441c9_0bd1ee10",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2792,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-15T00:11:16Z",
+      "side": 1,
+      "message": "This will be triggered every time PSI event is received (quite often). init_mp_common already checks for this, why do we need to check it again?",
+      "range": {
+        "startLine": 2787,
+        "startChar": 3,
+        "endLine": 2792,
+        "endChar": 5
+      },
+      "revId": "fe2d713c5b37e8dbe76a3886db64bdaa90ec024d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
