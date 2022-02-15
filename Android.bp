@@ -57,6 +57,9 @@ cc_library_static {
         "liblog",
         "libprocessgroup",
     ],
+    static_libs: [
+        "liblmkd_utils",
+    ],
 }
 
 cc_library_static {
