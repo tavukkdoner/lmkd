@@ -30,6 +30,10 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <fstream>
+
+#include <processgroup/processgroup.h>
+
 #ifdef LMKD_LOG_STATS
 
 #define STRINGIFY(x) STRINGIFY_INTERNAL(x)
@@ -63,7 +67,7 @@ static struct proc* pid_lookup(int pid) {
     return procp;
 }
 
-static void memory_stat_parse_line(char* line, struct memory_stat* mem_st) {
+static void memory_stat_parse_line(const char* line, struct memory_stat* mem_st) {
     char key[MAX_TASKNAME_LEN + 1];
     int64_t value;
 
@@ -85,22 +89,22 @@ static void memory_stat_parse_line(char* line, struct memory_stat* mem_st) {
         mem_st->swap_in_bytes = value;
 }
 
-static int memory_stat_from_cgroup(struct memory_stat* mem_st, int pid, uid_t uid) {
-    FILE *fp;
-    char buf[PATH_MAX];
-
-    snprintf(buf, sizeof(buf), MEMCG_PROCESS_MEMORY_STAT_PATH, uid, pid);
-
-    fp = fopen(buf, "r");
-
-    if (fp == NULL) {
+static int memory_stat_from_cgroup(struct memory_stat* mem_st, int pid, uid_t uid __unused) {
+    std::string path;
+    if (!CgroupGetAttributePathForTask("MemStats", pid, &path)) {
+        ALOGE("Querying MemStats path failed");
         return -1;
     }
 
-    while (fgets(buf, PAGE_SIZE, fp) != NULL) {
-        memory_stat_parse_line(buf, mem_st);
+    std::ifstream is(path);
+    if (!is) {
+        ALOGE("Opening %s failed", path.c_str());
+        return -1;
     }
-    fclose(fp);
+    std::string line;
+    while (std::getline(is, line)) {
+        memory_stat_parse_line(line.c_str(), mem_st);
+    }
 
     return 0;
 }
