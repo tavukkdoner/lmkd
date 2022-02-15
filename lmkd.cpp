@@ -36,6 +36,7 @@
 
 #include <algorithm>
 #include <array>
+#include <functional>
 #include <shared_mutex>
 #include <string>
 
@@ -3079,13 +3080,28 @@ static void destroy_mp_psi(enum vmpressure_level level) {
     mpevfd[level] = -1;
 }
 
+static bool __using_memcg_v2() {
+    std::optional<MemcgInfo> memcg_info = get_memcg_info();
+
+    return memcg_info.has_value() && memcg_info->version == 2;
+}
+
+static bool using_memcg_v2() {
+    static bool using_v2 = __using_memcg_v2();
+
+    return using_v2;
+}
+
 static bool init_psi_monitors() {
     /*
      * When PSI is used on low-ram devices or on high-end devices without memfree levels
-     * use new kill strategy based on zone watermarks, free swap and thrashing stats
+     * use new kill strategy based on zone watermarks, free swap and thrashing stats.
+     * Also use the new strategy if memcg has been mounted in the v2 cgroups hiearchy since
+     * the old strategy relies on memcg attributes that are not available in the v2 cgroups
+     * hiearchy.
      */
-    bool use_new_strategy =
-        GET_LMK_PROPERTY(bool, "use_new_strategy", low_ram_device || !use_minfree_levels);
+    bool use_new_strategy = GET_LMK_PROPERTY(
+            bool, "use_new_strategy", low_ram_device || !use_minfree_levels || using_memcg_v2());
 
     /* In default PSI mode override stall amounts using system properties */
     if (use_new_strategy) {
@@ -3110,7 +3126,20 @@ static bool init_psi_monitors() {
     return true;
 }
 
+static void run_once(const std::function<void(void)>& f) {
+    static bool __attribute__((unused)) done = (f(), true);
+};
+
 static bool init_mp_common(enum vmpressure_level level) {
+    // The implementation of this function relies on memcg statistics that are only available in the
+    // v1 cgroup hierarchy.
+    if (using_memcg_v2()) {
+        run_once([]() {
+            ALOGE("%s: global monitoring is only available for the v1 cgroup hierarchy", __func__);
+        });
+        return false;
+    }
+
     int mpfd;
     int evfd;
     int evctlfd;
