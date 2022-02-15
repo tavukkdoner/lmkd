@@ -30,6 +30,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <processgroup/processgroup.h>
+
 #ifdef LMKD_LOG_STATS
 
 #define STRINGIFY(x) STRINGIFY_INTERNAL(x)
@@ -85,13 +87,17 @@ static void memory_stat_parse_line(char* line, struct memory_stat* mem_st) {
         mem_st->swap_in_bytes = value;
 }
 
-static int memory_stat_from_cgroup(struct memory_stat* mem_st, int pid, uid_t uid) {
+static int memory_stat_from_cgroup(struct memory_stat* mem_st, int pid, uid_t uid __unused) {
+    std::string path;
+    if (!CgroupGetAttributePathForTask("MemStats", pid, &path)) {
+        ALOGE("Querying MemStats path failed");
+        return -1;
+    }
+
     FILE *fp;
     char buf[PATH_MAX];
 
-    snprintf(buf, sizeof(buf), MEMCG_PROCESS_MEMORY_STAT_PATH, uid, pid);
-
-    fp = fopen(buf, "r");
+    fp = fopen(path.c_str(), "r");
 
     if (fp == NULL) {
         return -1;
