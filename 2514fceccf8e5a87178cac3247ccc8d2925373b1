@@ -16,6 +16,24 @@
       "message": "Why can\u0027t we use CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, \u0026path) for this? Memcg v1 can be mounted in some place other than /dev/memcg/. I really want to avoid hardcoding cgroup paths since I spent lot of time cleaning them up when cgroup abstraction layer was first introduced. So I have a strong bias against hardcoding them.",
       "revId": "2514fceccf8e5a87178cac3247ccc8d2925373b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9bb2c897_dbea8115",
+        "filename": "liblmkd_utils.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-16T01:36:23Z",
+      "side": 1,
+      "message": "This patch has been modified such that libprocessgroup is now used to query the memcg mount point.",
+      "parentUuid": "dce58408_b9c735f4",
+      "revId": "2514fceccf8e5a87178cac3247ccc8d2925373b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
