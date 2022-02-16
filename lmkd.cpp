@@ -16,10 +16,12 @@
 
 #define LOG_TAG "lowmemorykiller"
 
+#include <dirent.h>
 #include <errno.h>
 #include <inttypes.h>
 #include <pwd.h>
 #include <sched.h>
+#include <signal.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -28,15 +30,17 @@
 #include <sys/eventfd.h>
 #include <sys/mman.h>
 #include <sys/pidfd.h>
+#include <sys/resource.h>
 #include <sys/socket.h>
 #include <sys/syscall.h>
 #include <sys/sysinfo.h>
+#include <sys/time.h>
+#include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
 
-#include <shared_mutex>
-
 #include <cutils/properties.h>
+#include <cutils/sched_policy.h>
 #include <cutils/sockets.h>
 #include <liblmkd_utils.h>
 #include <lmkd.h>
@@ -45,10 +49,9 @@
 #include <log/log_time.h>
 #include <private/android_filesystem_config.h>
 #include <psi/psi.h>
+#include <system/thread_defs.h>
 
-#include "reaper.h"
 #include "statslog.h"
-#include "watchdog.h"
 
 #define BPF_FD_JUST_USE_INT
 #include "BpfSyscallWrappers.h"
@@ -62,20 +65,13 @@
 #define ATRACE_TAG ATRACE_TAG_ALWAYS
 #include <cutils/trace.h>
 
-static inline void trace_kill_start(int pid, const char *desc) {
-    ATRACE_INT("kill_one_process", pid);
-    ATRACE_BEGIN(desc);
-}
-
-static inline void trace_kill_end() {
-    ATRACE_END();
-    ATRACE_INT("kill_one_process", 0);
-}
+#define TRACE_KILL_START(pid) ATRACE_INT(__FUNCTION__, pid);
+#define TRACE_KILL_END()      ATRACE_INT(__FUNCTION__, 0);
 
 #else /* LMKD_TRACE_KILLS */
 
-static inline void trace_kill_start(int, const char *) {}
-static inline void trace_kill_end() {}
+#define TRACE_KILL_START(pid) ((void)(pid))
+#define TRACE_KILL_END() ((void)0)
 
 #endif /* LMKD_TRACE_KILLS */
 
@@ -164,8 +160,6 @@ static inline void trace_kill_end() {}
 
 #define LMKD_REINIT_PROP "lmkd.reinit"
 
-#define WATCHDOG_TIMEOUT_SEC 2
-
 /* default to old in-kernel interface if no memory pressure events */
 static bool use_inkernel_interface = true;
 static bool has_inkernel_module;
@@ -227,8 +221,6 @@ static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
 };
 
 static android_log_context ctx;
-static Reaper reaper;
-static int reaper_comm_fd[2];
 
 enum polling_update {
     POLLING_DO_NOT_CHANGE,
@@ -278,9 +270,9 @@ static struct event_handler_info vmpressure_hinfo[VMPRESS_LEVEL_COUNT];
 
 /*
  * 1 ctrl listen socket, 3 ctrl data socket, 3 memory pressure levels,
- * 1 lmk events + 1 fd to wait for process death + 1 fd to receive kill failure notifications
+ * 1 lmk events + 1 fd to wait for process death
  */
-#define MAX_EPOLL_EVENTS (1 + MAX_DATA_CONN + VMPRESS_LEVEL_COUNT + 1 + 1 + 1)
+#define MAX_EPOLL_EVENTS (1 + MAX_DATA_CONN + VMPRESS_LEVEL_COUNT + 1 + 1)
 static int epollfd;
 static int maxevents;
 
@@ -528,11 +520,6 @@ static struct proc *pidhash[PIDHASH_SZ];
 
 #define ADJTOSLOT(adj) ((adj) + -OOM_SCORE_ADJ_MIN)
 #define ADJTOSLOT_COUNT (ADJTOSLOT(OOM_SCORE_ADJ_MAX) + 1)
-
-// protects procadjslot_list from concurrent access
-static std::shared_mutex adjslot_list_lock;
-// procadjslot_list should be modified only from the main thread while exclusively holding
-// adjslot_list_lock. Readers from non-main threads should hold adjslot_list_lock shared lock.
 static struct adjslot_list procadjslot_list[ADJTOSLOT_COUNT];
 
 #define MAX_DISTINCT_OOM_ADJ 32
@@ -922,18 +909,13 @@ static struct adjslot_list *adjslot_tail(struct adjslot_list *head) {
     return asl == head ? NULL : asl;
 }
 
-// Should be modified only from the main thread.
 static void proc_slot(struct proc *procp) {
     int adjslot = ADJTOSLOT(procp->oomadj);
-    std::scoped_lock lock(adjslot_list_lock);
 
     adjslot_insert(&procadjslot_list[adjslot], &procp->asl);
 }
 
-// Should be modified only from the main thread.
 static void proc_unslot(struct proc *procp) {
-    std::scoped_lock lock(adjslot_list_lock);
-
     adjslot_remove(&procp->asl);
 }
 
@@ -1950,15 +1932,8 @@ static void record_wakeup_time(struct timespec *tm, enum wakeup_reason reason,
     }
 }
 
-struct kill_info {
-    enum kill_reasons kill_reason;
-    const char *kill_desc;
-    int thrashing;
-    int max_thrashing;
-};
-
 static void killinfo_log(struct proc* procp, int min_oom_score, int rss_kb,
-                         int swap_kb, struct kill_info *ki, union meminfo *mi,
+                         int swap_kb, int kill_reason, union meminfo *mi,
                          struct wakeup_info *wi, struct timespec *tm) {
     /* log process information */
     android_log_write_int32(ctx, procp->pid);
@@ -1966,67 +1941,29 @@ static void killinfo_log(struct proc* procp, int min_oom_score, int rss_kb,
     android_log_write_int32(ctx, procp->oomadj);
     android_log_write_int32(ctx, min_oom_score);
     android_log_write_int32(ctx, (int32_t)min(rss_kb, INT32_MAX));
-    android_log_write_int32(ctx, ki ? ki->kill_reason : NONE);
+    android_log_write_int32(ctx, kill_reason);
 
     /* log meminfo fields */
     for (int field_idx = 0; field_idx < MI_FIELD_COUNT; field_idx++) {
-        android_log_write_int32(ctx, mi ? (int32_t)min(mi->arr[field_idx] * page_k, INT32_MAX): 0);
+        android_log_write_int32(ctx, (int32_t)min(mi->arr[field_idx] * page_k, INT32_MAX));
     }
 
     /* log lmkd wakeup information */
-    if (wi) {
-        android_log_write_int32(ctx, (int32_t)get_time_diff_ms(&wi->last_event_tm, tm));
-        android_log_write_int32(ctx, (int32_t)get_time_diff_ms(&wi->prev_wakeup_tm, tm));
-        android_log_write_int32(ctx, wi->wakeups_since_event);
-        android_log_write_int32(ctx, wi->skipped_wakeups);
-    } else {
-        android_log_write_int32(ctx, 0);
-        android_log_write_int32(ctx, 0);
-        android_log_write_int32(ctx, 0);
-        android_log_write_int32(ctx, 0);
-    }
-
+    android_log_write_int32(ctx, (int32_t)get_time_diff_ms(&wi->last_event_tm, tm));
+    android_log_write_int32(ctx, (int32_t)get_time_diff_ms(&wi->prev_wakeup_tm, tm));
+    android_log_write_int32(ctx, wi->wakeups_since_event);
+    android_log_write_int32(ctx, wi->skipped_wakeups);
     android_log_write_int32(ctx, (int32_t)min(swap_kb, INT32_MAX));
-    android_log_write_int32(ctx, mi ? (int32_t)mi->field.total_gpu_kb : 0);
-    if (ki) {
-        android_log_write_int32(ctx, ki->thrashing);
-        android_log_write_int32(ctx, ki->max_thrashing);
-    } else {
-        android_log_write_int32(ctx, 0);
-        android_log_write_int32(ctx, 0);
-    }
+    android_log_write_int32(ctx, (int32_t)mi->field.total_gpu_kb);
 
     android_log_write_list(ctx, LOG_ID_EVENTS);
     android_log_reset(ctx);
 }
 
-// Note: returned entry is only an anchor and does not hold a valid process info.
-// When called from a non-main thread, adjslot_list_lock read lock should be taken.
-static struct proc *proc_adj_head(int oomadj) {
-    return (struct proc *)&procadjslot_list[ADJTOSLOT(oomadj)];
-}
-
-// When called from a non-main thread, adjslot_list_lock read lock should be taken.
-static struct proc *proc_adj_tail(int oomadj) {
+static struct proc *proc_adj_lru(int oomadj) {
     return (struct proc *)adjslot_tail(&procadjslot_list[ADJTOSLOT(oomadj)]);
 }
 
-// When called from a non-main thread, adjslot_list_lock read lock should be taken.
-static struct proc *proc_adj_prev(int oomadj, int pid) {
-    struct adjslot_list *head = &procadjslot_list[ADJTOSLOT(oomadj)];
-    struct adjslot_list *curr = adjslot_tail(&procadjslot_list[ADJTOSLOT(oomadj)]);
-
-    while (curr != head) {
-        if (((struct proc *)curr)->pid == pid) {
-            return (struct proc *)curr->prev;
-        }
-        curr = curr->prev;
-    }
-
-    return NULL;
-}
-
-// When called from a non-main thread, adjslot_list_lock read lock should be taken.
 static struct proc *proc_get_heaviest(int oomadj) {
     struct adjslot_list *head = &procadjslot_list[ADJTOSLOT(oomadj)];
     struct adjslot_list *curr = head->next;
@@ -2050,54 +1987,40 @@ static struct proc *proc_get_heaviest(int oomadj) {
     return maxprocp;
 }
 
-static bool find_victim(int oom_score, int prev_pid, struct proc &target_proc) {
-    struct proc *procp;
-    std::shared_lock lock(adjslot_list_lock);
+static void set_process_group_and_prio(int pid, SchedPolicy sp, int prio) {
+    DIR* d;
+    char proc_path[PATH_MAX];
+    struct dirent* de;
 
-    if (!prev_pid) {
-        procp = proc_adj_tail(oom_score);
-    } else {
-        procp = proc_adj_prev(oom_score, prev_pid);
-        if (!procp) {
-            // pid was removed, restart at the tail
-            procp = proc_adj_tail(oom_score);
-        }
+    snprintf(proc_path, sizeof(proc_path), "/proc/%d/task", pid);
+    if (!(d = opendir(proc_path))) {
+        ALOGW("Failed to open %s; errno=%d: process pid(%d) might have died", proc_path, errno,
+              pid);
+        return;
     }
 
-    // the list is empty at this oom_score or we looped through it
-    if (!procp || procp == proc_adj_head(oom_score)) {
-        return false;
-    }
+    while ((de = readdir(d))) {
+        int t_pid;
 
-    // make a copy because original might be destroyed after adjslot_list_lock is released
-    target_proc = *procp;
+        if (de->d_name[0] == '.') continue;
+        t_pid = atoi(de->d_name);
 
-    return true;
-}
-
-static void watchdog_callback() {
-    int prev_pid = 0;
-
-    ALOGW("lmkd watchdog timed out!");
-    for (int oom_score = OOM_SCORE_ADJ_MAX; oom_score >= 0;) {
-        struct proc target;
-
-        if (!find_victim(oom_score, prev_pid, target)) {
-            oom_score--;
-            prev_pid = 0;
+        if (!t_pid) {
+            ALOGW("Failed to get t_pid for '%s' of pid(%d)", de->d_name, pid);
             continue;
         }
 
-        if (reaper.kill({ target.pidfd, target.pid, target.uid }, true) == 0) {
-            ALOGW("lmkd watchdog killed process %d, oom_score_adj %d", target.pid, oom_score);
-            killinfo_log(&target, 0, 0, 0, NULL, NULL, NULL, NULL);
-            break;
+        if (setpriority(PRIO_PROCESS, t_pid, prio) && errno != ESRCH) {
+            ALOGW("Unable to raise priority of killing t_pid (%d): errno=%d", t_pid, errno);
         }
-        prev_pid = target.pid;
-    }
-}
 
-static Watchdog watchdog(WATCHDOG_TIMEOUT_SEC, watchdog_callback);
+        if (set_cpuset_policy(t_pid, sp)) {
+            ALOGW("Failed to set_cpuset_policy on pid(%d) t_pid(%d) to %d", pid, t_pid, (int)sp);
+            continue;
+        }
+    }
+    closedir(d);
+}
 
 static bool is_kill_pending(void) {
     char buf[24];
@@ -2169,19 +2092,6 @@ static void kill_done_handler(int data __unused, uint32_t events __unused,
     poll_params->update = POLLING_RESUME;
 }
 
-static void kill_fail_handler(int data __unused, uint32_t events __unused,
-                              struct polling_params *poll_params) {
-    int pid;
-
-    // Extract pid from the communication pipe. Clearing the pipe this way allows further
-    // epoll_wait calls to sleep until the next event.
-    if (TEMP_FAILURE_RETRY(read(reaper_comm_fd[0], &pid, sizeof(pid))) != sizeof(pid)) {
-        ALOGE("thread communication read failed: %s", strerror(errno));
-    }
-    stop_wait_for_proc_kill(false);
-    poll_params->update = POLLING_RESUME;
-}
-
 static void start_wait_for_proc_kill(int pid_or_fd) {
     static struct event_handler_info kill_done_hinfo = { 0, kill_done_handler };
     struct epoll_event epev;
@@ -2210,6 +2120,13 @@ static void start_wait_for_proc_kill(int pid_or_fd) {
     maxevents++;
 }
 
+struct kill_info {
+    enum kill_reasons kill_reason;
+    const char *kill_desc;
+    int thrashing;
+    int max_thrashing;
+};
+
 /* Kill one process specified by procp.  Returns the size (in pages) of the process killed */
 static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_info *ki,
                             union meminfo *mi, struct wakeup_info *wi, struct timespec *tm) {
@@ -2217,7 +2134,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     int pidfd = procp->pidfd;
     uid_t uid = procp->uid;
     char *taskname;
-    int kill_result;
+    int r;
     int result = -1;
     struct memory_stat *mem_st;
     struct kill_stat kill_st;
@@ -2225,7 +2142,6 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     int64_t rss_kb;
     int64_t swap_kb;
     char buf[PAGE_SIZE];
-    char desc[LINE_MAX];
 
     if (!read_proc_status(pid, buf, sizeof(buf))) {
         goto out;
@@ -2254,22 +2170,27 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
 
     mem_st = stats_read_memory_stat(per_app_memcg, pid, uid, rss_kb * 1024, swap_kb * 1024);
 
-    snprintf(desc, sizeof(desc), "lmk,%d,%d,%d,%d,%d", pid, ki ? (int)ki->kill_reason : -1,
-             procp->oomadj, min_oom_score, ki ? ki->max_thrashing : -1);
+    TRACE_KILL_START(pid);
 
-    trace_kill_start(pid, desc);
+    /* CAP_KILL required */
+    if (pidfd < 0) {
+        start_wait_for_proc_kill(pid);
+        r = kill(pid, SIGKILL);
+    } else {
+        start_wait_for_proc_kill(pidfd);
+        r = pidfd_send_signal(pidfd, SIGKILL, NULL, 0);
+    }
 
-    start_wait_for_proc_kill(pidfd < 0 ? pid : pidfd);
-    kill_result = reaper.kill({ pidfd, pid, uid }, false);
+    TRACE_KILL_END();
 
-    trace_kill_end();
-
-    if (kill_result) {
+    if (r) {
         stop_wait_for_proc_kill(false);
         ALOGE("kill(%d): errno=%d", pid, errno);
         /* Delete process record even when we fail to kill so that we don't get stuck on it */
         goto out;
     }
+
+    set_process_group_and_prio(pid, SP_FOREGROUND, ANDROID_PRIORITY_HIGHEST);
 
     last_kill_tm = *tm;
 
@@ -2279,6 +2200,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
         kill_st.kill_reason = ki->kill_reason;
         kill_st.thrashing = ki->thrashing;
         kill_st.max_thrashing = ki->max_thrashing;
+        killinfo_log(procp, min_oom_score, rss_kb, swap_kb, ki->kill_reason, mi, wi, tm);
         ALOGI("Kill '%s' (%d), uid %d, oom_score_adj %d to free %" PRId64 "kB rss, %" PRId64
               "kB swap; reason: %s", taskname, pid, uid, procp->oomadj, rss_kb, swap_kb,
               ki->kill_desc);
@@ -2286,10 +2208,10 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
         kill_st.kill_reason = NONE;
         kill_st.thrashing = 0;
         kill_st.max_thrashing = 0;
+        killinfo_log(procp, min_oom_score, rss_kb, swap_kb, NONE, mi, wi, tm);
         ALOGI("Kill '%s' (%d), uid %d, oom_score_adj %d to free %" PRId64 "kB rss, %" PRId64
               "kb swap", taskname, pid, uid, procp->oomadj, rss_kb, swap_kb);
     }
-    killinfo_log(procp, min_oom_score, rss_kb, swap_kb, ki, mi, wi, tm);
 
     kill_st.uid = static_cast<int32_t>(uid);
     kill_st.taskname = taskname;
@@ -2336,7 +2258,7 @@ static int find_and_kill_process(int min_score_adj, struct kill_info *ki, union 
 
         while (true) {
             procp = choose_heaviest_task ?
-                proc_get_heaviest(i) : proc_adj_tail(i);
+                proc_get_heaviest(i) : proc_adj_lru(i);
 
             if (!procp)
                 break;
@@ -2488,6 +2410,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     static int64_t base_file_lru;
     static int64_t init_pgscan_kswapd;
     static int64_t init_pgscan_direct;
+    static int64_t swap_low_threshold;
     static bool killing;
     static int thrashing_limit = thrashing_limit_pct;
     static struct zone_watermarks watermarks;
@@ -2512,7 +2435,6 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     bool cut_thrashing_limit = false;
     int min_score_adj = 0;
     int swap_util = 0;
-    int64_t swap_low_threshold;
     long since_thrashing_reset_ms;
     int64_t workingset_refault_file;
 
@@ -2561,10 +2483,10 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
 
     /* Check free swap levels */
     if (swap_free_low_percentage) {
-        swap_low_threshold = mi.field.total_swap * swap_free_low_percentage / 100;
+        if (!swap_low_threshold) {
+            swap_low_threshold = mi.field.total_swap * swap_free_low_percentage / 100;
+        }
         swap_is_low = mi.field.free_swap < swap_low_threshold;
-    } else {
-        swap_low_threshold = 0;
     }
 
     /* Identify reclaim state */
@@ -2900,7 +2822,7 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
         }
 
         if (min_score_adj == OOM_SCORE_ADJ_MAX + 1) {
-            if (debug_process_killing && lowmem_targets_size) {
+            if (debug_process_killing) {
                 ALOGI("Ignore %s memory pressure event "
                       "(free memory=%ldkB, cache=%ldkB, limit=%ldkB)",
                       level_name[level], other_free * page_k, other_file * page_k,
@@ -3218,63 +3140,6 @@ static void destroy_monitors() {
     }
 }
 
-static void drop_reaper_comm() {
-    close(reaper_comm_fd[0]);
-    close(reaper_comm_fd[1]);
-}
-
-static bool setup_reaper_comm() {
-    if (pipe(reaper_comm_fd)) {
-        ALOGE("pipe failed: %s", strerror(errno));
-        return false;
-    }
-
-    // Ensure main thread never blocks on read
-    int flags = fcntl(reaper_comm_fd[0], F_GETFL);
-    if (fcntl(reaper_comm_fd[0], F_SETFL, flags | O_NONBLOCK)) {
-        ALOGE("fcntl failed: %s", strerror(errno));
-        drop_reaper_comm();
-        return false;
-    }
-
-    return true;
-}
-
-static bool init_reaper() {
-    if (!reaper.is_reaping_supported()) {
-        ALOGI("Process reaping is not supported");
-        return false;
-    }
-
-    if (!setup_reaper_comm()) {
-        ALOGE("Failed to create thread communication channel");
-        return false;
-    }
-
-    // Setup epoll handler
-    struct epoll_event epev;
-    static struct event_handler_info kill_failed_hinfo = { 0, kill_fail_handler };
-    epev.events = EPOLLIN;
-    epev.data.ptr = (void *)&kill_failed_hinfo;
-    if (epoll_ctl(epollfd, EPOLL_CTL_ADD, reaper_comm_fd[0], &epev)) {
-        ALOGE("epoll_ctl failed: %s", strerror(errno));
-        drop_reaper_comm();
-        return false;
-    }
-
-    if (!reaper.init(reaper_comm_fd[1])) {
-        ALOGE("Failed to initialize reaper object");
-        if (epoll_ctl(epollfd, EPOLL_CTL_DEL, reaper_comm_fd[0], &epev)) {
-            ALOGE("epoll_ctl failed: %s", strerror(errno));
-        }
-        drop_reaper_comm();
-        return false;
-    }
-    maxevents++;
-
-    return true;
-}
-
 static int init(void) {
     static struct event_handler_info kernel_poll_hinfo = { 0, kernel_event_handler };
     struct reread_data file_data = {
@@ -3392,7 +3257,6 @@ static void call_handler(struct event_handler_info* handler_info,
                          struct polling_params *poll_params, uint32_t events) {
     struct timespec curr_tm;
 
-    watchdog.start();
     poll_params->update = POLLING_DO_NOT_CHANGE;
     handler_info->handler(handler_info->data, events, poll_params);
     clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm);
@@ -3424,7 +3288,6 @@ static void call_handler(struct event_handler_info* handler_info,
         }
         break;
     }
-    watchdog.stop();
 }
 
 static void mainloop(void) {
@@ -3506,9 +3369,7 @@ static void mainloop(void) {
             if ((evt->events & EPOLLHUP) && evt->data.ptr) {
                 ALOGI("lmkd data connection dropped");
                 handler_info = (struct event_handler_info*)evt->data.ptr;
-                watchdog.start();
                 ctrl_data_close(handler_info->data);
-                watchdog.stop();
             }
         }
 
@@ -3601,8 +3462,6 @@ static void update_props() {
         thrashing_limit_pct * 2));
     swap_util_max = clamp(0, 100, GET_LMK_PROPERTY(int32, "swap_util_max", 100));
     filecache_min_kb = GET_LMK_PROPERTY(int64, "filecache_min_kb", 0);
-
-    reaper.enable_debug(debug_process_killing);
 }
 
 int main(int argc, char **argv) {
@@ -3642,15 +3501,6 @@ int main(int argc, char **argv) {
             if (sched_setscheduler(0, SCHED_FIFO, &param)) {
                 ALOGW("set SCHED_FIFO failed %s", strerror(errno));
             }
-        }
-
-        if (init_reaper()) {
-            ALOGI("Process reaper initialized with %d threads in the pool",
-                reaper.thread_cnt());
-        }
-
-        if (!watchdog.init()) {
-            ALOGE("Failed to initialize the watchdog");
         }
 
         mainloop();
