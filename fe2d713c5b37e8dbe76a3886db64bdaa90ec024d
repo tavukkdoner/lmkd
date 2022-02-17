@@ -57,6 +57,30 @@
       },
       "revId": "fe2d713c5b37e8dbe76a3886db64bdaa90ec024d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "68c7d858_18df5c90",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2792,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-17T00:28:32Z",
+      "side": 1,
+      "message": "Thanks for the feedback. I have removed the code this comment applies to.",
+      "parentUuid": "c12441c9_0bd1ee10",
+      "range": {
+        "startLine": 2787,
+        "startChar": 3,
+        "endLine": 2792,
+        "endChar": 5
+      },
+      "revId": "fe2d713c5b37e8dbe76a3886db64bdaa90ec024d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

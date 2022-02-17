@@ -113,6 +113,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "eda66c7a_1396422e",
+        "filename": "liblmkd_utils.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-17T00:28:32Z",
+      "side": 1,
+      "message": "A new function get_memcg_info() has been introduced that calls CgroupGetControllerPath().",
+      "parentUuid": "c0b8ed5f_76a3309c",
+      "range": {
+        "startLine": 80,
+        "startChar": 4,
+        "endLine": 80,
+        "endChar": 16
+      },
+      "revId": "0cef13b5028f30dedc4d35fb2d227399e567aef3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "586b4872_34d7d575",
