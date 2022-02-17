@@ -47,6 +47,7 @@
 #include <log/log_event_list.h>
 #include <log/log_time.h>
 #include <private/android_filesystem_config.h>
+#include <processgroup/processgroup.h>
 #include <psi/psi.h>
 
 #include "reaper.h"
@@ -86,9 +87,6 @@ static inline void trace_kill_end() {}
 #define __unused __attribute__((__unused__))
 #endif
 
-#define MEMCG_SYSFS_PATH "/dev/memcg/"
-#define MEMCG_MEMORY_USAGE "/dev/memcg/memory.usage_in_bytes"
-#define MEMCG_MEMORYSW_USAGE "/dev/memcg/memory.memsw.usage_in_bytes"
 #define ZONEINFO_PATH "/proc/zoneinfo"
 #define MEMINFO_PATH "/proc/meminfo"
 #define VMSTAT_PATH "/proc/vmstat"
@@ -1183,13 +1181,12 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
             soft_limit_mult = 64;
         }
 
-        std::optional<MemcgInfo> memcg_info = get_memcg_info();
-        if (!memcg_info.has_value()) {
-            ALOGE("Could not find the memory cgroup controller");
+        std::string path;
+        if (!CgroupGetAttributePathForTask("MemSoftLimit", params.pid, &path)) {
+            ALOGE("Querying MemSoftLimit path failed");
             return;
         }
-        snprintf(path, sizeof(path), "%s/uid_%d/pid_%d/%s", memcg_info->apps_dir.c_str(),
-                 params.uid, params.pid, "memory.soft_limit_in_bytes");
+
         snprintf(val, sizeof(val), "%d", soft_limit_mult * EIGHT_MEGA);
 
         /*
@@ -1199,7 +1196,7 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
         is_system_server = (params.oomadj == SYSTEM_ADJ &&
                             (pwdrec = getpwnam("system")) != NULL &&
                             params.uid == pwdrec->pw_uid);
-        writefilestring(path, val, !is_system_server);
+        writefilestring(path.c_str(), val, !is_system_server);
     }
 
     procp = pid_lookup(params.pid);
@@ -2866,6 +2863,16 @@ no_kill:
     }
 }
 
+static std::string GetCgroupAttributePath(const char* attr) {
+    std::string path;
+    if (!CgroupGetAttributePath(attr, &path)) {
+        ALOGE("Unknown cgroup attribute %s", attr);
+    }
+    return path;
+}
+
+// The implementation of this function relies on memcg statistics that are only available in the
+// v1 cgroup hierarchy.
 static void mp_event_common(int data, uint32_t events, struct polling_params *poll_params) {
     unsigned long long evcount;
     int64_t mem_usage, memsw_usage;
@@ -2879,11 +2886,11 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
     int min_score_adj;
     int minfree = 0;
     static struct reread_data mem_usage_file_data = {
-        .filename = MEMCG_MEMORY_USAGE,
+        .filename = GetCgroupAttributePath("MemUsage"),
         .fd = -1,
     };
     static struct reread_data memsw_usage_file_data = {
-        .filename = MEMCG_MEMORYSW_USAGE,
+        .filename = GetCgroupAttributePath("MemAndSwapUsage"),
         .fd = -1,
     };
     static struct wakeup_info wi;
@@ -3188,13 +3195,15 @@ static bool init_mp_common(enum vmpressure_level level) {
     const char *levelstr = level_name[level_idx];
 
     /* gid containing AID_SYSTEM required */
-    mpfd = open(MEMCG_SYSFS_PATH "memory.pressure_level", O_RDONLY | O_CLOEXEC);
+    static const std::string mem_pressure_level = GetCgroupAttributePath("MemPressureLevel");
+    mpfd = open(mem_pressure_level.c_str(), O_RDONLY | O_CLOEXEC);
     if (mpfd < 0) {
         ALOGI("No kernel memory.pressure_level support (errno=%d)", errno);
         goto err_open_mpfd;
     }
 
-    evctlfd = open(MEMCG_SYSFS_PATH "cgroup.event_control", O_WRONLY | O_CLOEXEC);
+    static const std::string cgroup_event_control = GetCgroupAttributePath("CgroupEventControl");
+    evctlfd = open(cgroup_event_control.c_str(), O_WRONLY | O_CLOEXEC);
     if (evctlfd < 0) {
         ALOGI("No kernel memory cgroup event control (errno=%d)", errno);
         goto err_open_evctlfd;
