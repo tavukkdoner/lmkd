@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "196f3bae_0360e8a1",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1966,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-17T20:15:05Z",
+      "side": 1,
+      "message": "Hmm. Does this result into std::min((int32_t)rss_kb, (int32_t)INT32_MAX) ?\n\nIf so, this this is not equivalent with the former (int32_t)min(rss_kb, INT32_MAX) and it won\u0027t handle the case when (rss_kb \u003e INT32_MAX) resulting in the value wraparound.",
+      "range": {
+        "startLine": 1966,
+        "startChar": 33,
+        "endLine": 1966,
+        "endChar": 50
+      },
+      "revId": "d62f5f59750a8d0c6558701bc6a209fdedc01bfd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
