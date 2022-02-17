@@ -16,6 +16,24 @@
       "message": "Please fix the long line issue. Otherwise LGTM.",
       "revId": "b3ce3efb775df0337bd1959a790d9aa8443479b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6db6c0d_36c93c9e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-17T19:52:11Z",
+      "side": 1,
+      "message": "This issue should be fixed now - I reformatted the code modified by this patch with git clang-format HEAD^",
+      "parentUuid": "e52c0297_89360306",
+      "revId": "b3ce3efb775df0337bd1959a790d9aa8443479b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
