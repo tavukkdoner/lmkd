@@ -37,6 +37,7 @@
 #include <algorithm>
 #include <array>
 #include <shared_mutex>
+#include <string>
 
 #include <cutils/properties.h>
 #include <cutils/sockets.h>
@@ -516,7 +517,7 @@ struct proc {
 };
 
 struct reread_data {
-    const char* const filename;
+    std::string filename;
     int fd;
 };
 
@@ -632,9 +633,9 @@ static char *reread_file(struct reread_data *data) {
             return NULL;
         }
 
-        data->fd = TEMP_FAILURE_RETRY(open(data->filename, O_RDONLY | O_CLOEXEC));
+        data->fd = TEMP_FAILURE_RETRY(open(data->filename.c_str(), O_RDONLY | O_CLOEXEC));
         if (data->fd < 0) {
-            ALOGE("%s open: %s", data->filename, strerror(errno));
+            ALOGE("%s open: %s", data->filename.c_str(), strerror(errno));
             return NULL;
         }
     }
@@ -642,7 +643,7 @@ static char *reread_file(struct reread_data *data) {
     while (true) {
         size = read_all(data->fd, buf, buf_size - 1);
         if (size < 0) {
-            ALOGE("%s read: %s", data->filename, strerror(errno));
+            ALOGE("%s read: %s", data->filename.c_str(), strerror(errno));
             close(data->fd);
             data->fd = -1;
             return NULL;
@@ -1754,7 +1755,7 @@ static int zoneinfo_parse(struct zoneinfo *zi) {
                     node_idx++;
                     if (node_idx == MAX_NR_NODES) {
                         /* max node count exceeded */
-                        ALOGE("%s parse error", file_data.filename);
+                        ALOGE("%s parse error", file_data.filename.c_str());
                         return -1;
                     }
                 }
@@ -1762,7 +1763,7 @@ static int zoneinfo_parse(struct zoneinfo *zi) {
                 node->id = node_id;
                 zone_idx = 0;
                 if (!zoneinfo_parse_node(&save_ptr, node)) {
-                    ALOGE("%s parse error", file_data.filename);
+                    ALOGE("%s parse error", file_data.filename.c_str());
                     return -1;
                 }
             } else {
@@ -1770,13 +1771,13 @@ static int zoneinfo_parse(struct zoneinfo *zi) {
                 zone_idx++;
             }
             if (!zoneinfo_parse_zone(&save_ptr, &node->zones[zone_idx])) {
-                ALOGE("%s parse error", file_data.filename);
+                ALOGE("%s parse error", file_data.filename.c_str());
                 return -1;
             }
         }
     }
     if (!node) {
-        ALOGE("%s parse error", file_data.filename);
+        ALOGE("%s parse error", file_data.filename.c_str());
         return -1;
     }
     node->zone_count = zone_idx + 1;
@@ -1855,7 +1856,7 @@ static int meminfo_parse(union meminfo *mi) {
     for (line = strtok_r(buf, "\n", &save_ptr); line;
          line = strtok_r(NULL, "\n", &save_ptr)) {
         if (!meminfo_parse_line(line, mi)) {
-            ALOGE("%s parse error", file_data.filename);
+            ALOGE("%s parse error", file_data.filename.c_str());
             return -1;
         }
     }
@@ -1911,7 +1912,7 @@ static int vmstat_parse(union vmstat *vs) {
     for (line = strtok_r(buf, "\n", &save_ptr); line;
          line = strtok_r(NULL, "\n", &save_ptr)) {
         if (!vmstat_parse_line(line, vs)) {
-            ALOGE("%s parse error", file_data.filename);
+            ALOGE("%s parse error", file_data.filename.c_str());
             return -1;
         }
     }
@@ -2376,7 +2377,7 @@ static int64_t get_memory_usage(struct reread_data *file_data) {
     }
 
     if (!parse_int64(buf, &mem_usage)) {
-        ALOGE("%s parse error", file_data->filename);
+        ALOGE("%s parse error", file_data->filename.c_str());
         return -1;
     }
     if (mem_usage == 0) {
@@ -3366,7 +3367,7 @@ static int init(void) {
      * read buffer and avoid memory re-allocations during memory pressure
      */
     if (reread_file(&file_data) == NULL) {
-        ALOGE("Failed to read %s: %s", file_data.filename, strerror(errno));
+        ALOGE("Failed to read %s: %s", file_data.filename.c_str(), strerror(errno));
     }
 
     /* check if kernel supports pidfd_open syscall */
