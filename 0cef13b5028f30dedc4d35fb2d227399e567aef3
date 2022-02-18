@@ -208,6 +208,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe5e23a9_aa17ea0d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1183,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-18T02:57:37Z",
+      "side": 1,
+      "message": "This code has been modified such that it now uses CgroupGetAttributePathForTask().",
+      "parentUuid": "16eb3b98_27870b55",
+      "range": {
+        "startLine": 1182,
+        "startChar": 7,
+        "endLine": 1183,
+        "endChar": 29
+      },
+      "revId": "0cef13b5028f30dedc4d35fb2d227399e567aef3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f70ff8b1_083617c9",
@@ -316,6 +340,30 @@
       "side": 1,
       "message": "ditto",
       "parentUuid": "a8da4228_015f849c",
+      "range": {
+        "startLine": 95,
+        "startChar": 0,
+        "endLine": 95,
+        "endChar": 81
+      },
+      "revId": "0cef13b5028f30dedc4d35fb2d227399e567aef3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa3b6d6f_784286fd",
+        "filename": "statslog.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-18T02:57:37Z",
+      "side": 1,
+      "message": "This has been fixed.",
+      "parentUuid": "fb6089a0_3e565072",
       "range": {
         "startLine": 95,
         "startChar": 0,
