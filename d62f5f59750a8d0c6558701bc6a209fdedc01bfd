@@ -22,6 +22,30 @@
       },
       "revId": "d62f5f59750a8d0c6558701bc6a209fdedc01bfd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f1d7dc4b_65d27134",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1966,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-02-18T01:03:41Z",
+      "side": 1,
+      "message": "The following changes have been made:\n- Change all std::min\u003cT\u003e(...) occurrences into std::min(...).\n- Upcast one std::min() argument if necessary.",
+      "parentUuid": "196f3bae_0360e8a1",
+      "range": {
+        "startLine": 1966,
+        "startChar": 33,
+        "endLine": 1966,
+        "endChar": 50
+      },
+      "revId": "d62f5f59750a8d0c6558701bc6a209fdedc01bfd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
