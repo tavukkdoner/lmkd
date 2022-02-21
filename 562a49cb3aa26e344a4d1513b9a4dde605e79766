@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1bd637e6_58b523b3",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2714,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-21T20:30:25Z",
+      "side": 1,
+      "message": "Yes. It performs one unnecessary reassignment but I guess it makes the code simpler. Will do.",
+      "parentUuid": "e3860119_845e9105",
+      "range": {
+        "startLine": 2714,
+        "startChar": 72,
+        "endLine": 2714,
+        "endChar": 84
+      },
+      "revId": "562a49cb3aa26e344a4d1513b9a4dde605e79766",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "55d81d4e_bd456e04",
         "filename": "lmkd.cpp",
         "patchSetId": 2
