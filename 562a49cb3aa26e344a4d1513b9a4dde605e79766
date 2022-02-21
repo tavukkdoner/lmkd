@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e3860119_845e9105",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2714,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-02-21T02:06:30Z",
+      "side": 1,
+      "message": "Can we add psi_breached check at last line instead of adding the condition check every cases?",
+      "range": {
+        "startLine": 2714,
+        "startChar": 72,
+        "endLine": 2714,
+        "endChar": 84
+      },
+      "revId": "562a49cb3aa26e344a4d1513b9a4dde605e79766",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55d81d4e_bd456e04",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2777,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-02-21T02:06:30Z",
+      "side": 1,
+      "message": "```\nIf (psi_breached) {\n  min_score_adj \u003d 0;\n}\n```",
+      "revId": "562a49cb3aa26e344a4d1513b9a4dde605e79766",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
