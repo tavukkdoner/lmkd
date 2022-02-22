@@ -37,6 +37,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2c048429_8fa78136",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1790,
+      "author": {
+        "id": 1868565
+      },
+      "writtenOn": "2022-02-22T00:31:35Z",
+      "side": 1,
+      "message": "dma_heap_pool can get from kernel_misc_reclaimable pages. so why use this ? read this may need many locks, like heap lock, pool mutex lock which may incur ux latency issue. if we realy need this we can add dma-pool atomic counter instead of this.",
+      "revId": "79e617fe56162750a11bfed8d8c00f2e3305a98b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "72c6161a_059a0c10",
         "filename": "lmkd.cpp",
         "patchSetId": 4
