@@ -22,6 +22,30 @@
       },
       "revId": "014dd7156eaf49860502787112a1bac88156d528",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f2e91c9_7d95712d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1954,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-02-22T17:12:45Z",
+      "side": 1,
+      "message": "no, it\u0027s not called from any other thread. The only threads in lmkd are the main thread, the reaper threads and the watchdog thread. Only main thread uses these functions.",
+      "parentUuid": "f8d5613f_5c5496fc",
+      "range": {
+        "startLine": 1951,
+        "startChar": 3,
+        "endLine": 1954,
+        "endChar": 6
+      },
+      "revId": "014dd7156eaf49860502787112a1bac88156d528",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
