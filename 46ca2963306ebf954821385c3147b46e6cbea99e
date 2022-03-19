@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "985b0994_ba9f4bbd",
+        "filename": "statslog.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-19T18:17:59Z",
+      "side": 1,
+      "message": "Unnecessary change. If we decide to convert everything in a proper C++ we should do this in a separate patch and target the whole file.",
+      "range": {
+        "startLine": 99,
+        "startChar": 0,
+        "endLine": 107,
+        "endChar": 5
+      },
+      "revId": "46ca2963306ebf954821385c3147b46e6cbea99e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
