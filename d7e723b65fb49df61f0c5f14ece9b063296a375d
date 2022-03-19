@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55554894_e4a1f33c",
+        "filename": "include/liblmkd_utils.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-19T18:15:37Z",
+      "side": 1,
+      "message": "AFAIKT this function is used:\n1. In the tests in combination with create_memcg(),\n2. In lmkd but then replaced with CgroupGetAttributePathForTask: https://android-review.googlesource.com/c/platform/system/memory/lmkd/+/1990496/4/lmkd.cpp#1185\n3. In __using_memcg_v2 (https://android-review.googlesource.com/c/platform/system/memory/lmkd/+/1972106/11/lmkd.cpp#3158) to only get the memcg version (which can be simply by using `if CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, \u0026path)` condition).\n\nConsidering all that I would suggest to amend create_memcg() implementation (without changing its API) instead of adding this new API and changing existing create_memcg API.",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 42
+      },
+      "revId": "d7e723b65fb49df61f0c5f14ece9b063296a375d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f9812dc_6afe32cf",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1191,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-19T18:15:37Z",
+      "side": 1,
+      "message": "This is changed again in https://android-review.googlesource.com/c/platform/system/memory/lmkd/+/1990496/4/lmkd.cpp#1185. Why not just implement the final version?",
+      "range": {
+        "startLine": 1185,
+        "startChar": 0,
+        "endLine": 1191,
+        "endChar": 71
+      },
+      "revId": "d7e723b65fb49df61f0c5f14ece9b063296a375d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
