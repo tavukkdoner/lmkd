@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d7d480d9_5e8fa80b",
+        "filename": "lmkd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 3157,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-19T18:44:57Z",
+      "side": 1,
+      "message": "Technically I think for the implemented logic you are actually interested whether memcg v1 is being used (those attributes are available in v1 only), so you probably want to implement:\n```\nstatic bool __using_memcg_v1() {\n    static bool memcg_v1_used \u003d CgroupGetControllerPath(\"memory\", NULL);\n    \n    return memcg_v1_used;\n}\n```\n\nI think CgroupGetControllerPath(\"memory\", NULL) will return false if memcg v2 is mounted but please double-check.",
+      "range": {
+        "startLine": 3157,
+        "startChar": 12,
+        "endLine": 3157,
+        "endChar": 28
+      },
+      "revId": "d269b5f05cfc197393b35c51a03c795d74c2de91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "462f1dd9_f3a5109e",
+        "filename": "lmkd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 3211,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-19T18:44:57Z",
+      "side": 1,
+      "message": "No need for this. The only place init_mp_common() is called is from init_monitors() and once the first call to it fails init_monitors() returns failure and the program exits.",
+      "range": {
+        "startLine": 3211,
+        "startChar": 8,
+        "endLine": 3211,
+        "endChar": 23
+      },
+      "revId": "d269b5f05cfc197393b35c51a03c795d74c2de91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
