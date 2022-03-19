@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca7bd63a_8e53a573",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1192,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-19T18:26:10Z",
+      "side": 0,
+      "message": "Should be written with CgroupGetAttributePathForTask() from the beginning.",
+      "range": {
+        "startLine": 1186,
+        "startChar": 7,
+        "endLine": 1192,
+        "endChar": 71
+      },
+      "revId": "090639371f88e41a75c051390168c7525e3a993b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
