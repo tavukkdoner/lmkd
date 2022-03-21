@@ -22,6 +22,30 @@
       },
       "revId": "46ca2963306ebf954821385c3147b46e6cbea99e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f5d9406e_ffb25cfc",
+        "filename": "statslog.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-21T23:06:10Z",
+      "side": 1,
+      "message": "This change has been reverted.",
+      "parentUuid": "985b0994_ba9f4bbd",
+      "range": {
+        "startLine": 99,
+        "startChar": 0,
+        "endLine": 107,
+        "endChar": 5
+      },
+      "revId": "46ca2963306ebf954821385c3147b46e6cbea99e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
