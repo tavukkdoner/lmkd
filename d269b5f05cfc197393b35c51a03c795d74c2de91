@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ddf5737e_bc45ce63",
+        "filename": "lmkd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 3157,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-21T23:05:30Z",
+      "side": 1,
+      "message": "Can you take another look at this patch? I think replacing using_memcg_v2() with using_memcg_v1() would lead to more negations in the code and hence code that is harder to read.",
+      "parentUuid": "d7d480d9_5e8fa80b",
+      "range": {
+        "startLine": 3157,
+        "startChar": 12,
+        "endLine": 3157,
+        "endChar": 28
+      },
+      "revId": "d269b5f05cfc197393b35c51a03c795d74c2de91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "462f1dd9_f3a5109e",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-03-19T18:44:57Z",
       "side": 1,
       "message": "No need for this. The only place init_mp_common() is called is from init_monitors() and once the first call to it fails init_monitors() returns failure and the program exits.",
+      "range": {
+        "startLine": 3211,
+        "startChar": 8,
+        "endLine": 3211,
+        "endChar": 23
+      },
+      "revId": "d269b5f05cfc197393b35c51a03c795d74c2de91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ec808837_2aeecf33",
+        "filename": "lmkd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 3211,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-21T23:05:30Z",
+      "side": 1,
+      "message": "rn_once() has been removed.",
+      "parentUuid": "462f1dd9_f3a5109e",
       "range": {
         "startLine": 3211,
         "startChar": 8,
