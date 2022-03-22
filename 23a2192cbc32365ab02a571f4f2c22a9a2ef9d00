@@ -46,6 +46,30 @@
       },
       "revId": "23a2192cbc32365ab02a571f4f2c22a9a2ef9d00",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b3f76149_9b0b4521",
+        "filename": "statslog.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-22T23:32:23Z",
+      "side": 1,
+      "message": "Marking this comment as resolved since a patch has been added that allocates this buffer dynamically.",
+      "parentUuid": "483d1d55_2aead676",
+      "range": {
+        "startLine": 98,
+        "startChar": 13,
+        "endLine": 98,
+        "endChar": 21
+      },
+      "revId": "23a2192cbc32365ab02a571f4f2c22a9a2ef9d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
