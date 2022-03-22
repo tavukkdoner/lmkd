@@ -16,6 +16,24 @@
       "message": "Unnecessary change. If you need to use std::string to assign the file name, this can be easily accomplished:\n\nstatic const std::string path \u003d GetCgroupAttributePath(...);\nstruct reread_data data \u003d {\n    filename \u003d path.c_str();\n    fd \u003d -1;\n};",
       "revId": "090639371f88e41a75c051390168c7525e3a993b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "44774dd7_f7cdd4e9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-22T22:30:50Z",
+      "side": 1,
+      "message": "I prefer to keep this change since I prefer to assign the result of GetCgroupAttributePath() directly to the \u0027filename\u0027 member.",
+      "parentUuid": "758770af_60cf1ac8",
+      "revId": "090639371f88e41a75c051390168c7525e3a993b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
