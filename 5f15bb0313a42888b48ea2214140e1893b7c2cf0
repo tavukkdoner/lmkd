@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7b3d8c5e_aad95e2f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2895,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-22T02:04:15Z",
+      "side": 1,
+      "message": "After aosp//1990495 is abandoned this will look as:\n\n```\nstatic string mem_usage_file_path \u003d GetCgroupAttributePath(\"MemUsage\");\nstatic struct reread_data mem_usage_file_data \u003d {\n        .filename \u003d mem_usage_file_path.c_str(),\n        .fd \u003d -1,\n    };\nstatic string memsw_usage_file_path \u003d GetCgroupAttributePath(\"MemAndSwapUsage\");    \n    static struct reread_data memsw_usage_file_data \u003d {\n        .filename \u003d memsw_usage_file_path.c_str(),\n        .fd \u003d -1,\n    };\n```",
+      "range": {
+        "startLine": 2888,
+        "startChar": 0,
+        "endLine": 2895,
+        "endChar": 6
+      },
+      "revId": "5f15bb0313a42888b48ea2214140e1893b7c2cf0",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
