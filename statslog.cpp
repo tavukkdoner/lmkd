@@ -30,6 +30,14 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <fstream>
+
+#include <android-base/file.h>
+#include <android-base/stringprintf.h>
+
+using ::android::base::ReadFileToString;
+using ::android::base::StringPrintf;
+
 #ifdef LMKD_LOG_STATS
 
 #define STRINGIFY(x) STRINGIFY_INTERNAL(x)
@@ -63,7 +71,7 @@ static struct proc* pid_lookup(int pid) {
     return procp;
 }
 
-static void memory_stat_parse_line(char* line, struct memory_stat* mem_st) {
+static void memory_stat_parse_line(const char* line, struct memory_stat* mem_st) {
     char key[MAX_TASKNAME_LEN + 1];
     int64_t value;
 
@@ -86,47 +94,29 @@ static void memory_stat_parse_line(char* line, struct memory_stat* mem_st) {
 }
 
 static int memory_stat_from_cgroup(struct memory_stat* mem_st, int pid, uid_t uid) {
-    FILE *fp;
-    char buf[PATH_MAX];
-
-    snprintf(buf, sizeof(buf), MEMCG_PROCESS_MEMORY_STAT_PATH, uid, pid);
-
-    fp = fopen(buf, "r");
-
-    if (fp == NULL) {
+    const std::string path = StringPrintf(MEMCG_PROCESS_MEMORY_STAT_PATH, uid, pid);
+    std::ifstream is(path, std::ios::in);
+    if (!is) {
         return -1;
     }
-
-    while (fgets(buf, PAGE_SIZE, fp) != NULL) {
-        memory_stat_parse_line(buf, mem_st);
+    std::string line;
+    while (std::getline(is, line)) {
+        memory_stat_parse_line(line.c_str(), mem_st);
     }
-    fclose(fp);
-
     return 0;
 }
 
 static int memory_stat_from_procfs(struct memory_stat* mem_st, int pid) {
-    char path[PATH_MAX];
-    char buffer[PROC_STAT_BUFFER_SIZE];
-    int fd, ret;
-
-    snprintf(path, sizeof(path), PROC_STAT_FILE_PATH, pid);
-    if ((fd = open(path, O_RDONLY | O_CLOEXEC)) < 0) {
+    std::string buffer;
+    if (!ReadFileToString(StringPrintf(PROC_STAT_FILE_PATH, pid), &buffer)) {
         return -1;
     }
-
-    ret = read(fd, buffer, sizeof(buffer));
-    if (ret < 0) {
-        close(fd);
-        return -1;
-    }
-    close(fd);
 
     // field 10 is pgfault
     // field 12 is pgmajfault
     // field 22 is starttime
     int64_t pgfault = 0, pgmajfault = 0, starttime = 0;
-    if (sscanf(buffer,
+    if (sscanf(buffer.c_str(),
                "%*u %*s %*s %*d %*d %*d %*d %*d %*d %" SCNd64 " %*d "
                "%" SCNd64 " %*d %*u %*u %*d %*d %*d %*d %*d %*d "
                "%" SCNd64 "",
