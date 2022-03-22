@@ -48,6 +48,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1332a98a_527b5b41",
+        "filename": "lmkd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 3157,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-22T02:09:12Z",
+      "side": 1,
+      "message": "True, but logically you want to ensure that the system is *not using v1 cgroups* rather than *using v2 cgroups*. Imaging a v3 coming up sometimes in the future. Then `if (!__using_memcg_v1())` would still make sense while `if (__using_memcg_v2())` would be invalid.",
+      "parentUuid": "ddf5737e_bc45ce63",
+      "range": {
+        "startLine": 3157,
+        "startChar": 12,
+        "endLine": 3157,
+        "endChar": 28
+      },
+      "revId": "d269b5f05cfc197393b35c51a03c795d74c2de91",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "462f1dd9_f3a5109e",
