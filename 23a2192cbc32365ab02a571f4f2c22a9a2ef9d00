@@ -22,6 +22,30 @@
       },
       "revId": "23a2192cbc32365ab02a571f4f2c22a9a2ef9d00",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "483d1d55_2aead676",
+        "filename": "statslog.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-22T18:15:29Z",
+      "side": 1,
+      "message": "My view on allocating large buffers on the stack is that these constitute a memory leak since memory that is allocated from the stack is never freed. Unless further feedback is provided I will allocate this array dynamically instead of statically. See also https://engdoc.corp.google.com/eng/doc/devguide/cpp/abridged-primer.md#stack_frame_sizes",
+      "parentUuid": "1a6bf3b0_ab47f4f0",
+      "range": {
+        "startLine": 98,
+        "startChar": 13,
+        "endLine": 98,
+        "endChar": 21
+      },
+      "revId": "23a2192cbc32365ab02a571f4f2c22a9a2ef9d00",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
