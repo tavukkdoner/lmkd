@@ -22,9 +22,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include <cutils/sockets.h>
 #include <liblmkd_utils.h>
-#include <processgroup/processgroup.h>
+#include <cutils/sockets.h>
 
 int lmkd_connect() {
     return socket_local_client("lmkd",
@@ -79,6 +78,34 @@ enum update_props_result lmkd_update_props(int sock) {
 }
 
 int create_memcg(uid_t uid, pid_t pid) {
-    return createProcessGroup(uid, pid, true) == 0 ? 0 : -1;
+    char buf[256];
+    int tasks_file;
+    int written;
+
+    snprintf(buf, sizeof(buf), "/dev/memcg/apps/uid_%u", uid);
+    if (mkdir(buf, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) < 0 &&
+        errno != EEXIST) {
+        return -1;
+    }
+
+    snprintf(buf, sizeof(buf), "/dev/memcg/apps/uid_%u/pid_%u", uid, pid);
+    if (mkdir(buf, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) < 0 &&
+        errno != EEXIST) {
+        return -1;
+    }
+
+    snprintf(buf, sizeof(buf), "/dev/memcg/apps/uid_%u/pid_%u/tasks", uid, pid);
+    tasks_file = open(buf, O_WRONLY);
+    if (tasks_file < 0) {
+        return -2;
+    }
+    written = snprintf(buf, sizeof(buf), "%u", pid);
+    if (__predict_false(written >= (int)sizeof(buf))) {
+        written = sizeof(buf) - 1;
+    }
+    written = TEMP_FAILURE_RETRY(write(tasks_file, buf, written));
+    close(tasks_file);
+
+    return (written < 0) ? -3 : 0;
 }
 
