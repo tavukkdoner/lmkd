@@ -1,5 +1,29 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0b40d65a_7b79061e",
+        "filename": "lmkd.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 3161,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-24T20:45:25Z",
+      "side": 1,
+      "message": "So, if memcg is not mounted at all (I think P21 is such a case) then this function would return `true`, which is incorrect.",
+      "range": {
+        "startLine": 3161,
+        "startChar": 9,
+        "endLine": 3161,
+        "endChar": 32
+      },
+      "revId": "7984f39fe275632e3d086d1ebff7b51daa2bd0d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
