@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1950314d_98912512",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-24T20:24:14Z",
+      "side": 1,
+      "message": "In LMKD we try to avoid dynamic allocations because the code runs during memory pressure, so additional dynamic allocations can trigger direct reclaim for LMKD itself and will delay kills required to resolve memory pressure.",
+      "revId": "64ba8efde52c64ba8594ae349c4d11ddd41e8b18",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
