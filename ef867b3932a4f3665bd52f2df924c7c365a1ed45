@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f93818a7_2b6eca26",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3199,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-24T20:41:32Z",
+      "side": 1,
+      "message": "init_mp_common is called during initialization and never again after that. Having this variable static will keep it after init is done, which would be wasteful.",
+      "range": {
+        "startLine": 3199,
+        "startChar": 4,
+        "endLine": 3199,
+        "endChar": 10
+      },
+      "revId": "ef867b3932a4f3665bd52f2df924c7c365a1ed45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38c1ea49_c485121d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3206,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-24T20:41:32Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 3206,
+        "startChar": 4,
+        "endLine": 3206,
+        "endChar": 10
+      },
+      "revId": "ef867b3932a4f3665bd52f2df924c7c365a1ed45",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
