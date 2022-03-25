@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "12a031c6_d241a53f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 3160,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-25T23:17:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "42f9a5d8_c2ef810d",
+      "range": {
+        "startLine": 3160,
+        "startChar": 4,
+        "endLine": 3160,
+        "endChar": 14
+      },
+      "revId": "fe289f6d3a55fd96cda789ccd2ef102bba4150d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1fae6976_2daca0d9",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c11db8f7_0068d279",
+        "filename": "lmkd.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 3166,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-25T23:17:03Z",
+      "side": 1,
+      "message": "Yes. I have verified this by adding a debug log statement.",
+      "parentUuid": "1fae6976_2daca0d9",
+      "range": {
+        "startLine": 3166,
+        "startChar": 4,
+        "endLine": 3166,
+        "endChar": 58
+      },
+      "revId": "fe289f6d3a55fd96cda789ccd2ef102bba4150d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "eae5167e_ed6d189e",
@@ -60,6 +108,30 @@
       "writtenOn": "2022-03-25T19:56:58Z",
       "side": 1,
       "message": "I\u0027m not sure this additional condition should be used here to specify the default for use_new_strategy. Why new strategy should\u0027t be the default for memcg v1? Most devices set `use_minfree_levels\u003dfalse`, so in most cases the default is `true` unless overridden.\n\nSo, do we really need this additional condition?",
+      "range": {
+        "startLine": 3191,
+        "startChar": 53,
+        "endLine": 3191,
+        "endChar": 96
+      },
+      "revId": "fe289f6d3a55fd96cda789ccd2ef102bba4150d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "073f461c_6676250b",
+        "filename": "lmkd.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 3191,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-25T23:17:03Z",
+      "side": 1,
+      "message": "The added code makes the new strategy the default for memcg v2 since the old strategy relies on memcg v1 attributes. Please reopen this comment thread if you want me to change this code.",
+      "parentUuid": "eae5167e_ed6d189e",
       "range": {
         "startLine": 3191,
         "startChar": 53,
