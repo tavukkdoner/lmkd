@@ -140,6 +140,30 @@
       },
       "revId": "fe289f6d3a55fd96cda789ccd2ef102bba4150d1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae9f0f0e_f86e3e6b",
+        "filename": "lmkd.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 3191,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-25T23:47:47Z",
+      "side": 1,
+      "message": "If old strategy can only be used with memcg v1 then this condition should be checked separately and cause a fatal error like this:\n\n```\nbool use_new_strategy \u003d GET_LMK_PROPERTY(\n            bool, \"use_new_strategy\",\n            low_ram_device || !use_minfree_levels);\nif (!use_new_strategy \u0026\u0026 memcg_version() !\u003d MemcgVersion::kV1) {\n   ALOGE(\"...\");\n   return false;\n}\n```",
+      "parentUuid": "073f461c_6676250b",
+      "range": {
+        "startLine": 3191,
+        "startChar": 53,
+        "endLine": 3191,
+        "endChar": 96
+      },
+      "revId": "fe289f6d3a55fd96cda789ccd2ef102bba4150d1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
