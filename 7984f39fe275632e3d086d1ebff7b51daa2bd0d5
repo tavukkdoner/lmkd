@@ -22,6 +22,30 @@
       },
       "revId": "7984f39fe275632e3d086d1ebff7b51daa2bd0d5",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "639129e9_40bca8ac",
+        "filename": "lmkd.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 3161,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-03-25T00:05:02Z",
+      "side": 1,
+      "message": "This function has been modified such that it can return three values instead of two.",
+      "parentUuid": "0b40d65a_7b79061e",
+      "range": {
+        "startLine": 3161,
+        "startChar": 9,
+        "endLine": 3161,
+        "endChar": 32
+      },
+      "revId": "7984f39fe275632e3d086d1ebff7b51daa2bd0d5",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ],
   "submitRequirementResults": [
