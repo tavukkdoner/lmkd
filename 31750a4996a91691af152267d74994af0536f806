@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0f30e80_9262edce",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 17
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-29T18:41:45Z",
+      "side": 1,
+      "message": "LMKD is started pretty early during init. Please verify that cgroups are mounted before LMKD runs these checks.",
+      "revId": "31750a4996a91691af152267d74994af0536f806",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "644bad39_f8a78f64",
+        "filename": "lmkd.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 3193,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-03-29T18:41:45Z",
+      "side": 1,
+      "message": "The message would be misleading it memcgs are not mounted at all. Suggest changing to:\n```\nOld kill strategy can only be used with v1 cgroup hierarchy\n```",
+      "range": {
+        "startLine": 3192,
+        "startChar": 14,
+        "endLine": 3193,
+        "endChar": 25
+      },
+      "revId": "31750a4996a91691af152267d74994af0536f806",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
