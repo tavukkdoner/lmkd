@@ -27,7 +27,6 @@
 #include <android-base/properties.h>
 #include <android-base/stringprintf.h>
 #include <android-base/strings.h>
-#include <cutils/properties.h>
 #include <gtest/gtest.h>
 #include <lmkd.h>
 #include <liblmkd_utils.h>
@@ -252,7 +251,6 @@ void runMemStressTest() {
             params.pid = pid;
             params.uid = uid;
             params.oomadj = data->oomadj;
-            params.ptype = PROC_TYPE_APP;
             ASSERT_FALSE(lmkd_register_proc(sock, &params) < 0)
                 << "Failed to communicate with lmkd, err=" << strerror(errno);
             // signal the child it can proceed
@@ -275,10 +273,8 @@ void runMemStressTest() {
                              << data->oomadj;
             data->allocated = 0;
             data->finished = false;
-            if (property_get_bool("ro.config.low_ram", false)) {
-                ASSERT_FALSE(create_memcg(uid, pid) != 0)
-                    << "Child [pid=" << pid << "] failed to create a cgroup";
-            }
+            ASSERT_FALSE(create_memcg(uid, pid) != 0)
+                << "Child [pid=" << pid << "] failed to create a cgroup";
             signal_state(ssync, STATE_CHILD_READY);
             wait_for_state(ssync, STATE_PARENT_READY);
             add_pressure(data);
