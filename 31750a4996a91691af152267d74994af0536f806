@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "035162b8_8a2d4bac",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 17
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1869780
+      },
+      "writtenOn": "2022-04-19T15:41:57Z",
+      "side": 1,
+      "message": "The diagram on https://medium.com/@voodoomio/what-the-zygote-76f852d887d9 shows that filesystems are mounted before lmkd is started.",
+      "parentUuid": "b0f30e80_9262edce",
+      "revId": "31750a4996a91691af152267d74994af0536f806",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "644bad39_f8a78f64",
