@@ -16,6 +16,24 @@
       "message": "Dear Suren,\n\nHi, My name is Yoonjae Jeon.\n\nI fixed a minor bug in call_handler() function.\n\nIn this function, there is an if statement that compare uninitialized variale in\n\ncertain case.\n\nThis happens if data communication with AMS happens before start polling.\n\nCould you review the code?\n\nBest Regards,\nYoonjae",
       "revId": "f7adbcf878888a66ae01ae5f8cb6fbca3ebc8fdd",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "99267bbb_d1f62041",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-04-23T17:51:00Z",
+      "side": 1,
+      "message": "true. It\u0027s a harmless mistake since the result would be unnecessary reset of poll_params-\u003epoll_handler which is already NULL (note that whenever we set poll_params-\u003epoll_handler we also set poll_params-\u003epoll_start_tm). The simplest fix would be to add a poll_params-\u003epoll_handler !\u003d NULL check like this:\n\nif (poll_params-\u003epoll_handler \u0026\u0026 get_time_diff_ms(\u0026poll_params-\u003epoll_start_tm, \u0026curr_tm) \u003e PSI_WINDOW_SIZE_MS) {\n    poll_params-\u003epoll_handler \u003d NULL;\n}\n\nPlease post that change and I\u0027ll approve it. Currently your patch contains no code changes. Also add Signed-off-by: tag in the patch description and use your official email if possible (both in Signed-off-by: and in From: field of your patch).",
+      "parentUuid": "2647ac63_cb0e6455",
+      "revId": "f7adbcf878888a66ae01ae5f8cb6fbca3ebc8fdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
