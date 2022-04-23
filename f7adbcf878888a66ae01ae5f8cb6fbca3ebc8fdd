@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2647ac63_cb0e6455",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1948996
+      },
+      "writtenOn": "2022-04-23T14:30:43Z",
+      "side": 1,
+      "message": "Dear Suren,\n\nHi, My name is Yoonjae Jeon.\n\nI fixed a minor bug in call_handler() function.\n\nIn this function, there is an if statement that compare uninitialized variale in\n\ncertain case.\n\nThis happens if data communication with AMS happens before start polling.\n\nCould you review the code?\n\nBest Regards,\nYoonjae",
+      "revId": "f7adbcf878888a66ae01ae5f8cb6fbca3ebc8fdd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
