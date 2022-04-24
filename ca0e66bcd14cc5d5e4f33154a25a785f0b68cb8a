@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5a59e7f_17128a2e",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 3546,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-04-24T05:03:58Z",
+      "side": 1,
+      "message": "It should be `if (poll_params-\u003epoll_handler \u0026\u0026 ...)` instead of `if (!poll_params-\u003epoll_handler \u0026\u0026 ...)`",
+      "range": {
+        "startLine": 3546,
+        "startChar": 12,
+        "endLine": 3546,
+        "endChar": 13
+      },
+      "revId": "ca0e66bcd14cc5d5e4f33154a25a785f0b68cb8a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "13912102_105ec8a5",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 3546,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-04-24T05:03:58Z",
+      "side": 1,
+      "message": "Please remove the extra whitespace.",
+      "range": {
+        "startLine": 3546,
+        "startChar": 41,
+        "endLine": 3546,
+        "endChar": 42
+      },
+      "revId": "ca0e66bcd14cc5d5e4f33154a25a785f0b68cb8a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
