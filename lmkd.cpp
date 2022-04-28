@@ -34,6 +34,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <algorithm>
+#include <array>
 #include <shared_mutex>
 
 #include <cutils/properties.h>
@@ -44,6 +46,7 @@
 #include <log/log_event_list.h>
 #include <log/log_time.h>
 #include <private/android_filesystem_config.h>
+#include <processgroup/processgroup.h>
 #include <psi/psi.h>
 
 #include "reaper.h"
@@ -83,9 +86,6 @@ static inline void trace_kill_end() {}
 #define __unused __attribute__((__unused__))
 #endif
 
-#define MEMCG_SYSFS_PATH "/dev/memcg/"
-#define MEMCG_MEMORY_USAGE "/dev/memcg/memory.usage_in_bytes"
-#define MEMCG_MEMORYSW_USAGE "/dev/memcg/memory.memsw.usage_in_bytes"
 #define ZONEINFO_PATH "/proc/zoneinfo"
 #define MEMINFO_PATH "/proc/meminfo"
 #define VMSTAT_PATH "/proc/vmstat"
@@ -103,7 +103,6 @@ static inline void trace_kill_end() {}
 #define INKERNEL_MINFREE_PATH "/sys/module/lowmemorykiller/parameters/minfree"
 #define INKERNEL_ADJ_PATH "/sys/module/lowmemorykiller/parameters/adj"
 
-#define ARRAY_SIZE(x)   (sizeof(x) / sizeof(*(x)))
 #define EIGHT_MEGA (1 << 23)
 
 #define TARGET_UPDATE_MIN_INTERVAL_MS 1000
@@ -139,9 +138,6 @@ static inline void trace_kill_end() {}
 #define PSI_POLL_PERIOD_SHORT_MS 10
 /* Polling period after PSI signal when pressure is low */
 #define PSI_POLL_PERIOD_LONG_MS 100
-
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-#define max(a, b) (((a) > (b)) ? (a) : (b))
 
 #define FAIL_REPORT_RLIMIT_MS 1000
 
@@ -218,6 +214,7 @@ static int thrashing_limit_decay_pct;
 static int thrashing_critical_pct;
 static int swap_util_max;
 static int64_t filecache_min_kb;
+static int64_t stall_limit_critical;
 static bool use_psi_monitors = false;
 static int kpoll_fd;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
@@ -288,8 +285,8 @@ static int maxevents;
 #define OOM_SCORE_ADJ_MIN       (-1000)
 #define OOM_SCORE_ADJ_MAX       1000
 
-static int lowmem_adj[MAX_TARGETS];
-static int lowmem_minfree[MAX_TARGETS];
+static std::array<int, MAX_TARGETS> lowmem_adj;
+static std::array<int, MAX_TARGETS> lowmem_minfree;
 static int lowmem_targets_size;
 
 /* Fields to parse in /proc/zoneinfo */
@@ -555,7 +552,7 @@ static bool init_monitors();
 static void destroy_monitors();
 
 static int clamp(int low, int high, int value) {
-    return max(min(value, high), low);
+    return std::max(std::min(value, high), low);
 }
 
 static bool parse_int64(const char* str, int64_t* ret) {
@@ -836,7 +833,7 @@ static void poll_kernel(int poll_fd) {
 
     while (1) {
         char rd_buf[256];
-        int bytes_read = TEMP_FAILURE_RETRY(pread(poll_fd, (void*)rd_buf, sizeof(rd_buf), 0));
+        int bytes_read = TEMP_FAILURE_RETRY(pread(poll_fd, (void*)rd_buf, sizeof(rd_buf) - 1, 0));
         if (bytes_read <= 0) break;
         rd_buf[bytes_read] = '\0';
 
@@ -1183,9 +1180,12 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
             soft_limit_mult = 64;
         }
 
-        snprintf(path, sizeof(path), MEMCG_SYSFS_PATH
-                 "apps/uid_%d/pid_%d/memory.soft_limit_in_bytes",
-                 params.uid, params.pid);
+        std::string path;
+        if (!CgroupGetAttributePathForTask("MemSoftLimit", params.pid, &path)) {
+            ALOGE("Querying MemSoftLimit path failed");
+            return;
+        }
+
         snprintf(val, sizeof(val), "%d", soft_limit_mult * EIGHT_MEGA);
 
         /*
@@ -1195,7 +1195,7 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
         is_system_server = (params.oomadj == SYSTEM_ADJ &&
                             (pwdrec = getpwnam("system")) != NULL &&
                             params.uid == pwdrec->pw_uid);
-        writefilestring(path, val, !is_system_server);
+        writefilestring(path.c_str(), val, !is_system_server);
     }
 
     procp = pid_lookup(params.pid);
@@ -1377,8 +1377,9 @@ static void cmd_target(int ntargets, LMKD_CTRL_PACKET packet) {
     static struct timespec last_req_tm;
     struct timespec curr_tm;
 
-    if (ntargets < 1 || ntargets > (int)ARRAY_SIZE(lowmem_adj))
+    if (ntargets < 1 || ntargets > (int)lowmem_adj.size()) {
         return;
+    }
 
     /*
      * Ratelimit minfree updates to once per TARGET_UPDATE_MIN_INTERVAL_MS
@@ -1470,8 +1471,9 @@ static void ctrl_command_handler(int dsock_idx) {
     switch(cmd) {
     case LMK_TARGET:
         targets = nargs / 2;
-        if (nargs & 0x1 || targets > (int)ARRAY_SIZE(lowmem_adj))
+        if (nargs & 0x1 || targets > (int)lowmem_adj.size()) {
             goto wronglen;
+        }
         cmd_target(targets, packet);
         break;
     case LMK_PROCPRIO:
@@ -1915,6 +1917,53 @@ static int vmstat_parse(union vmstat *vs) {
     return 0;
 }
 
+static int psi_parse(struct reread_data *file_data, struct psi_stats stats[], bool full) {
+    char *buf;
+    char *save_ptr;
+    char *line;
+
+    if ((buf = reread_file(file_data)) == NULL) {
+        return -1;
+    }
+
+    line = strtok_r(buf, "\n", &save_ptr);
+    if (parse_psi_line(line, PSI_SOME, stats)) {
+        return -1;
+    }
+    if (full) {
+        line = strtok_r(NULL, "\n", &save_ptr);
+        if (parse_psi_line(line, PSI_FULL, stats)) {
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+static int psi_parse_mem(struct psi_data *psi_data) {
+    static struct reread_data file_data = {
+        .filename = PSI_PATH_MEMORY,
+        .fd = -1,
+    };
+    return psi_parse(&file_data, psi_data->mem_stats, true);
+}
+
+static int psi_parse_io(struct psi_data *psi_data) {
+    static struct reread_data file_data = {
+        .filename = PSI_PATH_IO,
+        .fd = -1,
+    };
+    return psi_parse(&file_data, psi_data->io_stats, true);
+}
+
+static int psi_parse_cpu(struct psi_data *psi_data) {
+    static struct reread_data file_data = {
+        .filename = PSI_PATH_CPU,
+        .fd = -1,
+    };
+    return psi_parse(&file_data, psi_data->cpu_stats, false);
+}
+
 enum wakeup_reason {
     Event,
     Polling
@@ -1959,18 +2008,19 @@ struct kill_info {
 
 static void killinfo_log(struct proc* procp, int min_oom_score, int rss_kb,
                          int swap_kb, struct kill_info *ki, union meminfo *mi,
-                         struct wakeup_info *wi, struct timespec *tm) {
+                         struct wakeup_info *wi, struct timespec *tm, struct psi_data *pd) {
     /* log process information */
     android_log_write_int32(ctx, procp->pid);
     android_log_write_int32(ctx, procp->uid);
     android_log_write_int32(ctx, procp->oomadj);
     android_log_write_int32(ctx, min_oom_score);
-    android_log_write_int32(ctx, (int32_t)min(rss_kb, INT32_MAX));
+    android_log_write_int32(ctx, std::min(rss_kb, (int)INT32_MAX));
     android_log_write_int32(ctx, ki ? ki->kill_reason : NONE);
 
     /* log meminfo fields */
     for (int field_idx = 0; field_idx < MI_FIELD_COUNT; field_idx++) {
-        android_log_write_int32(ctx, mi ? (int32_t)min(mi->arr[field_idx] * page_k, INT32_MAX): 0);
+        android_log_write_int32(ctx,
+                                mi ? std::min(mi->arr[field_idx] * page_k, (int64_t)INT32_MAX) : 0);
     }
 
     /* log lmkd wakeup information */
@@ -1986,7 +2036,7 @@ static void killinfo_log(struct proc* procp, int min_oom_score, int rss_kb,
         android_log_write_int32(ctx, 0);
     }
 
-    android_log_write_int32(ctx, (int32_t)min(swap_kb, INT32_MAX));
+    android_log_write_int32(ctx, std::min(swap_kb, (int)INT32_MAX));
     android_log_write_int32(ctx, mi ? (int32_t)mi->field.total_gpu_kb : 0);
     if (ki) {
         android_log_write_int32(ctx, ki->thrashing);
@@ -1994,6 +2044,18 @@ static void killinfo_log(struct proc* procp, int min_oom_score, int rss_kb,
     } else {
         android_log_write_int32(ctx, 0);
         android_log_write_int32(ctx, 0);
+    }
+
+    if (pd) {
+        android_log_write_float32(ctx, pd->mem_stats[PSI_SOME].avg10);
+        android_log_write_float32(ctx, pd->mem_stats[PSI_FULL].avg10);
+        android_log_write_float32(ctx, pd->io_stats[PSI_SOME].avg10);
+        android_log_write_float32(ctx, pd->io_stats[PSI_FULL].avg10);
+        android_log_write_float32(ctx, pd->cpu_stats[PSI_SOME].avg10);
+    } else {
+        for (int i = 0; i < 5; i++) {
+            android_log_write_float32(ctx, 0);
+        }
     }
 
     android_log_write_list(ctx, LOG_ID_EVENTS);
@@ -2090,7 +2152,7 @@ static void watchdog_callback() {
 
         if (reaper.kill({ target.pidfd, target.pid, target.uid }, true) == 0) {
             ALOGW("lmkd watchdog killed process %d, oom_score_adj %d", target.pid, oom_score);
-            killinfo_log(&target, 0, 0, 0, NULL, NULL, NULL, NULL);
+            killinfo_log(&target, 0, 0, 0, NULL, NULL, NULL, NULL, NULL);
             break;
         }
         prev_pid = target.pid;
@@ -2212,7 +2274,8 @@ static void start_wait_for_proc_kill(int pid_or_fd) {
 
 /* Kill one process specified by procp.  Returns the size (in pages) of the process killed */
 static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_info *ki,
-                            union meminfo *mi, struct wakeup_info *wi, struct timespec *tm) {
+                            union meminfo *mi, struct wakeup_info *wi, struct timespec *tm,
+                            struct psi_data *pd) {
     int pid = procp->pid;
     int pidfd = procp->pidfd;
     uid_t uid = procp->uid;
@@ -2289,7 +2352,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
         ALOGI("Kill '%s' (%d), uid %d, oom_score_adj %d to free %" PRId64 "kB rss, %" PRId64
               "kb swap", taskname, pid, uid, procp->oomadj, rss_kb, swap_kb);
     }
-    killinfo_log(procp, min_oom_score, rss_kb, swap_kb, ki, mi, wi, tm);
+    killinfo_log(procp, min_oom_score, rss_kb, swap_kb, ki, mi, wi, tm, pd);
 
     kill_st.uid = static_cast<int32_t>(uid);
     kill_st.taskname = taskname;
@@ -2317,7 +2380,8 @@ out:
  * Returns size of the killed process.
  */
 static int find_and_kill_process(int min_score_adj, struct kill_info *ki, union meminfo *mi,
-                                 struct wakeup_info *wi, struct timespec *tm) {
+                                 struct wakeup_info *wi, struct timespec *tm,
+                                 struct psi_data *pd) {
     int i;
     int killed_size = 0;
     bool lmk_state_change_start = false;
@@ -2341,7 +2405,7 @@ static int find_and_kill_process(int min_score_adj, struct kill_info *ki, union 
             if (!procp)
                 break;
 
-            killed_size = kill_one_process(procp, min_score_adj, ki, mi, wi, tm);
+            killed_size = kill_one_process(procp, min_score_adj, ki, mi, wi, tm, pd);
             if (killed_size >= 0) {
                 if (!lmk_state_change_start) {
                     lmk_state_change_start = true;
@@ -2500,6 +2564,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
 
     union meminfo mi;
     union vmstat vs;
+    struct psi_data psi_data;
     struct timespec curr_tm;
     int64_t thrashing = 0;
     bool swap_is_low = false;
@@ -2515,6 +2580,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     int64_t swap_low_threshold;
     long since_thrashing_reset_ms;
     int64_t workingset_refault_file;
+    bool critical_stall = false;
 
     if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
         ALOGE("Failed to get current time");
@@ -2647,6 +2713,9 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     /* Find out which watermark is breached if any */
     wmark = get_lowest_watermark(&mi, &watermarks);
 
+    if (!psi_parse_mem(&psi_data)) {
+        critical_stall = psi_data.mem_stats[PSI_FULL].avg10 > (float)stall_limit_critical;
+    }
     /*
      * TODO: move this logic into a separate function
      * Decide if killing a process is necessary and record the reason
@@ -2744,7 +2813,14 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
             .thrashing = (int)thrashing,
             .max_thrashing = max_thrashing,
         };
-        int pages_freed = find_and_kill_process(min_score_adj, &ki, &mi, &wi, &curr_tm);
+
+        /* Allow killing perceptible apps if the system is stalled */
+        if (critical_stall) {
+            min_score_adj = 0;
+        }
+        psi_parse_io(&psi_data);
+        psi_parse_cpu(&psi_data);
+        int pages_freed = find_and_kill_process(min_score_adj, &ki, &mi, &wi, &curr_tm, &psi_data);
         if (pages_freed > 0) {
             killing = true;
             max_thrashing = 0;
@@ -2786,6 +2862,16 @@ no_kill:
     }
 }
 
+static std::string GetCgroupAttributePath(const char* attr) {
+    std::string path;
+    if (!CgroupGetAttributePath(attr, &path)) {
+        ALOGE("Unknown cgroup attribute %s", attr);
+    }
+    return path;
+}
+
+// The implementation of this function relies on memcg statistics that are only available in the
+// v1 cgroup hierarchy.
 static void mp_event_common(int data, uint32_t events, struct polling_params *poll_params) {
     unsigned long long evcount;
     int64_t mem_usage, memsw_usage;
@@ -2798,12 +2884,14 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
     long other_free = 0, other_file = 0;
     int min_score_adj;
     int minfree = 0;
+    static const std::string mem_usage_path = GetCgroupAttributePath("MemUsage");
     static struct reread_data mem_usage_file_data = {
-        .filename = MEMCG_MEMORY_USAGE,
+        .filename = mem_usage_path.c_str(),
         .fd = -1,
     };
+    static const std::string memsw_usage_path = GetCgroupAttributePath("MemAndSwapUsage");
     static struct reread_data memsw_usage_file_data = {
-        .filename = MEMCG_MEMORYSW_USAGE,
+        .filename = memsw_usage_path.c_str(),
         .fd = -1,
     };
     static struct wakeup_info wi;
@@ -2964,7 +3052,7 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
 do_kill:
     if (low_ram_device) {
         /* For Go devices kill only one task */
-        if (find_and_kill_process(level_oomadj[level], NULL, &mi, &wi, &curr_tm) == 0) {
+        if (find_and_kill_process(level_oomadj[level], NULL, &mi, &wi, &curr_tm, NULL) == 0) {
             if (debug_process_killing) {
                 ALOGI("Nothing to kill");
             }
@@ -2987,7 +3075,7 @@ do_kill:
             min_score_adj = level_oomadj[level];
         }
 
-        pages_freed = find_and_kill_process(min_score_adj, NULL, &mi, &wi, &curr_tm);
+        pages_freed = find_and_kill_process(min_score_adj, NULL, &mi, &wi, &curr_tm, NULL);
 
         if (pages_freed == 0) {
             /* Rate limit kill reports when nothing was reclaimed */
@@ -3066,14 +3154,44 @@ static void destroy_mp_psi(enum vmpressure_level level) {
     mpevfd[level] = -1;
 }
 
+enum class MemcgVersion {
+    kNotFound,
+    kV1,
+    kV2,
+};
+
+static MemcgVersion __memcg_version() {
+    std::string cgroupv2_path, memcg_path;
+
+    if (!CgroupGetControllerPath("memory", &memcg_path)) {
+        return MemcgVersion::kNotFound;
+    }
+    return CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, &cgroupv2_path) &&
+                           cgroupv2_path == memcg_path
+                   ? MemcgVersion::kV2
+                   : MemcgVersion::kV1;
+}
+
+static MemcgVersion memcg_version() {
+    static MemcgVersion version = __memcg_version();
+
+    return version;
+}
+
 static bool init_psi_monitors() {
     /*
      * When PSI is used on low-ram devices or on high-end devices without memfree levels
-     * use new kill strategy based on zone watermarks, free swap and thrashing stats
+     * use new kill strategy based on zone watermarks, free swap and thrashing stats.
+     * Also use the new strategy if memcg has not been mounted in the v1 cgroups hiearchy since
+     * the old strategy relies on memcg attributes that are available only in the v1 cgroups
+     * hiearchy.
      */
     bool use_new_strategy =
         GET_LMK_PROPERTY(bool, "use_new_strategy", low_ram_device || !use_minfree_levels);
-
+    if (!use_new_strategy && memcg_version() != MemcgVersion::kV1) {
+        ALOGE("Old kill strategy can only be used with v1 cgroup hierarchy");
+        return false;
+    }
     /* In default PSI mode override stall amounts using system properties */
     if (use_new_strategy) {
         /* Do not use low pressure level */
@@ -3098,6 +3216,13 @@ static bool init_psi_monitors() {
 }
 
 static bool init_mp_common(enum vmpressure_level level) {
+    // The implementation of this function relies on memcg statistics that are only available in the
+    // v1 cgroup hierarchy.
+    if (memcg_version() != MemcgVersion::kV1) {
+        ALOGE("%s: global monitoring is only available for the v1 cgroup hierarchy", __func__);
+        return false;
+    }
+
     int mpfd;
     int evfd;
     int evctlfd;
@@ -3108,13 +3233,13 @@ static bool init_mp_common(enum vmpressure_level level) {
     const char *levelstr = level_name[level_idx];
 
     /* gid containing AID_SYSTEM required */
-    mpfd = open(MEMCG_SYSFS_PATH "memory.pressure_level", O_RDONLY | O_CLOEXEC);
+    mpfd = open(GetCgroupAttributePath("MemPressureLevel").c_str(), O_RDONLY | O_CLOEXEC);
     if (mpfd < 0) {
         ALOGI("No kernel memory.pressure_level support (errno=%d)", errno);
         goto err_open_mpfd;
     }
 
-    evctlfd = open(MEMCG_SYSFS_PATH "cgroup.event_control", O_WRONLY | O_CLOEXEC);
+    evctlfd = open(GetCgroupAttributePath("CgroupEventControl").c_str(), O_WRONLY | O_CLOEXEC);
     if (evctlfd < 0) {
         ALOGI("No kernel memory cgroup event control (errno=%d)", errno);
         goto err_open_evctlfd;
@@ -3593,14 +3718,16 @@ static void update_props() {
         low_ram_device ? DEF_PARTIAL_STALL_LOWRAM : DEF_PARTIAL_STALL);
     psi_complete_stall_ms = GET_LMK_PROPERTY(int32, "psi_complete_stall_ms",
         DEF_COMPLETE_STALL);
-    thrashing_limit_pct = max(0, GET_LMK_PROPERTY(int32, "thrashing_limit",
-        low_ram_device ? DEF_THRASHING_LOWRAM : DEF_THRASHING));
+    thrashing_limit_pct =
+            std::max(0, GET_LMK_PROPERTY(int32, "thrashing_limit",
+                                         low_ram_device ? DEF_THRASHING_LOWRAM : DEF_THRASHING));
     thrashing_limit_decay_pct = clamp(0, 100, GET_LMK_PROPERTY(int32, "thrashing_limit_decay",
         low_ram_device ? DEF_THRASHING_DECAY_LOWRAM : DEF_THRASHING_DECAY));
-    thrashing_critical_pct = max(0, GET_LMK_PROPERTY(int32, "thrashing_limit_critical",
-        thrashing_limit_pct * 2));
+    thrashing_critical_pct = std::max(
+            0, GET_LMK_PROPERTY(int32, "thrashing_limit_critical", thrashing_limit_pct * 2));
     swap_util_max = clamp(0, 100, GET_LMK_PROPERTY(int32, "swap_util_max", 100));
     filecache_min_kb = GET_LMK_PROPERTY(int64, "filecache_min_kb", 0);
+    stall_limit_critical = GET_LMK_PROPERTY(int64, "stall_limit_critical", 100);
 
     reaper.enable_debug(debug_process_killing);
 }
