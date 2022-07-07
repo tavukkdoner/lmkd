@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c15bf156_20c9c58d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3073,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-07-07T02:16:26Z",
+      "side": 1,
+      "message": "This is simpler to read:\n\n```\nif (find_and_kill_process(use_minfree_levels ? min_score_adj : level_oomadj[level],\n                          NULL, \u0026mi, \u0026wi, \u0026curr_tm, NULL) \u003d\u003d 0) {\n```",
+      "range": {
+        "startLine": 3072,
+        "startChar": 8,
+        "endLine": 3073,
+        "endChar": 88
+      },
+      "revId": "af6ddd23bcb6dd407d834831f7a1ff3a9f8a92a3",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
