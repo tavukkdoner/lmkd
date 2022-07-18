@@ -2651,11 +2651,11 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     }
 
     /* Identify reclaim state */
-    if (vs.field.pgscan_direct > init_pgscan_direct) {
+    if (vs.field.pgscan_direct != init_pgscan_direct) {
         init_pgscan_direct = vs.field.pgscan_direct;
         init_pgscan_kswapd = vs.field.pgscan_kswapd;
         reclaim = DIRECT_RECLAIM;
-    } else if (vs.field.pgscan_kswapd > init_pgscan_kswapd) {
+    } else if (vs.field.pgscan_kswapd != init_pgscan_kswapd) {
         init_pgscan_kswapd = vs.field.pgscan_kswapd;
         reclaim = KSWAPD_RECLAIM;
     } else if (workingset_refault_file == prev_workingset_refault) {
@@ -3069,7 +3069,8 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
 do_kill:
     if (low_ram_device) {
         /* For Go devices kill only one task */
-        if (find_and_kill_process(level_oomadj[level], NULL, &mi, &wi, &curr_tm, NULL) == 0) {
+        if (find_and_kill_process(use_minfree_levels ? min_score_adj : level_oomadj[level],
+                                  NULL, &mi, &wi, &curr_tm, NULL) == 0) {
             if (debug_process_killing) {
                 ALOGI("Nothing to kill");
             }
