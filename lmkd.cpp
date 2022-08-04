@@ -3430,7 +3430,7 @@ static int init(void) {
     int ret;
 
     page_k = sysconf(_SC_PAGESIZE);
-    if (page_k == -1)
+    if (page_k <= 0 )
         page_k = PAGE_SIZE;
     page_k /= 1024;
 
