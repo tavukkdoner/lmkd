@@ -2764,7 +2764,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
             min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
         }
         check_filecache = true;
-    } else if (swap_is_low && wmark < WMARK_HIGH) {
+    } else if (swap_is_low && (wmark < WMARK_HIGH || reclaim == DIRECT_RECLAIM)) {
         /* Both free memory and swap are low */
         kill_reason = LOW_MEM_AND_SWAP;
         snprintf(kill_desc, sizeof(kill_desc), "%s watermark is breached and swap is low (%"
