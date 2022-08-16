@@ -66,19 +66,17 @@
 #define ATRACE_TAG ATRACE_TAG_ALWAYS
 #include <cutils/trace.h>
 
-static inline void trace_kill_start(int pid, const char *desc) {
-    ATRACE_INT("kill_one_process", pid);
+static inline void trace_kill_start(const char *desc) {
     ATRACE_BEGIN(desc);
 }
 
 static inline void trace_kill_end() {
     ATRACE_END();
-    ATRACE_INT("kill_one_process", 0);
 }
 
 #else /* LMKD_TRACE_KILLS */
 
-static inline void trace_kill_start(int, const char *) {}
+static inline void trace_kill_start(const char *) {}
 static inline void trace_kill_end() {}
 
 #endif /* LMKD_TRACE_KILLS */
@@ -1828,7 +1826,7 @@ static bool meminfo_parse_line(char *line, union meminfo *mi) {
 
 static int64_t read_gpu_total_kb() {
     static int fd = android::bpf::bpfFdGet(
-            "/sys/fs/bpf/map_gpu_mem_gpu_mem_total_map", BPF_F_RDONLY);
+            "/sys/fs/bpf/map_gpuMem_gpu_mem_total_map", BPF_F_RDONLY);
     static constexpr uint64_t kBpfKeyGpuTotalUsage = 0;
     uint64_t value;
 
@@ -2337,7 +2335,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
       return result;
     }
 
-    trace_kill_start(pid, desc);
+    trace_kill_start(desc);
 
     start_wait_for_proc_kill(pidfd < 0 ? pid : pidfd);
     kill_result = reaper.kill({ pidfd, pid, uid }, false);
@@ -2651,11 +2649,11 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     }
 
     /* Identify reclaim state */
-    if (vs.field.pgscan_direct > init_pgscan_direct) {
+    if (vs.field.pgscan_direct != init_pgscan_direct) {
         init_pgscan_direct = vs.field.pgscan_direct;
         init_pgscan_kswapd = vs.field.pgscan_kswapd;
         reclaim = DIRECT_RECLAIM;
-    } else if (vs.field.pgscan_kswapd > init_pgscan_kswapd) {
+    } else if (vs.field.pgscan_kswapd != init_pgscan_kswapd) {
         init_pgscan_kswapd = vs.field.pgscan_kswapd;
         reclaim = KSWAPD_RECLAIM;
     } else if (workingset_refault_file == prev_workingset_refault) {
@@ -3069,7 +3067,8 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
 do_kill:
     if (low_ram_device) {
         /* For Go devices kill only one task */
-        if (find_and_kill_process(level_oomadj[level], NULL, &mi, &wi, &curr_tm, NULL) == 0) {
+        if (find_and_kill_process(use_minfree_levels ? min_score_adj : level_oomadj[level],
+                                  NULL, &mi, &wi, &curr_tm, NULL) == 0) {
             if (debug_process_killing) {
                 ALOGI("Nothing to kill");
             }
