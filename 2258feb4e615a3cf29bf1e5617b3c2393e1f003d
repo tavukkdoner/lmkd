@@ -16,6 +16,24 @@
       "message": "In what situation does sysconf(_SC_PAGESIZE) return 0? According to https://man7.org/linux/man-pages/man3/sysconf.3.html returned value `Must not be less than 1.` and return value can be either a valid value (which 0 is not) or a -1 in case of an error. Could you please clarify?",
       "revId": "2258feb4e615a3cf29bf1e5617b3c2393e1f003d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "32d4202c_13caecb1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1961582
+      },
+      "writtenOn": "2022-08-24T02:22:17Z",
+      "side": 1,
+      "message": "In lmkd.cpp, track back code follow : init() -\u003e page_k \u003d sysconf(_SC_PAGESIZE) -\u003e getauxval(AT_PAGESZ) -\u003e __bionic_getauxval(), in __bionic_getauxval function,it may have some probability to return 0;\n\nIn my customized code in lmkd.cpp, i use (page_k !\u003d 0) to judge whether it can go into property setting, but this a small probability that user version can not go into my customizd code through user feedback log",
+      "parentUuid": "b9a3b9fb_c9d418e8",
+      "revId": "2258feb4e615a3cf29bf1e5617b3c2393e1f003d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
