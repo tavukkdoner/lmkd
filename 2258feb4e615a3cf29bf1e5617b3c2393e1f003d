@@ -34,6 +34,24 @@
       "parentUuid": "b9a3b9fb_c9d418e8",
       "revId": "2258feb4e615a3cf29bf1e5617b3c2393e1f003d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "676a999b_5856e82b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-08-24T17:02:36Z",
+      "side": 1,
+      "message": "Have you seen such error in practice? If __bionic_getauxval(_SC_PAGESIZE) returns 0 that sounds to me like a bug in bionic which does not follow the documented behavior of sysconf().",
+      "parentUuid": "32d4202c_13caecb1",
+      "revId": "2258feb4e615a3cf29bf1e5617b3c2393e1f003d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
