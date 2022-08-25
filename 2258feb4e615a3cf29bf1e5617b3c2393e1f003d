@@ -52,6 +52,24 @@
       "parentUuid": "32d4202c_13caecb1",
       "revId": "2258feb4e615a3cf29bf1e5617b3c2393e1f003d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "87ed509d_c4f9ebff",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1961582
+      },
+      "writtenOn": "2022-08-25T02:20:17Z",
+      "side": 1,
+      "message": "I got this from user feedback, which occur trace in using (page_k !\u003d 0)\nbut it may not be High probability issue, do not easy to debug it\n\nback to the logic of __bionic_getauxval function, if it can not find the \ncorrespond type, it will return 0, i think this is possible in user case\n\nIn global introduction of sysconf.3.html, it remind that __SG_PAGESIZE must\nnot return less than 1, so return 0 is not right for system;\nlmkd module using sysconf(_SC_PAGESIZE) to calculate page_k value, i think can\nnot be 0.\n\nTo be more rigorous, i think it will be page_k \u003c\u003d 0 to judge whether page_k is valid",
+      "parentUuid": "676a999b_5856e82b",
+      "revId": "2258feb4e615a3cf29bf1e5617b3c2393e1f003d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
