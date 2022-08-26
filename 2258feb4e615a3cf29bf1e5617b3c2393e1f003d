@@ -70,6 +70,24 @@
       "parentUuid": "676a999b_5856e82b",
       "revId": "2258feb4e615a3cf29bf1e5617b3c2393e1f003d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "28a25e91_1bdd3c21",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-08-26T00:39:05Z",
+      "side": 1,
+      "message": "I don\u0027t see reasons to add checks for cases which are invalid per documentation. If you or someone else actually hit this problem please provide the details how this happened.",
+      "parentUuid": "87ed509d_c4f9ebff",
+      "revId": "2258feb4e615a3cf29bf1e5617b3c2393e1f003d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
