@@ -29,10 +29,6 @@
 
 using namespace android::base;
 
-#ifndef __NR_process_mrelease
-#define __NR_process_mrelease 448
-#endif
-
 #define INKERNEL_MINFREE_PATH "/sys/module/lowmemorykiller/parameters/minfree"
 
 #define LMKD_LOGCAT_MARKER "lowmemorykiller"
@@ -168,7 +164,7 @@ class LmkdTest : public ::testing::Test {
 
 TEST_F(LmkdTest, TargetReaping) {
     // test specific requirements
-    if (syscall(__NR_process_mrelease, -1, 0) && errno == ENOSYS) {
+    if (process_mrelease(-1, 0) && errno == ENOSYS) {
         GTEST_SKIP() << "Must support process_mrelease syscall, skipping test";
     }
 

@@ -39,14 +39,6 @@
 #define NS_PER_MS (NS_PER_SEC / MS_PER_SEC)
 #define THREAD_POOL_SIZE 2
 
-#ifndef __NR_process_mrelease
-#define __NR_process_mrelease 448
-#endif
-
-static int process_mrelease(int pidfd, unsigned int flags) {
-    return syscall(__NR_process_mrelease, pidfd, flags);
-}
-
 static inline long get_time_diff_ms(struct timespec *from,
                                     struct timespec *to) {
     return (to->tv_sec - from->tv_sec) * (long)MS_PER_SEC +
