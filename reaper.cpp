@@ -21,9 +21,10 @@
 #include <fcntl.h>
 #include <log/log.h>
 #include <signal.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/epoll.h>
+#include <sys/mman.h>
 #include <sys/pidfd.h>
 #include <sys/resource.h>
 #include <sys/sysinfo.h>
@@ -38,14 +39,6 @@
 
 #define NS_PER_MS (NS_PER_SEC / MS_PER_SEC)
 #define THREAD_POOL_SIZE 2
-
-#ifndef __NR_process_mrelease
-#define __NR_process_mrelease 448
-#endif
-
-static int process_mrelease(int pidfd, unsigned int flags) {
-    return syscall(__NR_process_mrelease, pidfd, flags);
-}
 
 static inline long get_time_diff_ms(struct timespec *from,
                                     struct timespec *to) {
