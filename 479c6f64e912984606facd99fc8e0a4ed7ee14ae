@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c2b99d9_102e16f0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003224
+      },
+      "writtenOn": "2022-09-26T18:29:53Z",
+      "side": 1,
+      "message": "it\u0027s still not obvious to me whether this is a good idea; is there any progress on writing a man page and/or adding this to musl/glibc?\n\nthe fact that the current caller doesn\u0027t need a seccomp filter exception is probably also a sign that we _shouldn\u0027t_ do this? (because we wouldn\u0027t want to expose it more widely than necessary.)\n\ni think the obvious alternative would be to instead document that adding process_madvise() to bionic, rather than just using syscall() for the single caller of that, was probably a mistake? that would at least make it more obvious why we have this asymmetry in the header...",
+      "revId": "479c6f64e912984606facd99fc8e0a4ed7ee14ae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
