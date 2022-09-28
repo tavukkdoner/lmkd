@@ -22,6 +22,30 @@
       },
       "revId": "ba9ea6e3d6bf294ccb87299f3744070b96c10a67",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36f0574a_40737aac",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2107,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-09-28T22:41:29Z",
+      "side": 1,
+      "message": "proc_get_heaviest() is currently called only from the main thread. Since it calls pid_remove() which can be called only from the main thread, transitively proc_get_heaviest() gets the same limitation. That\u0027s why I updated the invalid comment.",
+      "parentUuid": "8803d93f_cdc3dd24",
+      "range": {
+        "startLine": 2106,
+        "startChar": 0,
+        "endLine": 2107,
+        "endChar": 42
+      },
+      "revId": "ba9ea6e3d6bf294ccb87299f3744070b96c10a67",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
