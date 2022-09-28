@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8803d93f_cdc3dd24",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2107,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2022-09-28T22:25:07Z",
+      "side": 1,
+      "message": "I don\u0027t see corresponding change to ensure this only being called from main thread. Or comment was incorrect before?",
+      "range": {
+        "startLine": 2106,
+        "startChar": 0,
+        "endLine": 2107,
+        "endChar": 42
+      },
+      "revId": "ba9ea6e3d6bf294ccb87299f3744070b96c10a67",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
