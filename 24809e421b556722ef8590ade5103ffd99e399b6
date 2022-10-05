@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aaad82b5_0ff31866",
+        "filename": "reaper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1105075
+      },
+      "writtenOn": "2022-10-05T06:53:46Z",
+      "side": 1,
+      "message": "i see this connect with a lot of UI, should we reduce this to the same prio of UI and renderthread?",
+      "range": {
+        "startLine": 67,
+        "startChar": 39,
+        "endLine": 67,
+        "endChar": 63
+      },
+      "revId": "24809e421b556722ef8590ade5103ffd99e399b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
