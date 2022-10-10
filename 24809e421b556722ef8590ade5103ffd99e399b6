@@ -70,6 +70,30 @@
       },
       "revId": "24809e421b556722ef8590ade5103ffd99e399b6",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7eec1a85_d86075e0",
+        "filename": "reaper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-10T17:46:06Z",
+      "side": 1,
+      "message": "Downgrading reaper threads to lower priority might be related but is a separate task IMHO. This patch is targeting occasional lockups in LMKD main thread itself which I want to avoid. Let\u0027s discuss the reaper priority in a separate bug and I don\u0027t think we should do that in QPR2 (which is what this patch I would like to target).",
+      "parentUuid": "ce4796f6_b3ab6a0a",
+      "range": {
+        "startLine": 67,
+        "startChar": 39,
+        "endLine": 67,
+        "endChar": 63
+      },
+      "revId": "24809e421b556722ef8590ade5103ffd99e399b6",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
