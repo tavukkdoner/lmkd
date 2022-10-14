@@ -37,7 +37,7 @@
 #include "reaper.h"
 
 #define NS_PER_MS (NS_PER_SEC / MS_PER_SEC)
-#define THREAD_POOL_SIZE 2
+#define THREAD_POOL_SIZE 1
 
 #ifndef __NR_process_mrelease
 #define __NR_process_mrelease 448
