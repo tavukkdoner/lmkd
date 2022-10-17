@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "379f281c_b14db201",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1961582
+      },
+      "writtenOn": "2022-10-17T12:29:41Z",
+      "side": 1,
+      "message": "Hi maintain, please to review this code\nthe problem i actualy met in memory pressue test\n\nthe output log as below:\n5629:10-13 18:43:22.669 882 882 I killinfo: [29602,com.android.quicksearchbox,10130,200,701,490928,210,7307564,45368,1353404,40080,1512,21632,155956,6291452,2391996,266176,778052,413856,766820,455636,423148,866068,108480,160388,0,0,412,440,32,32,0,31688,0,0,0,27.170000,20.360001,2.360000,0.830000,44.919998]\n\nmin_socre_adj is 701, but it make developer to think it kill a adj\u003d200 process. it is deviate with origin mean of min_score_adj",
+      "revId": "1c631a94905e5d75019fb3c77ec9edf2dbc6189f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
