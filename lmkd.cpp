@@ -2032,13 +2032,13 @@ struct kill_info {
     int max_thrashing;
 };
 
-static void killinfo_log(struct proc* procp, int min_oom_score, int rss_kb,
+static void killinfo_log(struct proc* procp, int procp_oomadj,int min_oom_score, int rss_kb,
                          int swap_kb, struct kill_info *ki, union meminfo *mi,
                          struct wakeup_info *wi, struct timespec *tm, struct psi_data *pd) {
     /* log process information */
     android_log_write_int32(ctx, procp->pid);
     android_log_write_int32(ctx, procp->uid);
-    android_log_write_int32(ctx, procp->oomadj);
+    android_log_write_int32(ctx, procp_oomadj);
     android_log_write_int32(ctx, min_oom_score);
     android_log_write_int32(ctx, std::min(rss_kb, (int)INT32_MAX));
     android_log_write_int32(ctx, ki ? ki->kill_reason : NONE);
@@ -2178,7 +2178,7 @@ static void watchdog_callback() {
 
         if (target.valid && reaper.kill({ target.pidfd, target.pid, target.uid }, true) == 0) {
             ALOGW("lmkd watchdog killed process %d, oom_score_adj %d", target.pid, oom_score);
-            killinfo_log(&target, 0, 0, 0, NULL, NULL, NULL, NULL, NULL);
+            killinfo_log(&target, target.pid, 0, 0, 0, NULL, NULL, NULL, NULL, NULL);
             // Can't call pid_remove() from non-main thread, therefore just invalidate the record
             pid_invalidate(target.pid);
             break;
@@ -2391,7 +2391,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
         ALOGI("Kill '%s' (%d), uid %d, oom_score_adj %d to free %" PRId64 "kB rss, %" PRId64
               "kb swap", taskname, pid, uid, procp->oomadj, rss_kb, swap_kb);
     }
-    killinfo_log(procp, min_oom_score, rss_kb, swap_kb, ki, mi, wi, tm, pd);
+    killinfo_log(procp, procp->oomadj, min_oom_score, rss_kb, swap_kb, ki, mi, wi, tm, pd);
 
     kill_st.uid = static_cast<int32_t>(uid);
     kill_st.taskname = taskname;
