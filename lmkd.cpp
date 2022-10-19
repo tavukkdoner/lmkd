@@ -1424,6 +1424,10 @@ static void cmd_target(int ntargets, LMKD_CTRL_PACKET packet) {
         }
     }
 
+    if (debug_process_killing) {
+        ALOGI("minfree level have change to: %s", minfree_str);
+    }
+
     lowmem_targets_size = ntargets;
 
     /* Override the last extra comma */
