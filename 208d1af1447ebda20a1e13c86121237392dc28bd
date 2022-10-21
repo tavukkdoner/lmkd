@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7615b08_62b3d630",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-10-21T04:49:50Z",
+      "side": 1,
+      "message": "I wanted to note here\n\nActually, I am not big fan of adjust process\u0027s priority to resolve lock inversion to solve. The approach would introduce other priority bumping race again but still memory reclaim are inherently slow than allocation.\n\nSince LMKD had used higher priority before but recent CL got rids of the priority control, it seems to be rather aggressive change so here normal priority setting back would be more smooth approach until we could totally get rids of the priority(I hope)",
+      "revId": "208d1af1447ebda20a1e13c86121237392dc28bd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
