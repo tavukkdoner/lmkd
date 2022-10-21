@@ -116,6 +116,30 @@
       },
       "revId": "5ebecfaab5f9f7295e081bf223cd78498478f7b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "19ece968_bc6c224f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2366,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-21T23:43:21Z",
+      "side": 1,
+      "message": "re: `During this time, lmkd main thread receive an adj update from AMS, and save new adj to procadjslot_list? So that killinfo log get a after change adj?`\n\nNo this would not be possible. The main thread is the only one that processes messages from AMS. So, even if it is blocked waiting for reaper threads (which it should not), there is no possibility of AMS updating the record because it has to be done by the same main thread which is blocked.",
+      "parentUuid": "362b8a5e_4822741e",
+      "range": {
+        "startLine": 2366,
+        "startChar": 4,
+        "endLine": 2366,
+        "endChar": 27
+      },
+      "revId": "5ebecfaab5f9f7295e081bf223cd78498478f7b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
