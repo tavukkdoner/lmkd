@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "003c5f60_360db4dc",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1430,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-21T01:25:35Z",
+      "side": 1,
+      "message": "This is not something that should change very often, so you can simply read the value of sys.lmk.minfree_levels and log it if needed. If desired you can even add an `on property change` in your .rc file and catch the moment it changes. Sorry but I don\u0027t see this change as really necessary.",
+      "range": {
+        "startLine": 1427,
+        "startChar": 4,
+        "endLine": 1430,
+        "endChar": 0
+      },
+      "revId": "779ea2ab93ceeeb1f47e3e1043f73069e57aba53",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
