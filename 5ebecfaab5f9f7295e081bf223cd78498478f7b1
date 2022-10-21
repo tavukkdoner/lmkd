@@ -18,6 +18,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "ac75e974_ae2a34b8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1961582
+      },
+      "writtenOn": "2022-10-21T02:15:19Z",
+      "side": 1,
+      "message": "Done,Thanks for your guidance!",
+      "parentUuid": "ebae32e0_c86073bf",
+      "revId": "5ebecfaab5f9f7295e081bf223cd78498478f7b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "e5c4019f_55ae115a",
@@ -66,6 +84,30 @@
       "writtenOn": "2022-10-21T01:21:10Z",
       "side": 1,
       "message": "Hmm. Are you saying that `procp-\u003eoomadj` changes between here and when we call `killinfo_log` at line 2396? That I think can\u0027t happen because reaper does not modify `procp-\u003eoomadj`. The only place it can be modified is in `cmd_procprio` which runs in the same main thread as `kill_one_process`, therefore can\u0027t race with this code.\n\nPlease clarify the scenario that you are experiencing. From this change it\u0027s still unclear why you would get a wrong procp-\u003eoomadj at the time of `killinfo_log` call.",
+      "range": {
+        "startLine": 2366,
+        "startChar": 4,
+        "endLine": 2366,
+        "endChar": 27
+      },
+      "revId": "5ebecfaab5f9f7295e081bf223cd78498478f7b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "362b8a5e_4822741e",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2366,
+      "author": {
+        "id": 1961582
+      },
+      "writtenOn": "2022-10-21T02:15:19Z",
+      "side": 1,
+      "message": "As i know that, procp is a pointer to process maintained in procadjslot_list.killinfo also get log information from this.\n\nMay be have a situation like that: \nthis kill is a sync kill, being kill process\u0027s pid is giving to reaper thread, then block there until reaper work done. During this time, lmkd main thread receive an adj update from AMS, and save new adj to procadjslot_list?  So that killinfo log get a after change adj?\n\nScenario i meat in memory pressure test which swtich app very frequently, i think adj update also frequently. This scenario likely have high probability to happen this situation?\n\nLooking forward to your continued guidance.\nThanks a lot!",
+      "parentUuid": "980e2dfc_e61570c5",
       "range": {
         "startLine": 2366,
         "startChar": 4,
