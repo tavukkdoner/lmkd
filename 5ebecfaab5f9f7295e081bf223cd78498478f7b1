@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "ebae32e0_c86073bf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-21T01:21:42Z",
+      "side": 1,
+      "message": "You need to add this line here:\n\n`Bug: 254410109`",
+      "revId": "5ebecfaab5f9f7295e081bf223cd78498478f7b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "e5c4019f_55ae115a",
