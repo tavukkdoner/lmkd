@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "92c7c5de_a7593108",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2179,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-21T01:21:10Z",
+      "side": 0,
+      "message": "this line was incorrectly moved",
+      "range": {
+        "startLine": 2179,
+        "startChar": 6,
+        "endLine": 2179,
+        "endChar": 8
+      },
+      "revId": "67c467d4ecc258ff114103bb7a084752d9920fe7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

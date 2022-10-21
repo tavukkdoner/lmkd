@@ -34,6 +34,29 @@
       "parentUuid": "e5c4019f_55ae115a",
       "revId": "5ebecfaab5f9f7295e081bf223cd78498478f7b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "980e2dfc_e61570c5",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2366,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-21T01:21:10Z",
+      "side": 1,
+      "message": "Hmm. Are you saying that `procp-\u003eoomadj` changes between here and when we call `killinfo_log` at line 2396? That I think can\u0027t happen because reaper does not modify `procp-\u003eoomadj`. The only place it can be modified is in `cmd_procprio` which runs in the same main thread as `kill_one_process`, therefore can\u0027t race with this code.\n\nPlease clarify the scenario that you are experiencing. From this change it\u0027s still unclear why you would get a wrong procp-\u003eoomadj at the time of `killinfo_log` call.",
+      "range": {
+        "startLine": 2366,
+        "startChar": 4,
+        "endLine": 2366,
+        "endChar": 27
+      },
+      "revId": "5ebecfaab5f9f7295e081bf223cd78498478f7b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
