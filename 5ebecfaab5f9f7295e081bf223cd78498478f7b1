@@ -38,6 +38,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "77c0e03d_2300d8ed",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1961582
+      },
+      "writtenOn": "2022-10-24T09:22:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ac75e974_ae2a34b8",
+      "revId": "5ebecfaab5f9f7295e081bf223cd78498478f7b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "e5c4019f_55ae115a",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 5
@@ -131,6 +149,30 @@
       "writtenOn": "2022-10-21T23:43:21Z",
       "side": 1,
       "message": "re: `During this time, lmkd main thread receive an adj update from AMS, and save new adj to procadjslot_list? So that killinfo log get a after change adj?`\n\nNo this would not be possible. The main thread is the only one that processes messages from AMS. So, even if it is blocked waiting for reaper threads (which it should not), there is no possibility of AMS updating the record because it has to be done by the same main thread which is blocked.",
+      "parentUuid": "362b8a5e_4822741e",
+      "range": {
+        "startLine": 2366,
+        "startChar": 4,
+        "endLine": 2366,
+        "endChar": 27
+      },
+      "revId": "5ebecfaab5f9f7295e081bf223cd78498478f7b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e89dafde_0f9caa08",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2366,
+      "author": {
+        "id": 1961582
+      },
+      "writtenOn": "2022-10-24T09:22:14Z",
+      "side": 1,
+      "message": "All right, but it actually happen in test case.\nMay you have some method to debug for it? or something idea for this sicuation?\nThanks a lot!",
       "parentUuid": "362b8a5e_4822741e",
       "range": {
         "startLine": 2366,
