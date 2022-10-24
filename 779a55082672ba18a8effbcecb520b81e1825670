@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "18da450d_e6990cc4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2022-10-24T22:29:25Z",
+      "side": 1,
+      "message": "+2 If previous CL handles the test failure(defer to review the test CL to others who are familiar with)",
+      "revId": "779a55082672ba18a8effbcecb520b81e1825670",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
