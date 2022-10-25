@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "282797d9_e6868e8f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 2394,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-25T21:08:20Z",
+      "side": 1,
+      "message": "Do these logs also report wrong oomadj score?",
+      "range": {
+        "startLine": 2386,
+        "startChar": 8,
+        "endLine": 2394,
+        "endChar": 77
+      },
+      "revId": "83f11c04c31ba9a4e8e4d2c71f1c17c389d13737",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

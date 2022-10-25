@@ -182,6 +182,30 @@
       },
       "revId": "5ebecfaab5f9f7295e081bf223cd78498478f7b1",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d938beff_fcfa0b30",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2366,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2022-10-25T21:08:20Z",
+      "side": 1,
+      "message": "Have you tried logging procp-\u003eoomadj here and comparing it with the procp-\u003eoomadj in killinfo_log() report? I don\u0027t see any path that would modify procp-\u003eoomadj in between these locations unless procp somehow gets overritten completely. Please verify that the values indeed differ.",
+      "parentUuid": "e89dafde_0f9caa08",
+      "range": {
+        "startLine": 2366,
+        "startChar": 4,
+        "endLine": 2366,
+        "endChar": 27
+      },
+      "revId": "5ebecfaab5f9f7295e081bf223cd78498478f7b1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
