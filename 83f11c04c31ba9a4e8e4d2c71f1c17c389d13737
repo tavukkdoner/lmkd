@@ -22,6 +22,30 @@
       },
       "revId": "83f11c04c31ba9a4e8e4d2c71f1c17c389d13737",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ab2c135_02668c5c",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 2394,
+      "author": {
+        "id": 1961582
+      },
+      "writtenOn": "2022-10-26T11:40:56Z",
+      "side": 1,
+      "message": "log when issure occur:\n\n10-13 18:43:22.669   882   882 I lowmemorykiller: Kill \u0027com.android.quicksearchbox\u0027 (29602), uid 10130, oom_score_adj 200 to free 490928kB rss, 31688kB swap; reason: device is in direct reclaim and low on memory\n\n10-13 18:43:22.669   882   882 I killinfo: [29602,com.android.quicksearchbox,10130,200,701,490928,210,7307564,45368,1353404,40080,1512,21632,155956,6291452,2391996,266176,778052,413856,766820,455636,423148,866068,108480,160388,0,0,412,440,32,32,0,31688,0,0,0,27.170000,20.360001,2.360000,0.830000,44.919998]\n\nit is explicitly that oomadj is same in killinfo and lowmemorykiller log, so it must make change before actually send kill signal",
+      "parentUuid": "282797d9_e6868e8f",
+      "range": {
+        "startLine": 2386,
+        "startChar": 8,
+        "endLine": 2394,
+        "endChar": 77
+      },
+      "revId": "83f11c04c31ba9a4e8e4d2c71f1c17c389d13737",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
