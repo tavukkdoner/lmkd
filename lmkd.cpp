@@ -450,6 +450,7 @@ union meminfo {
         /* fields below are calculated rather than read from the file */
         int64_t nr_file_pages;
         int64_t total_gpu_kb;
+        int64_t easy_available;
     } field;
     int64_t arr[MI_FIELD_COUNT];
 };
@@ -510,6 +511,7 @@ struct proc {
     uid_t uid;
     int oomadj;
     pid_t reg_pid; /* PID of the process that registered this record */
+    bool valid;
     struct proc *pidhash_next;
 };
 
@@ -941,6 +943,7 @@ static void proc_insert(struct proc *procp) {
     proc_slot(procp);
 }
 
+// Can be called only from the main thread.
 static int pid_remove(int pid) {
     int hval = pid_hashfn(pid);
     struct proc *procp;
@@ -968,6 +971,15 @@ static int pid_remove(int pid) {
     }
     free(procp);
     return 0;
+}
+
+static void pid_invalidate(int pid) {
+    std::shared_lock lock(adjslot_list_lock);
+    struct proc *procp = pid_lookup(pid);
+
+    if (procp) {
+        procp->valid = false;
+    }
 }
 
 /*
@@ -1220,6 +1232,7 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
         procp->uid = params.uid;
         procp->reg_pid = cred->pid;
         procp->oomadj = params.oomadj;
+        procp->valid = true;
         proc_insert(procp);
     } else {
         if (!claim_record(procp, cred->pid)) {
@@ -1864,8 +1877,17 @@ static int meminfo_parse(union meminfo *mi) {
     mi->field.nr_file_pages = mi->field.cached + mi->field.swap_cached +
         mi->field.buffers;
     mi->field.total_gpu_kb = read_gpu_total_kb();
+    mi->field.easy_available = mi->field.nr_free_pages + mi->field.inactive_file;
 
     return 0;
+}
+
+// In the case of ZRAM, mi->field.free_swap can't be used directly because swap space is taken
+// from the free memory or reclaimed. Use the lowest of free_swap and easily available memory to
+// measure free swap because they represent how much swap space the system will consider to use
+// and how much it can actually use.
+static inline int64_t get_free_swap(union meminfo *mi) {
+    return std::min(mi->field.free_swap, mi->field.easy_available);
 }
 
 /* /proc/vmstat parsing routines */
@@ -2092,7 +2114,7 @@ static struct proc *proc_adj_prev(int oomadj, int pid) {
     return NULL;
 }
 
-// When called from a non-main thread, adjslot_list_lock read lock should be taken.
+// Can be called only from the main thread.
 static struct proc *proc_get_heaviest(int oomadj) {
     struct adjslot_list *head = &procadjslot_list[ADJTOSLOT(oomadj)];
     struct adjslot_list *curr = head->next;
@@ -2154,11 +2176,11 @@ static void watchdog_callback() {
             continue;
         }
 
-        if (reaper.kill({ target.pidfd, target.pid, target.uid }, true) == 0) {
+        if (target.valid && reaper.kill({ target.pidfd, target.pid, target.uid }, true) == 0) {
             ALOGW("lmkd watchdog killed process %d, oom_score_adj %d", target.pid, oom_score);
             killinfo_log(&target, 0, 0, 0, NULL, NULL, NULL, NULL, NULL);
-            // WARNING: do not use target after pid_remove()
-            pid_remove(target.pid);
+            // Can't call pid_remove() from non-main thread, therefore just invalidate the record
+            pid_invalidate(target.pid);
             break;
         }
         prev_pid = target.pid;
@@ -2296,7 +2318,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     char buf[PAGE_SIZE];
     char desc[LINE_MAX];
 
-    if (!read_proc_status(pid, buf, sizeof(buf))) {
+    if (!procp->valid || !read_proc_status(pid, buf, sizeof(buf))) {
         goto out;
     }
     if (!parse_status_tag(buf, PROC_STATUS_TGID_FIELD, &tgid)) {
@@ -2376,7 +2398,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     kill_st.oom_score = procp->oomadj;
     kill_st.min_oom_score = min_oom_score;
     kill_st.free_mem_kb = mi->field.nr_free_pages * page_k;
-    kill_st.free_swap_kb = mi->field.free_swap * page_k;
+    kill_st.free_swap_kb = get_free_swap(mi) * page_k;
     stats_write_lmk_kill_occurred(&kill_st, mem_st);
 
     ctrl_data_write_lmk_kill_occurred((pid_t)pid, uid);
@@ -2552,7 +2574,7 @@ void calc_zone_watermarks(struct zoneinfo *zi, struct zone_watermarks *watermark
 }
 
 static int calc_swap_utilization(union meminfo *mi) {
-    int64_t swap_used = mi->field.total_swap - mi->field.free_swap;
+    int64_t swap_used = mi->field.total_swap - get_free_swap(mi);
     int64_t total_swappable = mi->field.active_anon + mi->field.inactive_anon +
                               mi->field.shmem + swap_used;
     return total_swappable > 0 ? (swap_used * 100) / total_swappable : 0;
@@ -2645,7 +2667,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     /* Check free swap levels */
     if (swap_free_low_percentage) {
         swap_low_threshold = mi.field.total_swap * swap_free_low_percentage / 100;
-        swap_is_low = mi.field.free_swap < swap_low_threshold;
+        swap_is_low = get_free_swap(&mi) < swap_low_threshold;
     } else {
         swap_low_threshold = 0;
     }
@@ -2758,7 +2780,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         kill_reason = LOW_SWAP_AND_THRASHING;
         snprintf(kill_desc, sizeof(kill_desc), "device is low on swap (%" PRId64
             "kB < %" PRId64 "kB) and thrashing (%" PRId64 "%%)",
-            mi.field.free_swap * page_k, swap_low_threshold * page_k, thrashing);
+            get_free_swap(&mi) * page_k, swap_low_threshold * page_k, thrashing);
         /* Do not kill perceptible apps unless below min watermark or heavily thrashing */
         if (wmark > WMARK_MIN && thrashing < thrashing_critical_pct) {
             min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
@@ -2769,7 +2791,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         kill_reason = LOW_MEM_AND_SWAP;
         snprintf(kill_desc, sizeof(kill_desc), "%s watermark is breached and swap is low (%"
             PRId64 "kB < %" PRId64 "kB)", wmark < WMARK_LOW ? "min" : "low",
-            mi.field.free_swap * page_k, swap_low_threshold * page_k);
+            get_free_swap(&mi) * page_k, swap_low_threshold * page_k);
         /* Do not kill perceptible apps unless below min watermark or heavily thrashing */
         if (wmark > WMARK_MIN && thrashing < thrashing_critical_pct) {
             min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
@@ -3048,7 +3070,7 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
 
     // If we still have enough swap space available, check if we want to
     // ignore/downgrade pressure events.
-    if (mi.field.free_swap >=
+    if (get_free_swap(&mi) >=
         mi.field.total_swap * swap_free_low_percentage / 100) {
         // If the pressure is larger than downgrade_pressure lmk will not
         // kill any process, since enough memory is available.
