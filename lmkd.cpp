@@ -2301,9 +2301,9 @@ static void start_wait_for_proc_kill(int pid_or_fd) {
 }
 
 /* Kill one process specified by procp.  Returns the size (in pages) of the process killed */
-static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_info *ki,
-                            union meminfo *mi, struct wakeup_info *wi, struct timespec *tm,
-                            struct psi_data *pd) {
+static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_info* ki,
+                            union meminfo* mi, struct wakeup_info* wi, struct timespec* tm,
+                            struct psi_data* pd) {
     int pid = procp->pid;
     int pidfd = procp->pidfd;
     uid_t uid = procp->uid;
@@ -2348,7 +2348,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     snprintf(desc, sizeof(desc), "lmk,%d,%d,%d,%d,%d", pid, ki ? (int)ki->kill_reason : -1,
              procp->oomadj, min_oom_score, ki ? ki->max_thrashing : -1);
 
-    result = lmkd_free_memory_before_kill_hook(procp, rss_kb / page_k, min_oom_score,
+    result = lmkd_free_memory_before_kill_hook(procp, rss_kb / page_k, procp->oomadj,
                                                ki ? (int)ki->kill_reason : -1);
     if (result > 0) {
       /*
