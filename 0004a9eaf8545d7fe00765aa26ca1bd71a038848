@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4cd43fb_cc7750de",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2304,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-03-17T18:50:31Z",
+      "side": 1,
+      "message": "No need to add this parameter since procp-\u003eoomadj already contains the required value.",
+      "range": {
+        "startLine": 2304,
+        "startChar": 67,
+        "endLine": 2304,
+        "endChar": 87
+      },
+      "revId": "0004a9eaf8545d7fe00765aa26ca1bd71a038848",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
