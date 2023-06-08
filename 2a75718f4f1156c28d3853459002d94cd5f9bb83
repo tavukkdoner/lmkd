@@ -52,6 +52,24 @@
       "parentUuid": "c5898550_1e1b9fe3",
       "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6c987aa7_ab832254",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-06-08T21:28:19Z",
+      "side": 1,
+      "message": "Partner reports that this calculation makes lmkd overly aggressive for their device. Should I make the compression ratio configurable with 1x as a default and let partners reset it when required?",
+      "parentUuid": "38f37053_e84cb35f",
+      "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
