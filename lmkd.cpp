@@ -1885,9 +1885,9 @@ static int meminfo_parse(union meminfo *mi) {
 // In the case of ZRAM, mi->field.free_swap can't be used directly because swap space is taken
 // from the free memory or reclaimed. Use the lowest of free_swap and easily available memory to
 // measure free swap because they represent how much swap space the system will consider to use
-// and how much it can actually use.
+// and how much it can actually use. Assume average compression ratio of 3x in the calculation.
 static inline int64_t get_free_swap(union meminfo *mi) {
-    return std::min(mi->field.free_swap, mi->field.easy_available);
+    return std::min(mi->field.free_swap, mi->field.easy_available * 3);
 }
 
 /* /proc/vmstat parsing routines */
