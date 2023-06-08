@@ -16,6 +16,24 @@
       "message": "doesn\u0027t this make lmkd less aggressive in favor of spending more time in kswapd?",
       "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5898550_1e1b9fe3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-06-08T21:08:24Z",
+      "side": 1,
+      "message": "Yes but this way the calculation does not underestimate the amount of data swap can accomodate before it runs out of space. Current calculation assumes data to be always uncompressible (worst case scenario) which leads to LMKD being overly aggressive (see the bug in the description).",
+      "parentUuid": "4ef317b6_67577285",
+      "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
