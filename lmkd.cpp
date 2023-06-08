@@ -162,6 +162,8 @@ static inline void trace_kill_end() {}
 #define DEF_COMPLETE_STALL 700
 /* ro.lmk.direct_reclaim_threshold_ms property defaults */
 #define DEF_DIRECT_RECL_THRESH_MS 0
+/* ro.lmk.swap_compression_ratio property defaults */
+#define DEF_SWAP_COMP_RATIO 1
 
 #define LMKD_REINIT_PROP "lmkd.reinit"
 
@@ -232,6 +234,7 @@ static bool use_psi_monitors = false;
 static int kpoll_fd;
 static bool delay_monitors_until_boot;
 static int direct_reclaim_threshold_ms;
+static int swap_compression_ratio;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
     { PSI_SOME, 70 },    /* 70ms out of 1sec for partial stall */
     { PSI_SOME, 100 },   /* 100ms out of 1sec for partial stall */
@@ -1946,8 +1949,12 @@ static int meminfo_parse(union meminfo *mi) {
 // from the free memory or reclaimed. Use the lowest of free_swap and easily available memory to
 // measure free swap because they represent how much swap space the system will consider to use
 // and how much it can actually use.
+// Swap compression ratio in the calculation can be adjusted using swap_compression_ratio tunable.
+// By setting swap_compression_ratio to 0, available memory can be ignored.
 static inline int64_t get_free_swap(union meminfo *mi) {
-    return std::min(mi->field.free_swap, mi->field.easy_available);
+    if (swap_compression_ratio)
+        return std::min(mi->field.free_swap, mi->field.easy_available * swap_compression_ratio);
+    return mi->field.free_swap;
 }
 
 /* /proc/vmstat parsing routines */
@@ -3998,6 +4005,8 @@ static bool update_props() {
     delay_monitors_until_boot = GET_LMK_PROPERTY(bool, "delay_monitors_until_boot", false);
     direct_reclaim_threshold_ms =
             GET_LMK_PROPERTY(int64, "direct_reclaim_threshold_ms", DEF_DIRECT_RECL_THRESH_MS);
+    swap_compression_ratio =
+            GET_LMK_PROPERTY(int64, "swap_compression_ratio", DEF_SWAP_COMP_RATIO);
 
     reaper.enable_debug(debug_process_killing);
 
