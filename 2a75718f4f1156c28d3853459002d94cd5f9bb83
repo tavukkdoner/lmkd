@@ -124,6 +124,24 @@
       "parentUuid": "db90171c_bd3e35aa",
       "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8754906f_9d94fbae",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-06-08T22:31:12Z",
+      "side": 1,
+      "message": "The issue is that there is no such knob today to tune the compression ratio in this calculation. Therefore partners can\u0027t tune this on their side.",
+      "parentUuid": "d2b0ba3f_c35a704e",
+      "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
