@@ -88,6 +88,24 @@
       "parentUuid": "6c987aa7_ab832254",
       "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db90171c_bd3e35aa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-06-08T22:10:57Z",
+      "side": 1,
+      "message": "Unfortunately adjusting other knobs will have additional side-effects. For example if we instead adjust the low_swap limit to compensate for this 1x compression ration then we will be less aggressive when FreeSwap drops lower than the current low_swap limit. I think a separate knob would be the right way to solve this if we indeed don\u0027t want to change current lmkd behavior and to solve partner\u0027s issue.",
+      "parentUuid": "abda9325_fcb4eda7",
+      "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
