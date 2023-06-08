@@ -106,6 +106,24 @@
       "parentUuid": "abda9325_fcb4eda7",
       "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d2b0ba3f_c35a704e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-06-08T22:20:09Z",
+      "side": 1,
+      "message": "The LMKD behavior used to be fine, but it has become more conservative as the platform has become smarter about memory management. I think it\u0027s time to retune the behavior along with platform changes. I am fine to change the behavior if the direction goes more aggressive. If some vendor concerns it since they use on their own policy, they could adjust LMKD knobs on their side.",
+      "parentUuid": "db90171c_bd3e35aa",
+      "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
