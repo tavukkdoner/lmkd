@@ -142,6 +142,24 @@
       "parentUuid": "d2b0ba3f_c35a704e",
       "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e17b0815_1db88a55",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-06-08T22:52:53Z",
+      "side": 1,
+      "message": "Should I post a patch introducing compression ratio knob here? Would that be preperable?",
+      "parentUuid": "8754906f_9d94fbae",
+      "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
