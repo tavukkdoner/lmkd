@@ -232,6 +232,24 @@
       "parentUuid": "ee44bdaa_399fc5ba",
       "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a639c090_99c9f018",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-06-09T17:41:07Z",
+      "side": 1,
+      "message": "\"To make LMKD aggressive, tune the compression ratio knob\" - Isn\u0027t it too low level metric and also sounds strange since LMKD users need to be aware of how the LMKD is working with compression? That\u0027s all too low level detail and it\u0027s trying to expose low level implementation to control the LMKD\u0027s aggressiveness. \n\nNot sure what\u0027s the best knobs. What\u0027s the problem the low_swap limit you mentioned? I don\u0027t think we can avoid side effect but if that\u0027s align with platform changes, that\u0027s intended good fit. If the knob is not good by some reasons, can we make other representative knobs to control aggressiveness in LMKD instead of such an low level? And definitely the knob\u0027s default value would change depending on Android upgrade since it\u0027s intended behavior.",
+      "parentUuid": "1ba46b33_064c0b62",
+      "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
