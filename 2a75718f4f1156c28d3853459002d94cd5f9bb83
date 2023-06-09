@@ -196,6 +196,24 @@
       "parentUuid": "37101c50_2e78c649",
       "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ee44bdaa_399fc5ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-06-09T17:21:26Z",
+      "side": 1,
+      "message": "Compression ratio knob is just bandaid to control the LMKD aggressiveness.",
+      "parentUuid": "ec7aab17_e8c00a02",
+      "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
