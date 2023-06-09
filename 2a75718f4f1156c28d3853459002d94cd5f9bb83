@@ -250,6 +250,24 @@
       "parentUuid": "1ba46b33_064c0b62",
       "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1b4d82ea_faf9c453",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-06-09T18:05:42Z",
+      "side": 1,
+      "message": "The issue with retuning low_swap to compensate this new condition is that it\u0027s compared with `min(FreeSwap, easy_available)\u003clow_swap` vs before it was compared only with `FreeSwap\u003clow_swap`.\n\nSo, let\u0027s consider an example with FreeSwap\u003d10, easy_available\u003d5, low_swap\u003d7.\n\nBefore the change `FreeSwap\u003clow_swap` \u003d\u003d `10\u003c7` \u003d\u003d no kill\nAfter the change `min(FreeSwap, easy_available)\u003clow_swap` \u003d\u003d `min(10,5)\u003c7` \u003d\u003d kill (LMKD became more aggressive)\n\nIf we change low_swap to not kill in this condition (to match previous LMKD aggressiveness) we should change it from 7 to 4:\nAfter the change `min(10,5)\u003c4` \u003d\u003d no kill\n\nBut now if things change and FreeSwap\u003d5 and easy_available\u003d10 then:\n\nBefore the change and retuning `FreeSwap\u003clow_swap` \u003d\u003d `5\u003c7` \u003d\u003d kill\nAfter the change and retuning `min(5,10)\u003c4` \u003d\u003d no kill (LMKD became less aggressive)\n\nSo, we can\u0027t match LMKD\u0027s original aggressiveness by changing low_swap.",
+      "parentUuid": "a639c090_99c9f018",
+      "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
