@@ -214,6 +214,24 @@
       "parentUuid": "ec7aab17_e8c00a02",
       "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1ba46b33_064c0b62",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-06-09T17:32:12Z",
+      "side": 1,
+      "message": "I would not call that a bandaid. The original patch was developed to take into account the available space for ZRAM, however the truth is that the amount of data which can be fit there is larger than that number due to the compression ratio. How else can we reflect this fact?\n\nWhen talking about controlling LMKD aggressiveness, what is your suggestion to counterbalance this change in behavior?",
+      "parentUuid": "ee44bdaa_399fc5ba",
+      "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
