@@ -160,6 +160,24 @@
       "parentUuid": "8754906f_9d94fbae",
       "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "37101c50_2e78c649",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-06-09T04:14:08Z",
+      "side": 1,
+      "message": "Does the *compression ratio* really matter for vendor? I thought waht they wanted is not compression ratio but how LMKD was aggressive than old. However, the aggressiveness(*side effect* from the original patch) is align with platform improvement trend now so what needed would retune the LMKD knobs to make it aggressive if they believe that\u0027s better for their workload.",
+      "parentUuid": "e17b0815_1db88a55",
+      "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
