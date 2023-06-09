@@ -178,6 +178,24 @@
       "parentUuid": "e17b0815_1db88a55",
       "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec7aab17_e8c00a02",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-06-09T17:18:43Z",
+      "side": 1,
+      "message": "For their case the new behavior causes excessive kills, so LMKD is too aggressive and the argument they make is that current logic assumes always the worst-case scenario (uncompressible data) which leads to this excessive killing. Compression ratio knob would allow partners to adjust that worst-case assumption to something more realistic. Does that make sense?",
+      "parentUuid": "37101c50_2e78c649",
+      "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
