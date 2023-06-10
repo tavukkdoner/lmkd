@@ -268,6 +268,24 @@
       "parentUuid": "a639c090_99c9f018",
       "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f5043359_98d47b80",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-06-10T01:00:37Z",
+      "side": 1,
+      "message": "I don\u0027t think we can keep the LMKD behavior as such a fine-grained level and also  don\u0027t see what\u0027s the point in real field. Real workload is too complicated to keep such accuracy: thermal, CPU, allocation rate, reclaim behavior and workload patterns. I don\u0027t believe we can support such accuracy. What we try to be best is just to be macro level consistent in trend. Furthermore, we can change the trend as platform evolves, which is intended behavior sometimes. \n\nMy opinion about the patch is just tell the vendor to retune low_swap(or better new higher level knob if necessary) to be close with old behavior but can be never equal to old. Exporting such an low level implementation is not a really good idea.",
+      "parentUuid": "1b4d82ea_faf9c453",
+      "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
