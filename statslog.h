@@ -65,6 +65,7 @@ enum kill_reasons {
     LOW_MEM_AND_SWAP_UTIL,
     LOW_FILECACHE_AFTER_THRASHING,
     LOW_MEM,
+    COMPACTION,
     KILL_REASON_COUNT
 };
 
