@@ -94,6 +94,7 @@ static inline void trace_kill_end() {}
 #define LINE_MAX 128
 
 #define PERCEPTIBLE_APP_ADJ 200
+#define VISIBLE_APP_ADJ 100
 
 /* Android Logger event logtags (see event.logtags) */
 #define KILLINFO_LOG_TAG 10195355
@@ -465,6 +466,7 @@ enum vmstat_field {
     VS_PGSCAN_KSWAPD,
     VS_PGSCAN_DIRECT,
     VS_PGSCAN_DIRECT_THROTTLE,
+    VS_COMPACT_STALL,
     VS_FIELD_COUNT
 };
 
@@ -477,6 +479,7 @@ static const char* const vmstat_field_names[VS_FIELD_COUNT] = {
     "pgscan_kswapd",
     "pgscan_direct",
     "pgscan_direct_throttle",
+    "compact_stall",
 };
 
 union vmstat {
@@ -489,6 +492,7 @@ union vmstat {
         int64_t pgscan_kswapd;
         int64_t pgscan_direct;
         int64_t pgscan_direct_throttle;
+        int64_t compact_stall;
     } field;
     int64_t arr[VS_FIELD_COUNT];
 };
@@ -2575,6 +2579,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     static int64_t prev_thrash_growth = 0;
     static bool check_filecache = false;
     static int max_thrashing = 0;
+    static int64_t init_compact_stall;
 
     union meminfo mi;
     union vmstat vs;
@@ -2595,6 +2600,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     long since_thrashing_reset_ms;
     int64_t workingset_refault_file;
     bool critical_stall = false;
+    bool in_compaction = false;
 
     if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
         ALOGE("Failed to get current time");
@@ -2647,6 +2653,11 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         swap_low_threshold = 0;
     }
 
+    if (vs.field.compact_stall > init_compact_stall) {
+        init_compact_stall = vs.field.compact_stall;
+        in_compaction = true;
+    }
+
     /* Identify reclaim state */
     if (vs.field.pgscan_direct != init_pgscan_direct) {
         init_pgscan_direct = vs.field.pgscan_direct;
@@ -2655,7 +2666,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     } else if (vs.field.pgscan_kswapd != init_pgscan_kswapd) {
         init_pgscan_kswapd = vs.field.pgscan_kswapd;
         reclaim = KSWAPD_RECLAIM;
-    } else if (workingset_refault_file == prev_workingset_refault) {
+    } else if (workingset_refault_file == prev_workingset_refault && !in_compaction) {
         /*
          * Device is not thrashing and not reclaiming, bail out early until we see these stats
          * changing
@@ -2817,6 +2828,10 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
             /* File cache is big enough, stop checking */
             check_filecache = false;
         }
+    } else if (in_compaction && wmark <= WMARK_HIGH) {
+        kill_reason = COMPACTION;
+        strncpy(kill_desc, "device is in compaction and low on memory", sizeof(kill_desc));
+        min_score_adj = VISIBLE_APP_ADJ;
     }
 
     /* Kill a process if necessary */
