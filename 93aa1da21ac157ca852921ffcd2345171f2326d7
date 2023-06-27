@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9de90454_148da0bc",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2831,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-06-27T23:51:28Z",
+      "side": 1,
+      "message": "Hmm. This will be killing any time compaction is running even if kswapd is catching up with the allocations. That sounds quite aggressive. Could you post in the bug some data to backup the additional reason to kill in this situation?",
+      "range": {
+        "startLine": 2831,
+        "startChar": 32,
+        "endLine": 2831,
+        "endChar": 51
+      },
+      "revId": "93aa1da21ac157ca852921ffcd2345171f2326d7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
