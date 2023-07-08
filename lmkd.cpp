@@ -194,6 +194,7 @@ static int mpevfd[VMPRESS_LEVEL_COUNT] = { -1, -1, -1 };
 static bool pidfd_supported;
 static int last_kill_pid_or_fd = -1;
 static struct timespec last_kill_tm;
+static bool psi_monitors_registered;
 
 /* lmkd configurable parameters */
 static bool debug_process_killing;
@@ -216,6 +217,7 @@ static int64_t filecache_min_kb;
 static int64_t stall_limit_critical;
 static bool use_psi_monitors = false;
 static int kpoll_fd;
+static bool delay_psi_monitors_until_boot;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
     { PSI_SOME, 70 },    /* 70ms out of 1sec for partial stall */
     { PSI_SOME, 100 },   /* 100ms out of 1sec for partial stall */
@@ -551,6 +553,7 @@ static long page_k;
 static bool update_props();
 static bool init_monitors();
 static void destroy_monitors();
+static void start_psi_monitoring();
 
 static int clamp(int low, int high, int value) {
     return std::max(std::min(value, high), low);
@@ -1533,6 +1536,11 @@ static void ctrl_command_handler(int dsock_idx) {
             exit(1);
         }
         break;
+    case LMK_START_PSI_MONITORING:
+        if (use_psi_monitors) {
+            start_psi_monitoring();
+        }
+        break;
     default:
         ALOGE("Received unknown command code %d", cmd);
         return;
@@ -1542,6 +1550,33 @@ static void ctrl_command_handler(int dsock_idx) {
 
 wronglen:
     ALOGE("Wrong control socket read length cmd=%d len=%d", cmd, len);
+}
+
+static void start_psi_monitoring() {
+    // Psi monitoring needs to be started only if delay_psi_monitors_until_boot
+    // config is enabled.
+    if (!delay_psi_monitors_until_boot) {
+        return;
+    }
+
+    // Registration is needed only if it was skipped earlier and boot is completed.
+    if (psi_monitors_registered || !property_get_bool("sys.boot_completed", false)) {
+        return;
+    }
+
+    for (int level = VMPRESS_LEVEL_LOW; level <= VMPRESS_LEVEL_CRITICAL; level++) {
+        if (mpevfd[level] < 0) {
+            continue;
+        }
+        if (register_psi_monitor(epollfd, mpevfd[level], &vmpressure_hinfo[level]) < 0) {
+            /* Failure to start psi monitoring, crash to be restarted */
+            ALOGE("Failure to start psi monitoring. Exiting...");
+            exit(1);
+        }
+    }
+
+    ALOGI("Started psi monitoring after boot completed.");
+    psi_monitors_registered = true;
 }
 
 static void ctrl_data_handler(int data, uint32_t events,
@@ -3143,10 +3178,18 @@ static bool init_mp_psi(enum vmpressure_level level, bool use_new_strategy) {
 
     vmpressure_hinfo[level].handler = use_new_strategy ? mp_event_psi : mp_event_common;
     vmpressure_hinfo[level].data = level;
-    if (register_psi_monitor(epollfd, fd, &vmpressure_hinfo[level]) < 0) {
-        destroy_psi_monitor(fd);
-        return false;
+
+    // Do not register psi monitors until boot completed for devices configured
+    // for delaying psi monitors. This is done to save CPU cycles for low
+    // resource devices during boot up.
+    if (!delay_psi_monitors_until_boot || property_get_bool("sys.boot_completed", false)) {
+        if (register_psi_monitor(epollfd, fd, &vmpressure_hinfo[level]) < 0) {
+            destroy_psi_monitor(fd);
+            return false;
+        }
+        psi_monitors_registered = true;
     }
+
     maxevents++;
     mpevfd[level] = fd;
 
@@ -3749,6 +3792,7 @@ static bool update_props() {
     swap_util_max = clamp(0, 100, GET_LMK_PROPERTY(int32, "swap_util_max", 100));
     filecache_min_kb = GET_LMK_PROPERTY(int64, "filecache_min_kb", 0);
     stall_limit_critical = GET_LMK_PROPERTY(int64, "stall_limit_critical", 100);
+    delay_psi_monitors_until_boot = GET_LMK_PROPERTY(bool, "delay_psi_monitors_until_boot", false);
 
     reaper.enable_debug(debug_process_killing);
 
