@@ -1,0 +1,211 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9beb2f35_fe9af2d4",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-07-10T22:24:06Z",
+      "side": 1,
+      "message": "static variables are initialized with 0, so no need to assign initial values.",
+      "range": {
+        "startLine": 197,
+        "startChar": 45,
+        "endLine": 197,
+        "endChar": 53
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7bbe343c_c7cf6f26",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-07-10T22:24:06Z",
+      "side": 1,
+      "message": "It\u0027s better to have `psi_monitors_registered` flag instead. Will clarify in further comments.",
+      "range": {
+        "startLine": 197,
+        "startChar": 12,
+        "endLine": 197,
+        "endChar": 45
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f255e909_e35394a9",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1541,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-07-10T22:24:06Z",
+      "side": 1,
+      "message": "This command is supported only if `use_psi_monitors\u003dtrue`. Need to check for that here.",
+      "range": {
+        "startLine": 1541,
+        "startChar": 9,
+        "endLine": 1541,
+        "endChar": 33
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d2fb22bd_4888d4d6",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1559,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-07-10T22:24:06Z",
+      "side": 1,
+      "message": "this tristate return is weird. Since you are calling `exit(1);` on error, just handle it here with no return values.",
+      "range": {
+        "startLine": 1559,
+        "startChar": 7,
+        "endLine": 1559,
+        "endChar": 10
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "80fab34b_407d7aed",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1569,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-07-10T22:24:06Z",
+      "side": 1,
+      "message": "if (psi_monitors_registered || !property_get_bool(\"sys.boot_completed\", false)) {\n    return;\n}",
+      "range": {
+        "startLine": 1560,
+        "startChar": 4,
+        "endLine": 1569,
+        "endChar": 5
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cfdd7649_ce5fdd98",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1572,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-07-10T22:24:06Z",
+      "side": 1,
+      "message": "don\u0027t need this",
+      "range": {
+        "startLine": 1571,
+        "startChar": 4,
+        "endLine": 1572,
+        "endChar": 94
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcfcdd28_552b8dc8",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1577,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-07-10T22:24:06Z",
+      "side": 1,
+      "message": "Formatting is weird. Please run through `clang-format`",
+      "range": {
+        "startLine": 1574,
+        "startChar": 4,
+        "endLine": 1577,
+        "endChar": 5
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f0fb47d6_e2212c93",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1581,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-07-10T22:24:06Z",
+      "side": 1,
+      "message": "Just call the original function `register_psi_monitor(epollfd, fd, \u0026vmpressure_hinfo[level])` vmpressure_hinfo will already have the right data (see the next comment).",
+      "range": {
+        "startLine": 1578,
+        "startChar": 4,
+        "endLine": 1581,
+        "endChar": 5
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "faa5306b_7b3f047c",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3196,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-07-10T22:24:06Z",
+      "side": 1,
+      "message": "This whole function is not needed (see previous comments).",
+      "range": {
+        "startLine": 3196,
+        "startChar": 11,
+        "endLine": 3196,
+        "endChar": 31
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

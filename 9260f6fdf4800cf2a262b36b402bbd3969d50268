@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b98c3177_27877e07",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3145,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-07-10T22:24:06Z",
+      "side": 0,
+      "message": "Why do you need to move this part and introduce another `register_psi_monitor` function? All you need to do here is to skip `register_psi_monitor` call if `(delay_psi_monitors_until_boot \u0026\u0026 !property_get_bool(\"sys.boot_completed\", false))` and call it later when boot is complete. `vmpressure_hinfo` can still be set up here and it won\u0027t be lost:\n```\nvmpressure_hinfo[level].handler \u003d use_new_strategy ? mp_event_psi : mp_event_common;\nvmpressure_hinfo[level].data \u003d level;\n\nif (!delay_psi_monitors_until_boot ||\n    property_get_bool(\"sys.boot_completed\", false)) {\n    if (register_psi_monitor(epollfd, fd, \u0026vmpressure_hinfo[level]) \u003c 0) {\n        destroy_psi_monitor(fd);   \n        return false; \n    }\n    psi_monitors_registered \u003d true;\n}\n\n...\n```",
+      "range": {
+        "startLine": 3144,
+        "startChar": 3,
+        "endLine": 3145,
+        "endChar": 41
+      },
+      "revId": "9260f6fdf4800cf2a262b36b402bbd3969d50268",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
