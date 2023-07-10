@@ -49,6 +49,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "426ecc4d_53589a19",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-10T22:42:56Z",
+      "side": 1,
+      "message": "Understood the idea. My thought was to assign the vmpressure_hinfo only when the registering. I think your idea of doing that ahead should be a better approach. Thanks",
+      "parentUuid": "7bbe343c_c7cf6f26",
+      "range": {
+        "startLine": 197,
+        "startChar": 12,
+        "endLine": 197,
+        "endChar": 45
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f255e909_e35394a9",
         "filename": "lmkd.cpp",
         "patchSetId": 2
