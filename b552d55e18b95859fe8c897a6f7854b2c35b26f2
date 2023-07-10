@@ -71,6 +71,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7a7af226_6a814625",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-10T23:27:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "426ecc4d_53589a19",
+      "range": {
+        "startLine": 197,
+        "startChar": 12,
+        "endLine": 197,
+        "endChar": 45
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "490033e2_97fdeb22",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-10T23:27:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9beb2f35_fe9af2d4",
+      "range": {
+        "startLine": 197,
+        "startChar": 45,
+        "endLine": 197,
+        "endChar": 53
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f255e909_e35394a9",
@@ -84,6 +132,30 @@
       "writtenOn": "2023-07-10T22:24:06Z",
       "side": 1,
       "message": "This command is supported only if `use_psi_monitors\u003dtrue`. Need to check for that here.",
+      "range": {
+        "startLine": 1541,
+        "startChar": 9,
+        "endLine": 1541,
+        "endChar": 33
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "22a4eae0_de80f839",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1541,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-10T23:27:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f255e909_e35394a9",
       "range": {
         "startLine": 1541,
         "startChar": 9,
@@ -117,6 +189,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0e0a33c5_9bccf594",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1559,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-10T23:27:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d2fb22bd_4888d4d6",
+      "range": {
+        "startLine": 1559,
+        "startChar": 7,
+        "endLine": 1559,
+        "endChar": 10
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "80fab34b_407d7aed",
@@ -130,6 +226,30 @@
       "writtenOn": "2023-07-10T22:24:06Z",
       "side": 1,
       "message": "if (psi_monitors_registered || !property_get_bool(\"sys.boot_completed\", false)) {\n    return;\n}",
+      "range": {
+        "startLine": 1560,
+        "startChar": 4,
+        "endLine": 1569,
+        "endChar": 5
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aebc6fe2_83a8e28d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1569,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-10T23:27:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "80fab34b_407d7aed",
       "range": {
         "startLine": 1560,
         "startChar": 4,
@@ -163,6 +283,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3ffc58fc_8dec39ce",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1572,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-10T23:27:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cfdd7649_ce5fdd98",
+      "range": {
+        "startLine": 1571,
+        "startChar": 4,
+        "endLine": 1572,
+        "endChar": 94
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bcfcdd28_552b8dc8",
@@ -176,6 +320,30 @@
       "writtenOn": "2023-07-10T22:24:06Z",
       "side": 1,
       "message": "Formatting is weird. Please run through `clang-format`",
+      "range": {
+        "startLine": 1574,
+        "startChar": 4,
+        "endLine": 1577,
+        "endChar": 5
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a2d6d82e_cb98be33",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1577,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-10T23:27:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bcfcdd28_552b8dc8",
       "range": {
         "startLine": 1574,
         "startChar": 4,
@@ -209,6 +377,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "15617710_4477316b",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1581,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-10T23:27:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f0fb47d6_e2212c93",
+      "range": {
+        "startLine": 1578,
+        "startChar": 4,
+        "endLine": 1581,
+        "endChar": 5
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "faa5306b_7b3f047c",
@@ -222,6 +414,30 @@
       "writtenOn": "2023-07-10T22:24:06Z",
       "side": 1,
       "message": "This whole function is not needed (see previous comments).",
+      "range": {
+        "startLine": 3196,
+        "startChar": 11,
+        "endLine": 3196,
+        "endChar": 31
+      },
+      "revId": "b552d55e18b95859fe8c897a6f7854b2c35b26f2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "88513395_e318b00a",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3196,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-10T23:27:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "faa5306b_7b3f047c",
       "range": {
         "startLine": 3196,
         "startChar": 11,
