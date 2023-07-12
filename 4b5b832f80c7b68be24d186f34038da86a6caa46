@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5642f62_9c91cd17",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1525,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-07-12T23:38:15Z",
+      "side": 1,
+      "message": "The following one-line change would be much simpler with the same result:\n```\n            if (!use_inkernel_interface \u0026\u0026 monitors_initialized) {\n                /* Reinitialize monitors to apply new settings */\n                destroy_monitors();\n                if (init_monitors()) {\n                    result \u003d 0;\n                }\n            } else {\n                result \u003d 0;\n            }\n```",
+      "range": {
+        "startLine": 1516,
+        "startChar": 11,
+        "endLine": 1525,
+        "endChar": 13
+      },
+      "revId": "4b5b832f80c7b68be24d186f34038da86a6caa46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "726b2ce2_3582eae7",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1559,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-07-12T23:38:15Z",
+      "side": 1,
+      "message": "do we need this check? If `delay_monitors_until_boot\u003dfalse` then `monitors_initialized` has to be `true`, no? And you check `monitors_initialized` in the next line.",
+      "range": {
+        "startLine": 1555,
+        "startChar": 4,
+        "endLine": 1559,
+        "endChar": 5
+      },
+      "revId": "4b5b832f80c7b68be24d186f34038da86a6caa46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db782690_96bafc68",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3174,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-07-12T23:38:15Z",
+      "side": 1,
+      "message": "unnecessary churn",
+      "revId": "4b5b832f80c7b68be24d186f34038da86a6caa46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fee8b462_d7c41d7a",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3179,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-07-12T23:38:15Z",
+      "side": 1,
+      "message": "ditto",
+      "revId": "4b5b832f80c7b68be24d186f34038da86a6caa46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
