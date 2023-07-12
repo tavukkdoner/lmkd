@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "711eaf7d_db255b7d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-12T23:57:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "533cfe50_889866fe",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 65
+      },
+      "revId": "4b5b832f80c7b68be24d186f34038da86a6caa46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c5642f62_9c91cd17",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-07-12T23:38:15Z",
       "side": 1,
       "message": "The following one-line change would be much simpler with the same result:\n```\n            if (!use_inkernel_interface \u0026\u0026 monitors_initialized) {\n                /* Reinitialize monitors to apply new settings */\n                destroy_monitors();\n                if (init_monitors()) {\n                    result \u003d 0;\n                }\n            } else {\n                result \u003d 0;\n            }\n```",
+      "range": {
+        "startLine": 1516,
+        "startChar": 11,
+        "endLine": 1525,
+        "endChar": 13
+      },
+      "revId": "4b5b832f80c7b68be24d186f34038da86a6caa46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e67513fe_312ee472",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1525,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-12T23:57:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c5642f62_9c91cd17",
       "range": {
         "startLine": 1516,
         "startChar": 11,
@@ -70,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ede8c26f_31fbe0a6",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1559,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-12T23:57:31Z",
+      "side": 1,
+      "message": "Yea, you are right. This is redundant. Removed it. Thanks!",
+      "parentUuid": "726b2ce2_3582eae7",
+      "range": {
+        "startLine": 1555,
+        "startChar": 4,
+        "endLine": 1559,
+        "endChar": 5
+      },
+      "revId": "4b5b832f80c7b68be24d186f34038da86a6caa46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "db782690_96bafc68",
@@ -87,6 +159,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4906d67d_5376cd3e",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3174,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-12T23:57:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "db782690_96bafc68",
+      "revId": "4b5b832f80c7b68be24d186f34038da86a6caa46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fee8b462_d7c41d7a",
@@ -100,6 +190,24 @@
       "writtenOn": "2023-07-12T23:38:15Z",
       "side": 1,
       "message": "ditto",
+      "revId": "4b5b832f80c7b68be24d186f34038da86a6caa46",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d0c1afad_cfec89ec",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3179,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-12T23:57:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fee8b462_d7c41d7a",
       "revId": "4b5b832f80c7b68be24d186f34038da86a6caa46",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
