@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "720234ed_01d72e9b",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1574,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-07-12T00:23:31Z",
+      "side": 1,
+      "message": "This lack of fall-back here is bothering me. Could we instead of doing all this just delay the call to `init_monitors()` if `delay_psi_monitors_until_boot\u003dtrue`? Could you try that? If that works then the whole code becomes much simpler and all the fallback logic will still be there with no additional effort. This way delaying would work also for the case of `use_psi_monitors\u003dfalse`.",
+      "range": {
+        "startLine": 1574,
+        "startChar": 12,
+        "endLine": 1574,
+        "endChar": 20
+      },
+      "revId": "35386aeb9a4d8cbe8d6de1e635ce2a1191b64abb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
