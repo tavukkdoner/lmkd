@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "47efd049_b7ec639b",
+        "filename": "include/lmkd.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-13T18:25:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cdc21a91_a68fcab9",
+      "range": {
+        "startLine": 251,
+        "startChar": 0,
+        "endLine": 259,
+        "endChar": 0
+      },
+      "revId": "7ed9bde2c11b129671f8d8df1d423d4b637c5ab8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "afe4da90_011b0ce2",
@@ -41,6 +65,24 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "38b18e67_d7752ca7",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1539,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-13T18:25:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "afe4da90_011b0ce2",
+      "revId": "7ed9bde2c11b129671f8d8df1d423d4b637c5ab8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9c2a76ce_1de0e392",
@@ -54,6 +96,30 @@
       "writtenOn": "2023-07-13T17:39:30Z",
       "side": 1,
       "message": "This is the only place this function is used, so let\u0027s move its body in here directly and eliminate the additional function.\n\nIn addition, let\u0027s log a warning if this request is received when `!property_get_bool(\"sys.boot_completed\", false)` because we do not expect such a request unless boot was completed.",
+      "range": {
+        "startLine": 1540,
+        "startChar": 8,
+        "endLine": 1540,
+        "endChar": 24
+      },
+      "revId": "7ed9bde2c11b129671f8d8df1d423d4b637c5ab8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6073424_55e8a320",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1540,
+      "author": {
+        "id": 1882967
+      },
+      "writtenOn": "2023-07-13T18:25:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9c2a76ce_1de0e392",
       "range": {
         "startLine": 1540,
         "startChar": 8,
