@@ -102,8 +102,9 @@ static int memory_stat_from_cgroup(struct memory_stat* mem_st, int pid, uid_t ui
         return -1;
     }
 
-    char buf[PAGE_SIZE];
-    while (fgets(buf, PAGE_SIZE, fp) != NULL) {
+    int buf_size = 4096;
+    char buf[buf_size];
+    while (fgets(buf, buf_size, fp) != NULL) {
         memory_stat_parse_line(buf, mem_st);
     }
     fclose(fp);
