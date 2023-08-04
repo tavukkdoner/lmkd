@@ -30,6 +30,7 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <fstream>
 #include <string>
 
 #include <processgroup/processgroup.h>
@@ -67,7 +68,7 @@ static struct proc* pid_lookup(int pid) {
     return procp;
 }
 
-static void memory_stat_parse_line(char* line, struct memory_stat* mem_st) {
+static void memory_stat_parse_line(const char* line, struct memory_stat* mem_st) {
     char key[MAX_TASKNAME_LEN + 1];
     int64_t value;
 
@@ -96,17 +97,17 @@ static int memory_stat_from_cgroup(struct memory_stat* mem_st, int pid, uid_t ui
         return -1;
     }
 
-    FILE* fp = fopen(path.c_str(), "r");
-
-    if (fp == NULL) {
+    std::ifstream ifs(path.c_str(), std::ifstream::in);
+    if (!ifs.is_open()) {
         return -1;
     }
 
-    char buf[PAGE_SIZE];
-    while (fgets(buf, PAGE_SIZE, fp) != NULL) {
-        memory_stat_parse_line(buf, mem_st);
+    std::string line;
+    while (std::getline(ifs, line)) {
+        memory_stat_parse_line(line.c_str(), mem_st);
     }
-    fclose(fp);
+
+    ifs.close();
 
     return 0;
 }
