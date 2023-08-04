@@ -194,6 +194,7 @@ static int mpevfd[VMPRESS_LEVEL_COUNT] = { -1, -1, -1 };
 static bool pidfd_supported;
 static int last_kill_pid_or_fd = -1;
 static struct timespec last_kill_tm;
+static bool monitors_initialized;
 
 /* lmkd configurable parameters */
 static bool debug_process_killing;
@@ -216,6 +217,7 @@ static int64_t filecache_min_kb;
 static int64_t stall_limit_critical;
 static bool use_psi_monitors = false;
 static int kpoll_fd;
+static bool delay_monitors_until_boot;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
     { PSI_SOME, 70 },    /* 70ms out of 1sec for partial stall */
     { PSI_SOME, 100 },   /* 100ms out of 1sec for partial stall */
@@ -465,6 +467,7 @@ enum vmstat_field {
     VS_PGSCAN_KSWAPD,
     VS_PGSCAN_DIRECT,
     VS_PGSCAN_DIRECT_THROTTLE,
+    VS_PGREFILL,
     VS_FIELD_COUNT
 };
 
@@ -477,6 +480,7 @@ static const char* const vmstat_field_names[VS_FIELD_COUNT] = {
     "pgscan_kswapd",
     "pgscan_direct",
     "pgscan_direct_throttle",
+    "pgrefill",
 };
 
 union vmstat {
@@ -489,6 +493,7 @@ union vmstat {
         int64_t pgscan_kswapd;
         int64_t pgscan_direct;
         int64_t pgscan_direct_throttle;
+        int64_t pgrefill;
     } field;
     int64_t arr[VS_FIELD_COUNT];
 };
@@ -1510,7 +1515,7 @@ static void ctrl_command_handler(int dsock_idx) {
             goto wronglen;
         result = -1;
         if (update_props()) {
-            if (!use_inkernel_interface) {
+            if (!use_inkernel_interface && monitors_initialized) {
                 /* Reinitialize monitors to apply new settings */
                 destroy_monitors();
                 if (init_monitors()) {
@@ -1532,6 +1537,24 @@ static void ctrl_command_handler(int dsock_idx) {
             ALOGE("New configuration is not supported. Exiting...");
             exit(1);
         }
+        break;
+    case LMK_START_MONITORING:
+        if (nargs != 0)
+            goto wronglen;
+        // Registration is needed only if it was skipped earlier.
+        if (monitors_initialized)
+            return;
+        if (!property_get_bool("sys.boot_completed", false)) {
+            ALOGE("LMK_START_MONITORING cannot be handled before boot completed");
+            return;
+        }
+
+        if (!init_monitors()) {
+            /* Failure to start psi monitoring, crash to be restarted */
+            ALOGE("Failure to initialize monitoring. Exiting...");
+            exit(1);
+        }
+        ALOGI("Initialized monitors after boot completed.");
         break;
     default:
         ALOGE("Received unknown command code %d", cmd);
@@ -2566,6 +2589,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     static int64_t base_file_lru;
     static int64_t init_pgscan_kswapd;
     static int64_t init_pgscan_direct;
+    static int64_t init_pgrefill;
     static bool killing;
     static int thrashing_limit = thrashing_limit_pct;
     static struct zone_watermarks watermarks;
@@ -2651,9 +2675,14 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     if (vs.field.pgscan_direct != init_pgscan_direct) {
         init_pgscan_direct = vs.field.pgscan_direct;
         init_pgscan_kswapd = vs.field.pgscan_kswapd;
+        init_pgrefill = vs.field.pgrefill;
         reclaim = DIRECT_RECLAIM;
     } else if (vs.field.pgscan_kswapd != init_pgscan_kswapd) {
         init_pgscan_kswapd = vs.field.pgscan_kswapd;
+        init_pgrefill = vs.field.pgrefill;
+        reclaim = KSWAPD_RECLAIM;
+    } else if (vs.field.pgrefill != init_pgrefill) {
+        init_pgrefill = vs.field.pgrefill;
         reclaim = KSWAPD_RECLAIM;
     } else if (workingset_refault_file == prev_workingset_refault) {
         /*
@@ -3343,6 +3372,7 @@ static bool init_monitors() {
     } else {
         ALOGI("Using vmpressure for memory pressure detection");
     }
+    monitors_initialized = true;
     return true;
 }
 
@@ -3482,8 +3512,13 @@ static int init(void) {
             }
         }
     } else {
-        if (!init_monitors()) {
-            return -1;
+        // Do not register monitors until boot completed for devices configured
+        // for delaying monitors. This is done to save CPU cycles for low
+        // resource devices during boot up.
+        if (!delay_monitors_until_boot || property_get_bool("sys.boot_completed", false)) {
+            if (!init_monitors()) {
+                return -1;
+            }
         }
         /* let the others know it does support reporting kills */
         property_set("sys.lmk.reportkills", "1");
@@ -3749,6 +3784,7 @@ static bool update_props() {
     swap_util_max = clamp(0, 100, GET_LMK_PROPERTY(int32, "swap_util_max", 100));
     filecache_min_kb = GET_LMK_PROPERTY(int64, "filecache_min_kb", 0);
     stall_limit_critical = GET_LMK_PROPERTY(int64, "stall_limit_critical", 100);
+    delay_monitors_until_boot = GET_LMK_PROPERTY(bool, "delay_monitors_until_boot", false);
 
     reaper.enable_debug(debug_process_killing);
 
