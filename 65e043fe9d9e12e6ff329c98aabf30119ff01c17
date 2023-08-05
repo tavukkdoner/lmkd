@@ -46,6 +46,30 @@
       },
       "revId": "65e043fe9d9e12e6ff329c98aabf30119ff01c17",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "82119e32_d0b66b1f",
+        "filename": "statslog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-08-05T00:57:58Z",
+      "side": 1,
+      "message": "Change it to use getline.",
+      "parentUuid": "06f9c5a2_c24f4751",
+      "range": {
+        "startLine": 105,
+        "startChar": 19,
+        "endLine": 105,
+        "endChar": 23
+      },
+      "revId": "65e043fe9d9e12e6ff329c98aabf30119ff01c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
