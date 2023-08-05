@@ -22,6 +22,30 @@
       },
       "revId": "65e043fe9d9e12e6ff329c98aabf30119ff01c17",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "06f9c5a2_c24f4751",
+        "filename": "statslog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-08-05T00:41:42Z",
+      "side": 1,
+      "message": "IIUC it only needs to be as long as the longest line from the  file.\n\nOr we can use something like getline instead.",
+      "parentUuid": "bef517a7_3c63aefa",
+      "range": {
+        "startLine": 105,
+        "startChar": 19,
+        "endLine": 105,
+        "endChar": 23
+      },
+      "revId": "65e043fe9d9e12e6ff329c98aabf30119ff01c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
