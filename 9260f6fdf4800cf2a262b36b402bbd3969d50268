@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22500166_8cf0e335",
+        "filename": "statslog.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-08-08T22:39:45Z",
+      "side": 0,
+      "message": "just move #define LINE_MAX into a common header and use it instead.",
+      "range": {
+        "startLine": 105,
+        "startChar": 13,
+        "endLine": 105,
+        "endChar": 22
+      },
+      "revId": "9260f6fdf4800cf2a262b36b402bbd3969d50268",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
