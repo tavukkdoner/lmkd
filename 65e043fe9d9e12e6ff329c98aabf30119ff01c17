@@ -94,6 +94,30 @@
       },
       "revId": "65e043fe9d9e12e6ff329c98aabf30119ff01c17",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1dc41f6b_2fb3888e",
+        "filename": "statslog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-08-08T22:52:47Z",
+      "side": 1,
+      "message": "I think that works, but it doesn\u0027t account for the characters of the key\u0027s value since both LINE_MAX and MAX_TASKNAME_LEN are 128.\n\n```\n#define LINE_MAX 128\n\n#define MAX_TASKNAME_LEN 128\n\nmemory_stat_parse_line\n  -\u003e sscanf(line, \"%\" STRINGIFY(MAX_TASKNAME_LEN) \"s  %\" SCNd64 \"\", key, \u0026value);\n```\n\nIt should be ok though since the largest key is \"total_pgmajfault\" (16 chars).",
+      "parentUuid": "0217233b_651c2082",
+      "range": {
+        "startLine": 105,
+        "startChar": 19,
+        "endLine": 105,
+        "endChar": 23
+      },
+      "revId": "65e043fe9d9e12e6ff329c98aabf30119ff01c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
