@@ -70,6 +70,30 @@
       },
       "revId": "65e043fe9d9e12e6ff329c98aabf30119ff01c17",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0217233b_651c2082",
+        "filename": "statslog.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-08-08T22:38:19Z",
+      "side": 1,
+      "message": "Let\u0027s not use std::string which can dynamically allocate memory. The lines in memory.stat are not long, so LINE_MAX should be fine.",
+      "parentUuid": "82119e32_d0b66b1f",
+      "range": {
+        "startLine": 105,
+        "startChar": 19,
+        "endLine": 105,
+        "endChar": 23
+      },
+      "revId": "65e043fe9d9e12e6ff329c98aabf30119ff01c17",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
