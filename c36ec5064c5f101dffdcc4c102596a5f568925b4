@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c10e77c6_6eb1099f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 347,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-08-21T07:33:09Z",
+      "side": 1,
+      "message": "I tried solving this zone name to index mapping problem a bit differently. Does it look good to you?",
+      "parentUuid": "22aac124_1ca54712",
+      "range": {
+        "startLine": 347,
+        "startChar": 4,
+        "endLine": 347,
+        "endChar": 28
+      },
+      "revId": "c36ec5064c5f101dffdcc4c102596a5f568925b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ec30d4e2_bc5ce278",
         "filename": "lmkd.cpp",
         "patchSetId": 7
@@ -37,6 +61,24 @@
       "writtenOn": "2023-08-08T22:31:27Z",
       "side": 1,
       "message": "unnecessary new line",
+      "revId": "c36ec5064c5f101dffdcc4c102596a5f568925b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3df72305_744d8791",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-08-21T07:33:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ec30d4e2_bc5ce278",
       "revId": "c36ec5064c5f101dffdcc4c102596a5f568925b4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
@@ -64,6 +106,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "24bd45c2_b557a3ee",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1684,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-08-21T07:33:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "63baf3d9_72a9cd39",
+      "range": {
+        "startLine": 1683,
+        "startChar": 4,
+        "endLine": 1684,
+        "endChar": 39
+      },
+      "revId": "c36ec5064c5f101dffdcc4c102596a5f568925b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d74dcfed_ea642611",
@@ -77,6 +143,30 @@
       "writtenOn": "2023-08-08T22:31:27Z",
       "side": 1,
       "message": "consistent spaces please",
+      "range": {
+        "startLine": 1689,
+        "startChar": 0,
+        "endLine": 1689,
+        "endChar": 1
+      },
+      "revId": "c36ec5064c5f101dffdcc4c102596a5f568925b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8fb48d8a_094c51ae",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1689,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-08-21T07:33:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d74dcfed_ea642611",
       "range": {
         "startLine": 1689,
         "startChar": 0,
@@ -123,6 +213,30 @@
       "writtenOn": "2023-08-08T22:31:27Z",
       "side": 1,
       "message": "Let\u0027s combine these two functions:\n\n```\nstatic bool calc_pgskip_deltas(union vmstat *vs, int64_t *pgskip_deltas)\n{\n    static int64_t init_pgskip[MAX_NR_ZONES];\n    unsigned int i, pgskip_idx;\n    bool pgskip_changed \u003d false;\n\n    for (i \u003d VS_PGSKIP_FIRST_ZONE, pgskip_idx \u003d PGSKIP_IDX(i); i \u003c\u003d VS_PGSKIP_LAST_ZONE; i++, pgskip_idx++) {\n       /*\n        * When MGLRU is enabled, don\u0027t set the pgskip delta for Normal zone.\n        * Because it could be because of page-isolation failure as well.\n        * In which case, we need to consider Normal Zone watermarks and\n        * free memory values for making kill decisions.\n        */\n        if (MGLRU_status \u003e 0 \u0026\u0026 i \u003d\u003d VS_PGSKIP_NORMAL) {\n            pgskip_deltas[pgskip_idx] \u003d 0;\n            continue;\n        }\n    \n        if (vs-\u003earr[i] \u003e\u003d 0 \u0026\u0026 init_pgskip[pgskip_idx]) {\n            pgskip_deltas[pgskip_idx] \u003d vs-\u003earr[i] - init_pgskip[pgskip_idx];\n            pgskip_changed \u003d true;\n        } else {\n            pgskip_deltas[pgskip_idx] \u003d 0;\n        }\n        init_pgskip[pgskip_idx] \u003d vs-\u003earr[i];\n    }\n\n    return pgskip_changed;\n}\n```",
+      "range": {
+        "startLine": 2645,
+        "startChar": 0,
+        "endLine": 2671,
+        "endChar": 1
+      },
+      "revId": "c36ec5064c5f101dffdcc4c102596a5f568925b4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8f2204d_8c25d96b",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 2671,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-08-21T07:33:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "87539c49_76956f11",
       "range": {
         "startLine": 2645,
         "startChar": 0,
