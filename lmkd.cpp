@@ -91,6 +91,7 @@ static inline void trace_kill_end() {}
 #define PROC_STATUS_TGID_FIELD "Tgid:"
 #define PROC_STATUS_RSS_FIELD "VmRSS:"
 #define PROC_STATUS_SWAP_FIELD "VmSwap:"
+#define NODE_STATS_MARKER "  per-node stats"
 
 #define PERCEPTIBLE_APP_ADJ 200
 
@@ -1709,6 +1710,11 @@ static int zoneinfo_parse_zone(char **buf, struct zoneinfo_zone *zone) {
 
 static int zoneinfo_parse_node(char **buf, struct zoneinfo_node *node) {
     int fields_to_match = ZI_NODE_FIELD_COUNT;
+
+    if (strncmp(*buf, NODE_STATS_MARKER, strlen(NODE_STATS_MARKER))) {
+        /* node is empty */
+        return true;
+    }
 
     for (char *line = strtok_r(NULL, "\n", buf); line;
          line = strtok_r(NULL, "\n", buf)) {
