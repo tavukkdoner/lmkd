@@ -1656,7 +1656,9 @@ static void zoneinfo_parse_protection(char *buf, struct zoneinfo_zone *zone) {
     zone->max_protection = max;
 }
 
-static int zoneinfo_parse_zone(char **buf, struct zoneinfo_zone *zone) {
+static int zoneinfo_parse_node(char **buf, struct zoneinfo_node *node) {
+    int fields_to_match = ZI_NODE_FIELD_COUNT;
+
     for (char *line = strtok_r(NULL, "\n", buf); line;
          line = strtok_r(NULL, "\n", buf)) {
         char *cp;
@@ -1665,6 +1667,49 @@ static int zoneinfo_parse_zone(char **buf, struct zoneinfo_zone *zone) {
         int64_t val;
         int field_idx;
         enum field_match_result match_res;
+
+        cp = strtok_r(line, " ", &save_ptr);
+        if (!cp) {
+            return false;
+        }
+
+        ap = strtok_r(NULL, " ", &save_ptr);
+        if (!ap) {
+            return false;
+        }
+
+        match_res = match_field(cp, ap, zoneinfo_node_field_names, ZI_NODE_FIELD_COUNT,
+            &val, &field_idx);
+        if (match_res == PARSE_FAIL) {
+            return false;
+        }
+        if (match_res == PARSE_SUCCESS) {
+            node->fields.arr[field_idx] = val;
+            fields_to_match--;
+            if (!fields_to_match) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+static int zoneinfo_parse_zone(char **buf, struct zoneinfo_zone *zone,
+                               struct zoneinfo_node *node) {
+    for (char *line = strtok_r(NULL, "\n", buf); line;
+         line = strtok_r(NULL, "\n", buf)) {
+        char *cp;
+        char *ap;
+        char *save_ptr;
+        int64_t val;
+        int field_idx;
+        enum field_match_result match_res;
+
+        if (strcmp(line, "per-node stats") == 0) {
+            if (!zoneinfo_parse_node(buf, node)) {
+                return false;
+            }
+        }
 
         cp = strtok_r(line, " ", &save_ptr);
         if (!cp) {
@@ -1708,44 +1753,6 @@ static int zoneinfo_parse_zone(char **buf, struct zoneinfo_zone *zone) {
     return false;
 }
 
-static int zoneinfo_parse_node(char **buf, struct zoneinfo_node *node) {
-    int fields_to_match = ZI_NODE_FIELD_COUNT;
-
-    for (char *line = strtok_r(NULL, "\n", buf); line;
-         line = strtok_r(NULL, "\n", buf)) {
-        char *cp;
-        char *ap;
-        char *save_ptr;
-        int64_t val;
-        int field_idx;
-        enum field_match_result match_res;
-
-        cp = strtok_r(line, " ", &save_ptr);
-        if (!cp) {
-            return false;
-        }
-
-        ap = strtok_r(NULL, " ", &save_ptr);
-        if (!ap) {
-            return false;
-        }
-
-        match_res = match_field(cp, ap, zoneinfo_node_field_names, ZI_NODE_FIELD_COUNT,
-            &val, &field_idx);
-        if (match_res == PARSE_FAIL) {
-            return false;
-        }
-        if (match_res == PARSE_SUCCESS) {
-            node->fields.arr[field_idx] = val;
-            fields_to_match--;
-            if (!fields_to_match) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 static int zoneinfo_parse(struct zoneinfo *zi) {
     static struct reread_data file_data = {
         .filename = ZONEINFO_PATH,
@@ -1783,15 +1790,11 @@ static int zoneinfo_parse(struct zoneinfo *zi) {
                 node = &zi->nodes[node_idx];
                 node->id = node_id;
                 zone_idx = 0;
-                if (!zoneinfo_parse_node(&save_ptr, node)) {
-                    ALOGE("%s parse error", file_data.filename);
-                    return -1;
-                }
             } else {
                 /* new zone is found */
                 zone_idx++;
             }
-            if (!zoneinfo_parse_zone(&save_ptr, &node->zones[zone_idx])) {
+            if (!zoneinfo_parse_zone(&save_ptr, &node->zones[zone_idx], node)) {
                 ALOGE("%s parse error", file_data.filename);
                 return -1;
             }
