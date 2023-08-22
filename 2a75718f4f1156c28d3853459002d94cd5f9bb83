@@ -286,6 +286,23 @@
       "parentUuid": "1b4d82ea_faf9c453",
       "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a81d551d_7766fcb6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2037111
+      },
+      "writtenOn": "2023-08-22T07:30:46Z",
+      "side": 1,
+      "message": "memfree plus inactive(file) can use for zram space，should Multiplied by zram compression ratio when compare with swapfree threshold",
+      "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
