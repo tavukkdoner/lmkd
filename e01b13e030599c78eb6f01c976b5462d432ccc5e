@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c567c603_5ed8a297",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-09-05T18:06:30Z",
+      "side": 0,
+      "message": "Looks like you removed `zone_count` calculations, so you should also remove the field if it\u0027s unused.",
+      "range": {
+        "startLine": 368,
+        "startChar": 4,
+        "endLine": 368,
+        "endChar": 19
+      },
+      "revId": "e01b13e030599c78eb6f01c976b5462d432ccc5e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

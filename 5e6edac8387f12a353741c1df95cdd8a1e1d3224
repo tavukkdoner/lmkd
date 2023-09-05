@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "254791ab_029d8718",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-09-05T18:06:30Z",
+      "side": 1,
+      "message": "this should be just `bool`, no?",
+      "range": {
+        "startLine": 230,
+        "startChar": 7,
+        "endLine": 230,
+        "endChar": 14
+      },
+      "revId": "5e6edac8387f12a353741c1df95cdd8a1e1d3224",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "113d7098_667cbfe1",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1680,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-09-05T18:06:30Z",
+      "side": 1,
+      "message": "Does\u0027n this work?\n```\nstatic char* zone_names[MAX_NR_ZONES] \u003d\n                          {\"DMA\", \"DMA32\", \"Normal\", \"High\", \"Movable\"};\n```",
+      "range": {
+        "startLine": 1679,
+        "startChar": 4,
+        "endLine": 1680,
+        "endChar": 72
+      },
+      "revId": "5e6edac8387f12a353741c1df95cdd8a1e1d3224",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "430e887c_3453fcf1",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 2597,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-09-05T18:06:30Z",
+      "side": 1,
+      "message": "This function calculates more that watermarks now, so should be named something like calc_zone_meminfo()",
+      "range": {
+        "startLine": 2597,
+        "startChar": 5,
+        "endLine": 2597,
+        "endChar": 25
+      },
+      "revId": "5e6edac8387f12a353741c1df95cdd8a1e1d3224",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31b25031_ed74db2d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 2600,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-09-05T18:06:30Z",
+      "side": 1,
+      "message": "zone_meminfo",
+      "range": {
+        "startLine": 2600,
+        "startChar": 33,
+        "endLine": 2600,
+        "endChar": 48
+      },
+      "revId": "5e6edac8387f12a353741c1df95cdd8a1e1d3224",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5b53f6a_7cbaf1c6",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 2631,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-09-05T18:06:30Z",
+      "side": 1,
+      "message": "you call get_MGLRU_status() from init(), so there is no need for this optimization since it will be called only once.",
+      "range": {
+        "startLine": 2629,
+        "startChar": 4,
+        "endLine": 2631,
+        "endChar": 5
+      },
+      "revId": "5e6edac8387f12a353741c1df95cdd8a1e1d3224",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be976c56_18b7b81a",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 2675,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-09-05T18:06:30Z",
+      "side": 1,
+      "message": "I think this can simply be:\n```\npgskip_deltas[pgskip_idx] \u003d vs-\u003earr[i] - init_pgskip[pgskip_idx];\npgskip_changed \u003d pgskip_deltas[pgskip_idx] \u003e 0;\ninit_pgskip[pgskip_idx] \u003d vs-\u003earr[i];\n```\nand with that you don\u0027t need to reset all vs-\u003earr[i] to -1 inside `vmstat_parse`",
+      "range": {
+        "startLine": 2669,
+        "startChar": 0,
+        "endLine": 2675,
+        "endChar": 45
+      },
+      "revId": "5e6edac8387f12a353741c1df95cdd8a1e1d3224",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "acdb8c01_0067c65e",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 2870,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-09-05T18:06:30Z",
+      "side": 1,
+      "message": "IIUC, this will use nr_free_pages and cma_free from all zones but the aggregate watermarks will be from whatever zones were used in the last calc_zone_watermarks() where some zones might have been skipped. This does not seem right... Please clarify the logic.",
+      "range": {
+        "startLine": 2869,
+        "startChar": 8,
+        "endLine": 2870,
+        "endChar": 41
+      },
+      "revId": "5e6edac8387f12a353741c1df95cdd8a1e1d3224",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
