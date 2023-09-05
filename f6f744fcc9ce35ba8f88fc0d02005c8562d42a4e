@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "73d52ebf_a9649604",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1721,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-09-05T16:32:14Z",
+      "side": 0,
+      "message": "Why not simply add this check instead of rewriting parsing logic:\n```\nstatic int zoneinfo_parse_node(char **buf, struct zoneinfo_node *node) {\n    int fields_to_match \u003d ZI_NODE_FIELD_COUNT;\n\n    if (strncmp(*buf, \"  per-node stats\", strlen(\"  per-node stats\"))) {\n        /* node is empty */\n        return true;\n    }\n\n    for (char *line \u003d strtok_r(NULL, \"\\n\", buf); line;\n         line \u003d strtok_r(NULL, \"\\n\", buf)) {\n...         \n```",
+      "revId": "f6f744fcc9ce35ba8f88fc0d02005c8562d42a4e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
