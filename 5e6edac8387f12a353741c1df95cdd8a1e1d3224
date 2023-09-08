@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "163389f2_079dc140",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-09-08T06:58:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "254791ab_029d8718",
+      "range": {
+        "startLine": 230,
+        "startChar": 7,
+        "endLine": 230,
+        "endChar": 14
+      },
+      "revId": "5e6edac8387f12a353741c1df95cdd8a1e1d3224",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "113d7098_667cbfe1",
@@ -37,6 +61,30 @@
       "writtenOn": "2023-09-05T18:06:30Z",
       "side": 1,
       "message": "Does\u0027n this work?\n```\nstatic char* zone_names[MAX_NR_ZONES] \u003d\n                          {\"DMA\", \"DMA32\", \"Normal\", \"High\", \"Movable\"};\n```",
+      "range": {
+        "startLine": 1679,
+        "startChar": 4,
+        "endLine": 1680,
+        "endChar": 72
+      },
+      "revId": "5e6edac8387f12a353741c1df95cdd8a1e1d3224",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb685d2f_b4f0e6da",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1680,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-09-08T06:58:54Z",
+      "side": 1,
+      "message": "Forgot to mention it in your previous comment; when trying with this, I\u0027m being thrown an error while compiling:\n\n```\n$ source build/envsetup.sh\n  \u003csnip\u003e\n$ lunch 2\n  \u003csnip\u003e\n$ cd system/memory/lmkd\n$ mm\n  \u003csnip\u003e\nsystem/memory/lmkd/lmkd.cpp:1680:28: error: ISO C++11 does not allow conversion from string literal to \u0027char *\u0027 [-Werror,-Wwritable-strings]\n                          {\"DMA\", \"DMA32\", \"Normal\", \"High\", \"Movable\"};\n                           ^\n\u003cSame error for the other 4 strings\u003e\n                                                             ^\n5 errors generated.\n  \u003csnip\u003e\n```",
+      "parentUuid": "113d7098_667cbfe1",
       "range": {
         "startLine": 1679,
         "startChar": 4,
@@ -70,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e70d8acb_b97e38a1",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 2597,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-09-08T06:58:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "430e887c_3453fcf1",
+      "range": {
+        "startLine": 2597,
+        "startChar": 5,
+        "endLine": 2597,
+        "endChar": 25
+      },
+      "revId": "5e6edac8387f12a353741c1df95cdd8a1e1d3224",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "31b25031_ed74db2d",
@@ -83,6 +155,30 @@
       "writtenOn": "2023-09-05T18:06:30Z",
       "side": 1,
       "message": "zone_meminfo",
+      "range": {
+        "startLine": 2600,
+        "startChar": 33,
+        "endLine": 2600,
+        "endChar": 48
+      },
+      "revId": "5e6edac8387f12a353741c1df95cdd8a1e1d3224",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0094250_55d88de0",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 2600,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-09-08T06:58:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "31b25031_ed74db2d",
       "range": {
         "startLine": 2600,
         "startChar": 33,
@@ -116,6 +212,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "be10be8c_b3e3e865",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 2631,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-09-08T06:58:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c5b53f6a_7cbaf1c6",
+      "range": {
+        "startLine": 2629,
+        "startChar": 4,
+        "endLine": 2631,
+        "endChar": 5
+      },
+      "revId": "5e6edac8387f12a353741c1df95cdd8a1e1d3224",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "be976c56_18b7b81a",
@@ -139,6 +259,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e2894276_f0e1b634",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 2675,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-09-08T06:58:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "be976c56_18b7b81a",
+      "range": {
+        "startLine": 2669,
+        "startChar": 0,
+        "endLine": 2675,
+        "endChar": 45
+      },
+      "revId": "5e6edac8387f12a353741c1df95cdd8a1e1d3224",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "acdb8c01_0067c65e",
@@ -152,6 +296,30 @@
       "writtenOn": "2023-09-05T18:06:30Z",
       "side": 1,
       "message": "IIUC, this will use nr_free_pages and cma_free from all zones but the aggregate watermarks will be from whatever zones were used in the last calc_zone_watermarks() where some zones might have been skipped. This does not seem right... Please clarify the logic.",
+      "range": {
+        "startLine": 2869,
+        "startChar": 8,
+        "endLine": 2870,
+        "endChar": 41
+      },
+      "revId": "5e6edac8387f12a353741c1df95cdd8a1e1d3224",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb7a7e32_762e94d2",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 2870,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-09-08T06:58:54Z",
+      "side": 1,
+      "message": "Done, storing total watermarks separately now.",
+      "parentUuid": "acdb8c01_0067c65e",
       "range": {
         "startLine": 2869,
         "startChar": 8,
