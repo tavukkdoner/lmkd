@@ -97,6 +97,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7471e851_b548fffc",
+        "filename": "lmkd.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 1680,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-09-15T21:33:14Z",
+      "side": 1,
+      "message": "use `const char*` like this:\n```\n    static const char *zone_names[MAX_NR_ZONES] \u003d\n                          {\"DMA\", \"DMA32\", \"Normal\", \"High\", \"Movable\"};\n```",
+      "parentUuid": "fb685d2f_b4f0e6da",
+      "range": {
+        "startLine": 1679,
+        "startChar": 4,
+        "endLine": 1680,
+        "endChar": 72
+      },
+      "revId": "5e6edac8387f12a353741c1df95cdd8a1e1d3224",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "430e887c_3453fcf1",
         "filename": "lmkd.cpp",
         "patchSetId": 12

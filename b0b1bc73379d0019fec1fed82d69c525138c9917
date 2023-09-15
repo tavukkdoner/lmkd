@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25156f09_20ed22d3",
+        "filename": "lmkd.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 1845,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-09-15T21:33:14Z",
+      "side": 1,
+      "message": "This will not compile since you removed `zone_count` member. Have you build this?",
+      "range": {
+        "startLine": 1845,
+        "startChar": 38,
+        "endLine": 1845,
+        "endChar": 54
+      },
+      "revId": "b0b1bc73379d0019fec1fed82d69c525138c9917",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
