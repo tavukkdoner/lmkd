@@ -22,6 +22,30 @@
       },
       "revId": "b0b1bc73379d0019fec1fed82d69c525138c9917",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b8d68ab_8106aad9",
+        "filename": "lmkd.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 1845,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-09-19T05:02:34Z",
+      "side": 1,
+      "message": "I\u0027m sorry, my patches got a bit mixed up. Latest patchset has `zone_count` removed.",
+      "parentUuid": "25156f09_20ed22d3",
+      "range": {
+        "startLine": 1845,
+        "startChar": 38,
+        "endLine": 1845,
+        "endChar": 54
+      },
+      "revId": "b0b1bc73379d0019fec1fed82d69c525138c9917",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
