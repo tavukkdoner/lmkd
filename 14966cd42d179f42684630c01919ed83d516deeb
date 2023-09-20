@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "849934d8_a404892d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 1685,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-09-20T16:32:43Z",
+      "side": 1,
+      "message": "Do we really need `strcasecmp` here? Isn\u0027t the format of these strings known exactly?",
+      "range": {
+        "startLine": 1685,
+        "startChar": 12,
+        "endLine": 1685,
+        "endChar": 22
+      },
+      "revId": "14966cd42d179f42684630c01919ed83d516deeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eea921de_adfe5511",
+        "filename": "lmkd.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 2614,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-09-20T16:32:43Z",
+      "side": 1,
+      "message": "Later in the code you are using this loop:\n```\n    for (i \u003d VS_PGSKIP_FIRST_ZONE, pgskip_idx \u003d PGSKIP_IDX(i);\n         i \u003c\u003d VS_PGSKIP_LAST_ZONE; i++, pgskip_idx++) {\n```\nPlease use the same here for consistency.",
+      "range": {
+        "startLine": 2612,
+        "startChar": 0,
+        "endLine": 2614,
+        "endChar": 0
+      },
+      "revId": "14966cd42d179f42684630c01919ed83d516deeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ba932aa_03329f79",
+        "filename": "lmkd.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 2671,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-09-20T16:32:43Z",
+      "side": 1,
+      "message": "Uh. This should be:\n```\npgskip_changed \u003d pgskip_changed || (pgskip_deltas[pgskip_idx] \u003e 0);\n```\nor simply:\n```\nif (pgskip_deltas[pgskip_idx] \u003e 0) {\n    pgskip_changed \u003d true;\n}\n```",
+      "range": {
+        "startLine": 2671,
+        "startChar": 8,
+        "endLine": 2671,
+        "endChar": 55
+      },
+      "revId": "14966cd42d179f42684630c01919ed83d516deeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
