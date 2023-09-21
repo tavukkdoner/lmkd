@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "db13c076_d1cc5585",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 19
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-09-21T21:02:28Z",
+      "side": 1,
+      "message": "Could you someone explain little bit more what\u0027s problem so why does we want to look at the pgskip?\n\nSimple example would be great to help .",
+      "range": {
+        "startLine": 14,
+        "startChar": 26,
+        "endLine": 18,
+        "endChar": 12
+      },
+      "revId": "0ac72ef41a0d9b0f7cf840a56e38c2ae25fe997e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4f9d2f78_98076150",
         "filename": "lmkd.cpp",
         "patchSetId": 19
