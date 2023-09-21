@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f9d2f78_98076150",
+        "filename": "lmkd.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 2641,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-09-21T20:58:36Z",
+      "side": 1,
+      "message": "AFAICT this is null and read_all() doesn\u0027t do any buffer allocation?\n\nDo I misunderstand?",
+      "range": {
+        "startLine": 2641,
+        "startChar": 23,
+        "endLine": 2641,
+        "endChar": 26
+      },
+      "revId": "0ac72ef41a0d9b0f7cf840a56e38c2ae25fe997e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
