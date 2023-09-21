@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f2a80d90_77d6268d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 1685,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-09-21T05:13:23Z",
+      "side": 1,
+      "message": "No need, `strncmp` is better.",
+      "parentUuid": "849934d8_a404892d",
+      "range": {
+        "startLine": 1685,
+        "startChar": 12,
+        "endLine": 1685,
+        "endChar": 22
+      },
+      "revId": "14966cd42d179f42684630c01919ed83d516deeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "eea921de_adfe5511",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5732b755_c4eb97bb",
+        "filename": "lmkd.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 2614,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-09-21T05:13:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eea921de_adfe5511",
+      "range": {
+        "startLine": 2612,
+        "startChar": 0,
+        "endLine": 2614,
+        "endChar": 0
+      },
+      "revId": "14966cd42d179f42684630c01919ed83d516deeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4ba932aa_03329f79",
@@ -60,6 +108,30 @@
       "writtenOn": "2023-09-20T16:32:43Z",
       "side": 1,
       "message": "Uh. This should be:\n```\npgskip_changed \u003d pgskip_changed || (pgskip_deltas[pgskip_idx] \u003e 0);\n```\nor simply:\n```\nif (pgskip_deltas[pgskip_idx] \u003e 0) {\n    pgskip_changed \u003d true;\n}\n```",
+      "range": {
+        "startLine": 2671,
+        "startChar": 8,
+        "endLine": 2671,
+        "endChar": 55
+      },
+      "revId": "14966cd42d179f42684630c01919ed83d516deeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3b3303e3_a370c181",
+        "filename": "lmkd.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 2671,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-09-21T05:13:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4ba932aa_03329f79",
       "range": {
         "startLine": 2671,
         "startChar": 8,
