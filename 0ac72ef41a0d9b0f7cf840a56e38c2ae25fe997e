@@ -22,6 +22,30 @@
       },
       "revId": "0ac72ef41a0d9b0f7cf840a56e38c2ae25fe997e",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36ba22c1_7eb9fee2",
+        "filename": "lmkd.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 2641,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-09-21T21:01:31Z",
+      "side": 1,
+      "message": "Yes, this is an issue.",
+      "parentUuid": "4f9d2f78_98076150",
+      "range": {
+        "startLine": 2641,
+        "startChar": 23,
+        "endLine": 2641,
+        "endChar": 26
+      },
+      "revId": "0ac72ef41a0d9b0f7cf840a56e38c2ae25fe997e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
