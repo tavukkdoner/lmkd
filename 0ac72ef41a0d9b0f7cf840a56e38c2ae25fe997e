@@ -73,6 +73,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "dede3633_2239760c",
+        "filename": "lmkd.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 1685,
+      "author": {
+        "id": 1951160
+      },
+      "writtenOn": "2023-09-23T09:39:40Z",
+      "side": 1,
+      "message": "Oh missed the DMA/DMA32 case. Since the order of parsed zones in zoneinfo is the same as in zone_names[MAX_NR_ZONES], would just doing\n\n```\n  if (strncmp(zone_names[i], zone_name, strlen(zone_name)) \u003d\u003d 0)\n```\n\nalso do? With the above LMKD would never run into this case:\n\n```\nstrncmp(\"DMA\", \"DMA32\", strlen(\"DMA\")) \u003d\u003d 0\n```",
+      "parentUuid": "d4d5cadb_35287c53",
+      "range": {
+        "startLine": 1685,
+        "startChar": 8,
+        "endLine": 1685,
+        "endChar": 76
+      },
+      "revId": "0ac72ef41a0d9b0f7cf840a56e38c2ae25fe997e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4f9d2f78_98076150",
         "filename": "lmkd.cpp",
         "patchSetId": 19
