@@ -145,6 +145,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "dc205e5d_0c5164ad",
+        "filename": "lmkd.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 1685,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2023-09-25T16:14:17Z",
+      "side": 1,
+      "message": "Right it would be dependent on order. I think we can use regular `strcmp()`, that also works as `\u0027\\0\u0027 !\u003d ?`",
+      "parentUuid": "2288222b_05c55a4d",
+      "range": {
+        "startLine": 1685,
+        "startChar": 8,
+        "endLine": 1685,
+        "endChar": 76
+      },
+      "revId": "0ac72ef41a0d9b0f7cf840a56e38c2ae25fe997e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4f9d2f78_98076150",
         "filename": "lmkd.cpp",
         "patchSetId": 19
