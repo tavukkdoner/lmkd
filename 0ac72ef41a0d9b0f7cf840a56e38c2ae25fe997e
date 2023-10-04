@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "05a8e254_5e80348e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 19
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-10-04T06:48:33Z",
+      "side": 1,
+      "message": "Hi,\n\n\u003e Could you someone explain little bit more what\u0027s problem so why does we want to look at the pgskip?\n\nThe patch serves primarily to make the LMKD more correct in watermark calculation by determining which zones are under memory pressure (we\u0027re considering pgskip as the factor for that). The consequence of this is that ULMK aggressiveness is infrequently increased to address the memory pressure. It\u0027s helped address some OOM and application concurrency issues seen earlier in our test farms.\n\n\u003e Simple example would be great to help .\n\nOur devices have the movable zone enabled. There are scenarios where, due to memory pressure from something allocating normal pages, movable zone pages are skipped during reclaim. Since at the moment memory pressure is mainly constrained to the normal zone, eliminating the skipped zone (even for one event handler iteration) makes the ULMK more aggressive so that the memory pressure is addressed. It\u0027s particularly helpful in scenarios where there are still a lot of free movable zone pages.\n\nUpdating the commit message with some of the above.",
+      "parentUuid": "db13c076_d1cc5585",
+      "range": {
+        "startLine": 14,
+        "startChar": 26,
+        "endLine": 18,
+        "endChar": 12
+      },
+      "revId": "0ac72ef41a0d9b0f7cf840a56e38c2ae25fe997e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3297c613_1c908167",
         "filename": "lmkd.cpp",
         "patchSetId": 19
@@ -167,6 +191,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "50674e04_84adc8dc",
+        "filename": "lmkd.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 1685,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-10-04T06:48:33Z",
+      "side": 1,
+      "message": "Done, using Suren\u0027s suggestion.",
+      "parentUuid": "dc205e5d_0c5164ad",
+      "range": {
+        "startLine": 1685,
+        "startChar": 8,
+        "endLine": 1685,
+        "endChar": 76
+      },
+      "revId": "0ac72ef41a0d9b0f7cf840a56e38c2ae25fe997e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4f9d2f78_98076150",
@@ -204,6 +252,30 @@
       "side": 1,
       "message": "Yes, this is an issue.",
       "parentUuid": "4f9d2f78_98076150",
+      "range": {
+        "startLine": 2641,
+        "startChar": 23,
+        "endLine": 2641,
+        "endChar": 26
+      },
+      "revId": "0ac72ef41a0d9b0f7cf840a56e38c2ae25fe997e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8c37f76c_23a3fc81",
+        "filename": "lmkd.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 2641,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-10-04T06:48:33Z",
+      "side": 1,
+      "message": "Done, removed the NULL.",
+      "parentUuid": "36ba22c1_7eb9fee2",
       "range": {
         "startLine": 2641,
         "startChar": 23,
