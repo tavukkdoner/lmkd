@@ -217,6 +217,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "21bc7fb9_74138d73",
+        "filename": "lmkd.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 1685,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-10-09T19:56:09Z",
+      "side": 1,
+      "message": "Not quite... I suggested using an intermediate variable to exclude one mode strlen():\n```\nif ((len \u003d strlen(zone_names[i]) \u003d\u003d strlen(zone_name) \u0026\u0026\n      strncmp(zone_names[i], zone_name, len) \u003d\u003d 0)\n```\nCompiler might be smart enough to optimize that but I would not count on that.",
+      "parentUuid": "50674e04_84adc8dc",
+      "range": {
+        "startLine": 1685,
+        "startChar": 8,
+        "endLine": 1685,
+        "endChar": 76
+      },
+      "revId": "0ac72ef41a0d9b0f7cf840a56e38c2ae25fe997e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4f9d2f78_98076150",
         "filename": "lmkd.cpp",
         "patchSetId": 19
