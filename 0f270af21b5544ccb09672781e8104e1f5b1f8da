@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a97e7020_ad0ce7a0",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1789,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2023-10-09T19:50:54Z",
+      "side": 1,
+      "message": "It\u0027s unclear what `pnode_ret` represents. IIUC it tells us that the current node is empty if `pnode_ret !\u003d 0`. Why not have a `bool` instead and set it as `node_empty \u003d strncmp(line, NODE_STATS_MARKER, strlen(NODE_STATS_MARKER)) !\u003d 0;` This code becomes:\n\n```\nnode_empty \u003d strncmp(line, NODE_STATS_MARKER, strlen(NODE_STATS_MARKER)) !\u003d 0;\nif (node_empty)\n  continue;\n```\nwhich is much easier to read and understand.\n\n\nAlso, would the following simpler code also work?:\n\n```\n        if (sscanf(line, \"Node %d, zone %\" STRINGIFY(LINE_MAX) \"s\", \u0026node_id, zone_name) \u003d\u003d 2) {\n            if (!node || node-\u003eid !\u003d node_id) {\n                line \u003d strtok_r(NULL, \"\\n\", \u0026save_ptr);\n                // skip if node is empty\n                if (strncmp(line, NODE_STATS_MARKER, strlen(NODE_STATS_MARKER)) !\u003d 0)\n                    continue;        \n            \n                /* new node is found */\n                if (node) {\n                    node-\u003ezone_count \u003d zone_idx + 1;\n                    node_idx++;\n                    if (node_idx \u003d\u003d MAX_NR_NODES) {\n                        /* max node count exceeded */\n                        ALOGE(\"%s parse error\", file_data.filename);\n                        return -1;\n                    }\n                }\n                node \u003d \u0026zi-\u003enodes[node_idx];\n                node-\u003eid \u003d node_id;\n                zone_idx \u003d 0;\n```\n\nBasically we avoid setting `node` for empty nodes and that way don\u0027t need to change the conditions at Lines 1773 and 1775.",
+      "range": {
+        "startLine": 1789,
+        "startChar": 16,
+        "endLine": 1789,
+        "endChar": 25
+      },
+      "revId": "0f270af21b5544ccb09672781e8104e1f5b1f8da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
