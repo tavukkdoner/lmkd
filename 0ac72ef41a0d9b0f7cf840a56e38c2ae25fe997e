@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f2914075_a7c23ecc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 19
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-10-10T18:02:30Z",
+      "side": 1,
+      "message": "Thanks.\n\nThat would work for movable zone with GFP_KERNEL but how about if a vendor has small CMA in normal zone with GFP_KERNEL allocation constraint?\n\nAnd how does LMKD can help memory pressure by kill apps since it is not aware of apps consumed the movable memory? For example, LMKD killed the apps but released the memory from the victim was all movable memory.",
+      "parentUuid": "05a8e254_5e80348e",
+      "range": {
+        "startLine": 14,
+        "startChar": 26,
+        "endLine": 18,
+        "endChar": 12
+      },
+      "revId": "0ac72ef41a0d9b0f7cf840a56e38c2ae25fe997e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3297c613_1c908167",
         "filename": "lmkd.cpp",
         "patchSetId": 19

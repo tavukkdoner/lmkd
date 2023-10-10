@@ -1,0 +1,182 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4379cdee_5be373da",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 23
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-10-10T18:02:30Z",
+      "side": 1,
+      "message": "General comments\n\nLet\u0027s have three CLs to review easier.\n\n1. refactoring patches first to make your upcoming CL easier to have\n2. your logic Cl to focus the allocation zone constraint issues\n3. MGLRU fix if we really need it(However, I am really not a big fan of that userspace need to rely on what LRU config was enabled in the kernel)",
+      "revId": "31959c3f8588738be8155f0160e98902209b34fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7a76f3fe_116232b2",
+        "filename": "lmkd.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-10-10T18:02:30Z",
+      "side": 1,
+      "message": "Let\u0027s have the separate CL to handle MGLRU fix.",
+      "range": {
+        "startLine": 91,
+        "startChar": 7,
+        "endLine": 91,
+        "endChar": 59
+      },
+      "revId": "31959c3f8588738be8155f0160e98902209b34fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d52417fd_89927aed",
+        "filename": "lmkd.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-10-10T18:02:30Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 231,
+        "startChar": 12,
+        "endLine": 231,
+        "endChar": 24
+      },
+      "revId": "31959c3f8588738be8155f0160e98902209b34fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "20fb71c2_93d5ac67",
+        "filename": "lmkd.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 1679,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-10-10T18:02:30Z",
+      "side": 1,
+      "message": "Is it refactoring patch? Then, could we have this change as previous patch to prepare upcoming fix?",
+      "range": {
+        "startLine": 1679,
+        "startChar": 11,
+        "endLine": 1679,
+        "endChar": 24
+      },
+      "revId": "31959c3f8588738be8155f0160e98902209b34fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25a9919a_d9e53d9f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 2582,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-10-10T18:02:30Z",
+      "side": 1,
+      "message": "Please comment what\u0027s difference between watermarks and total_watermarks.",
+      "range": {
+        "startLine": 2582,
+        "startChar": 27,
+        "endLine": 2582,
+        "endChar": 37
+      },
+      "revId": "31959c3f8588738be8155f0160e98902209b34fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "90431113_66bb6275",
+        "filename": "lmkd.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 2589,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-10-10T18:02:30Z",
+      "side": 1,
+      "message": "If we have a chance to refactor this part(if it is, let\u0027s have it as separate patch), I\u0027d like to use the chance to improve the confusing function all the time. \n\nenum wmark_level {\n   ABOVE_WMARK_HIGH\n   ABOVE_WMARK_LOW,\n   ABOVE_WMARK_MIN,\n   ABOVE_WAMRK_ZERO,\n}\n\nenum get_wmark_level(struct zone_meminfo *zmi);\n\nFeel free to suggest better ideas which is better than current one.",
+      "range": {
+        "startLine": 2589,
+        "startChar": 27,
+        "endLine": 2589,
+        "endChar": 47
+      },
+      "revId": "31959c3f8588738be8155f0160e98902209b34fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d3fc20e4_5f4d9ddd",
+        "filename": "lmkd.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 2631,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-10-10T18:02:30Z",
+      "side": 1,
+      "message": "What happens if some vendor has CMA in a zone and kswapd skipped them for GFP_KERNEL?",
+      "range": {
+        "startLine": 2631,
+        "startChar": 17,
+        "endLine": 2631,
+        "endChar": 30
+      },
+      "revId": "31959c3f8588738be8155f0160e98902209b34fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0ad9ef17_7e43dc52",
+        "filename": "lmkd.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 2672,
+      "author": {
+        "id": 1275554
+      },
+      "writtenOn": "2023-10-10T18:02:30Z",
+      "side": 1,
+      "message": "Let\u0027s have MGLRU stuff as separate patch.",
+      "range": {
+        "startLine": 2669,
+        "startChar": 0,
+        "endLine": 2672,
+        "endChar": 55
+      },
+      "revId": "31959c3f8588738be8155f0160e98902209b34fa",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
