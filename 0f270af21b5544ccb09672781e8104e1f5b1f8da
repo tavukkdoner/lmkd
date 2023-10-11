@@ -22,6 +22,30 @@
       },
       "revId": "0f270af21b5544ccb09672781e8104e1f5b1f8da",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "07929b11_67e2ce63",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1789,
+      "author": {
+        "id": 1945302
+      },
+      "writtenOn": "2023-10-11T11:53:18Z",
+      "side": 1,
+      "message": "Thanks, latter code is working fine.",
+      "parentUuid": "a97e7020_ad0ce7a0",
+      "range": {
+        "startLine": 1789,
+        "startChar": 16,
+        "endLine": 1789,
+        "endChar": 25
+      },
+      "revId": "0f270af21b5544ccb09672781e8104e1f5b1f8da",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
