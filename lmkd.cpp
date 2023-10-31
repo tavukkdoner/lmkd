@@ -31,6 +31,8 @@
 #include <sys/socket.h>
 #include <sys/syscall.h>
 #include <sys/sysinfo.h>
+#include <linux/sock_diag.h>
+#include <sys/socket.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -758,8 +760,22 @@ static ssize_t ctrl_data_read(int dsock_idx, char* buf, size_t bufsz, struct ucr
     return ret;
 }
 
-static int ctrl_data_write(int dsock_idx, char* buf, size_t bufsz) {
+static int ctrl_data_write(int dsock_idx, char* buf, size_t bufsz, bool can_discard) {
     int ret = 0;
+
+    if (can_discard) {
+        unsigned int meminfo[SK_MEMINFO_VARS];
+        socklen_t len = sizeof(meminfo);
+        int rc = getsockopt(data_sock[dsock_idx].sock, SOL_SOCKET, SO_MEMINFO, meminfo, &len);
+
+        if (rc == 0) {
+            int percent = meminfo[SK_MEMINFO_WMEM_ALLOC] * 100 / meminfo[SK_MEMINFO_SNDBUF];
+            if (percent > 90) {
+                ALOGE("Sock is already fulled, discard this");
+                return ret;
+            }
+        }
+    }
 
     ret = TEMP_FAILURE_RETRY(write(data_sock[dsock_idx].sock, buf, bufsz));
 
@@ -783,7 +799,7 @@ static void ctrl_data_write_lmk_kill_occurred(pid_t pid, uid_t uid) {
 
     for (int i = 0; i < MAX_DATA_CONN; i++) {
         if (data_sock[i].sock >= 0 && data_sock[i].async_event_mask & 1 << LMK_ASYNC_EVENT_KILL) {
-            ctrl_data_write(i, (char*)packet, len);
+            ctrl_data_write(i, (char*)packet, len, true);
         }
     }
 }
@@ -801,7 +817,7 @@ static void stats_write_lmk_kill_occurred(struct kill_stat *kill_st,
 
     for (int i = 0; i < MAX_DATA_CONN; i++) {
         if (data_sock[i].sock >= 0 && data_sock[i].async_event_mask & 1 << LMK_ASYNC_EVENT_STAT) {
-            ctrl_data_write(i, packet, len);
+            ctrl_data_write(i, packet, len, true);
         }
     }
 
@@ -1498,7 +1514,7 @@ static void ctrl_command_handler(int dsock_idx) {
             goto wronglen;
         kill_cnt = cmd_getkillcnt(packet);
         len = lmkd_pack_set_getkillcnt_repl(packet, kill_cnt);
-        if (ctrl_data_write(dsock_idx, (char *)packet, len) != len)
+        if (ctrl_data_write(dsock_idx, (char *)packet, len, false) != len)
             return;
         break;
     case LMK_SUBSCRIBE:
@@ -1527,7 +1543,7 @@ static void ctrl_command_handler(int dsock_idx) {
         }
 
         len = lmkd_pack_set_update_props_repl(packet, result);
-        if (ctrl_data_write(dsock_idx, (char *)packet, len) != len) {
+        if (ctrl_data_write(dsock_idx, (char *)packet, len, false) != len) {
             ALOGE("Failed to report operation results");
         }
         if (!result) {
