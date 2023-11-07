@@ -57,6 +57,8 @@
 #define BPF_FD_JUST_USE_INT
 #include "BpfSyscallWrappers.h"
 
+#include <bpf_memevents/bpf_memevents.h>
+
 /*
  * Define LMKD_TRACE_KILLS to record lmkd kills in kernel traces
  * to profile and correlate with OOM kills
@@ -3806,17 +3808,31 @@ static bool update_props() {
 }
 
 int main(int argc, char **argv) {
-    if ((argc > 1) && argv[1] && !strcmp(argv[1], "--reinit")) {
-        if (property_set(LMKD_REINIT_PROP, "")) {
-            ALOGE("Failed to reset " LMKD_REINIT_PROP " property");
+    if ((argc > 1) && argv[1])  {
+        if (!strcmp(argv[1], "--reinit")) {
+            if (property_set(LMKD_REINIT_PROP, "")) {
+                ALOGE("Failed to reset " LMKD_REINIT_PROP " property");
+            }
+            return issue_reinit();
         }
-        return issue_reinit();
+
+        if (!strcmp(argv[1], "--oom_map")) {
+            return (android::bpf::memevents::bpf_oom_victim_map()).size();
+        }
+
+        if (!strcmp(argv[1], "--oom_poll")) {
+            android::bpf::memevents::bpf_poll_oom_kill();
+            return 0;
+        }
     }
 
     if (!update_props()) {
         ALOGE("Failed to initialize props, exiting.");
         return -1;
     }
+
+    // Attach bpf progs to tracepoint
+    android::bpf::memevents::bpf_attach_oom_tracepoint();
 
     ctx = create_android_logger(KILLINFO_LOG_TAG);
 
