@@ -46,6 +46,7 @@ cc_binary {
     shared_libs: [
         "libcutils",
         "liblog",
+        "libmemevents",
         "libprocessgroup",
         "libpsi",
     ],
@@ -54,7 +55,7 @@ cc_binary {
         "liblmkd_utils",
     ],
     header_libs: [
-        "bpf_syscall_wrappers",
+        "bpf_headers",
     ],
     local_include_dirs: ["include"],
     cflags: [
