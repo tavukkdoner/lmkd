@@ -40,7 +40,6 @@
 #include <shared_mutex>
 #include <vector>
 
-#include <bpf/KernelUtils.h>
 #include <bpf/WaitForProgsLoaded.h>
 #include <cutils/properties.h>
 #include <cutils/sockets.h>
@@ -228,6 +227,7 @@ static int64_t stall_limit_critical;
 static bool use_psi_monitors = false;
 static int kpoll_fd;
 static bool delay_monitors_until_boot;
+static int direct_reclaim_threshold_ms;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
     { PSI_SOME, 70 },    /* 70ms out of 1sec for partial stall */
     { PSI_SOME, 100 },   /* 100ms out of 1sec for partial stall */
@@ -2631,6 +2631,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     int64_t workingset_refault_file;
     bool critical_stall = false;
     bool in_direct_reclaim;
+    long direct_reclaim_duration_ms;
 
     if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
         ALOGE("Failed to get current time");
@@ -2692,6 +2693,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         init_pgscan_direct = vs.field.pgscan_direct;
         init_pgscan_kswapd = vs.field.pgscan_kswapd;
         init_pgrefill = vs.field.pgrefill;
+        direct_reclaim_duration_ms = get_time_diff_ms(&direct_reclaim_start_tm, &curr_tm);
         reclaim = DIRECT_RECLAIM;
     } else if (vs.field.pgscan_kswapd != init_pgscan_kswapd) {
         init_pgscan_kswapd = vs.field.pgscan_kswapd;
@@ -2849,6 +2851,11 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
             min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
         }
         check_filecache = true;
+    } else if (reclaim == DIRECT_RECLAIM && direct_reclaim_threshold_ms > 0 &&
+               direct_reclaim_duration_ms > direct_reclaim_threshold_ms) {
+        kill_reason = DIRECT_RECL_STUCK;
+        snprintf(kill_desc, sizeof(kill_desc), "device is stuck in direct reclaim (%" PRId64 "%%)",
+                 direct_reclaim_duration_ms);
     } else if (check_filecache) {
         int64_t file_lru_kb = (vs.field.nr_inactive_file + vs.field.nr_active_file) * page_k;
 
@@ -3499,6 +3506,10 @@ static bool init_monitors() {
         ALOGI("Using memevents for direct reclaim detection");
     } else {
         ALOGI("Using vmstats for direct reclaim detection");
+        if (direct_reclaim_threshold_ms > 0) {
+            ALOGW("Kernel support for direct_reclaim_threshold_ms is not found");
+            direct_reclaim_threshold_ms = 0;
+        }
     }
 
     monitors_initialized = true;
@@ -3916,6 +3927,7 @@ static bool update_props() {
     filecache_min_kb = GET_LMK_PROPERTY(int64, "filecache_min_kb", 0);
     stall_limit_critical = GET_LMK_PROPERTY(int64, "stall_limit_critical", 100);
     delay_monitors_until_boot = GET_LMK_PROPERTY(bool, "delay_monitors_until_boot", false);
+    direct_reclaim_threshold_ms = GET_LMK_PROPERTY(int64, "direct_reclaim_threshold_ms", 0);
 
     reaper.enable_debug(debug_process_killing);
 
