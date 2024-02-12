@@ -36,8 +36,11 @@
 
 #include <algorithm>
 #include <array>
+#include <memory>
 #include <shared_mutex>
+#include <vector>
 
+#include <bpf/WaitForProgsLoaded.h>
 #include <cutils/properties.h>
 #include <cutils/sockets.h>
 #include <liblmkd_utils.h>
@@ -46,6 +49,7 @@
 #include <log/log.h>
 #include <log/log_event_list.h>
 #include <log/log_time.h>
+#include <memevents/memevents.h>
 #include <private/android_filesystem_config.h>
 #include <processgroup/processgroup.h>
 #include <psi/psi.h>
@@ -189,6 +193,11 @@ struct psi_threshold {
     int threshold_ms;
 };
 
+/* Listener for direct reclaim state changes */
+static std::unique_ptr<android::bpf::memevents::MemEventListener> memevent_listener(nullptr);
+static int memevent_listener_fd = -1;
+static struct timespec direct_reclaim_start_tm;
+
 static int level_oomadj[VMPRESS_LEVEL_COUNT];
 static int mpevfd[VMPRESS_LEVEL_COUNT] = { -1, -1, -1 };
 static bool pidfd_supported;
@@ -219,6 +228,7 @@ static int64_t stall_limit_critical;
 static bool use_psi_monitors = false;
 static int kpoll_fd;
 static bool delay_monitors_until_boot;
+static int direct_reclaim_threshold_ms;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
     { PSI_SOME, 70 },    /* 70ms out of 1sec for partial stall */
     { PSI_SOME, 100 },   /* 100ms out of 1sec for partial stall */
@@ -275,11 +285,15 @@ static struct sock_event_handler_info data_sock[MAX_DATA_CONN];
 /* vmpressure event handler data */
 static struct event_handler_info vmpressure_hinfo[VMPRESS_LEVEL_COUNT];
 
+/* direct reclaim state change event handler data */
+static struct event_handler_info direct_reclaim_hinfo;
+
 /*
  * 1 ctrl listen socket, 3 ctrl data socket, 3 memory pressure levels,
  * 1 lmk events + 1 fd to wait for process death + 1 fd to receive kill failure notifications
+ * + 1 fd to receive direct reclaim state change notifications
  */
-#define MAX_EPOLL_EVENTS (1 + MAX_DATA_CONN + VMPRESS_LEVEL_COUNT + 1 + 1 + 1)
+#define MAX_EPOLL_EVENTS (1 + MAX_DATA_CONN + VMPRESS_LEVEL_COUNT + 1 + 1 + 1 + 1)
 static int epollfd;
 static int maxevents;
 
@@ -2589,7 +2603,6 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     static int64_t prev_workingset_refault;
     static int64_t base_file_lru;
     static int64_t init_pgscan_kswapd;
-    static int64_t init_pgscan_direct;
     static int64_t init_pgrefill;
     static bool killing;
     static int thrashing_limit = thrashing_limit_pct;
@@ -2620,6 +2633,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     long since_thrashing_reset_ms;
     int64_t workingset_refault_file;
     bool critical_stall = false;
+    long direct_reclaim_duration_ms;
 
     if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
         ALOGE("Failed to get current time");
@@ -2673,10 +2687,8 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     }
 
     /* Identify reclaim state */
-    if (vs.field.pgscan_direct != init_pgscan_direct) {
-        init_pgscan_direct = vs.field.pgscan_direct;
-        init_pgscan_kswapd = vs.field.pgscan_kswapd;
-        init_pgrefill = vs.field.pgrefill;
+    if (direct_reclaim_start_tm.tv_sec != 0 || direct_reclaim_start_tm.tv_nsec != 0) {
+        direct_reclaim_duration_ms = get_time_diff_ms(&direct_reclaim_start_tm, &curr_tm);
         reclaim = DIRECT_RECLAIM;
     } else if (vs.field.pgscan_kswapd != init_pgscan_kswapd) {
         init_pgscan_kswapd = vs.field.pgscan_kswapd;
@@ -2834,6 +2846,11 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
             min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
         }
         check_filecache = true;
+    } else if (reclaim == DIRECT_RECLAIM && direct_reclaim_threshold_ms > 0 &&
+               direct_reclaim_duration_ms > direct_reclaim_threshold_ms) {
+        kill_reason = DIRECT_RECL_STUCK;
+        snprintf(kill_desc, sizeof(kill_desc), "device is stuck in direct reclaim (%" PRId64 "%%)",
+                 direct_reclaim_duration_ms);
     } else if (check_filecache) {
         int64_t file_lru_kb = (vs.field.nr_inactive_file + vs.field.nr_active_file) * page_k;
 
@@ -3232,6 +3249,91 @@ static MemcgVersion memcg_version() {
     return version;
 }
 
+static void direct_reclaim_state_change(int data __unused, uint32_t events __unused,
+                                        struct polling_params* poll_params __unused) {
+    struct timespec curr_tm;
+    std::vector<mem_event_t> dr_events;
+
+    if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
+        direct_reclaim_start_tm.tv_sec = 0;
+        direct_reclaim_start_tm.tv_nsec = 0;
+        ALOGE("Failed to get current time for direct reclaim state change.");
+        return;
+    }
+
+    if (!memevent_listener->getMemEvents(dr_events)) {
+        direct_reclaim_start_tm.tv_sec = 0;
+        direct_reclaim_start_tm.tv_nsec = 0;
+        ALOGE("Failed fetching direct reclaim events.");
+        return;
+    }
+
+    if (dr_events.empty() || dr_events.back().type == MEM_EVENT_DIRECT_RECLAIM_END) {
+        direct_reclaim_start_tm.tv_sec = 0;
+        direct_reclaim_start_tm.tv_nsec = 0;
+    } else if (dr_events.back().type == MEM_EVENT_DIRECT_RECLAIM_BEGIN) {
+        direct_reclaim_start_tm = curr_tm;
+    }
+}
+
+static bool init_direct_reclaim_monitoring() {
+    if (!memevent_listener) {
+        // Make sure bpf programs are loaded
+        android::bpf::waitForProgsLoaded();
+        memevent_listener = std::make_unique<android::bpf::memevents::MemEventListener>(
+                android::bpf::memevents::MemEventClient::LMKD);
+    }
+
+    if (!memevent_listener->registerEvent(MEM_EVENT_DIRECT_RECLAIM_BEGIN) ||
+        !memevent_listener->registerEvent(MEM_EVENT_DIRECT_RECLAIM_END)) {
+        ALOGE("Failed to register for direct reclaim state changes");
+        return false;
+    }
+
+    memevent_listener_fd = memevent_listener->getRingBufferFd();
+    if (memevent_listener_fd < 0) {
+        memevent_listener.reset();
+        ALOGE("Invalid memevent_listener fd: %d", memevent_listener_fd);
+        return false;
+    }
+
+    direct_reclaim_hinfo.handler = direct_reclaim_state_change;
+    direct_reclaim_hinfo.data = 0;
+
+    struct epoll_event epev;
+    epev.events = EPOLLPRI;
+    epev.data.ptr = &direct_reclaim_hinfo;
+    if (epoll_ctl(epollfd, EPOLL_CTL_ADD, memevent_listener_fd, &epev) < 0) {
+        ALOGE("Failed registering direct reclaim fd: %d; errno=%d", memevent_listener_fd, errno);
+        return false;
+    }
+
+    direct_reclaim_start_tm.tv_sec = 0;
+    direct_reclaim_start_tm.tv_nsec = 0;
+
+    maxevents++;
+    return true;
+}
+
+static void destroy_direct_reclaim_monitoring() {
+    if (memevent_listener && memevent_listener_fd >= 0) {
+        if (epoll_ctl(epollfd, EPOLL_CTL_DEL, memevent_listener_fd, NULL) < 0)
+            ALOGE("Failed to unregister direct reclaim monitoring; errno=%d", errno);
+
+        maxevents--;
+    }
+    memevent_listener.reset();
+    /*
+     * We never want to manually close this file descriptor, we always want to allow
+     * the `memevent_listener` destructor to handle the bpf's ring buffer opening and
+     * closing.
+     */
+    memevent_listener_fd = -1;
+
+    direct_reclaim_start_tm.tv_sec = 0;
+    direct_reclaim_start_tm.tv_nsec = 0;
+}
+
 static bool init_psi_monitors() {
     /*
      * When PSI is used on low-ram devices or on high-end devices without memfree levels
@@ -3382,6 +3484,12 @@ static bool init_monitors() {
     } else {
         ALOGI("Using vmpressure for memory pressure detection");
     }
+
+    if (!init_direct_reclaim_monitoring()) {
+        destroy_direct_reclaim_monitoring();
+        return false;
+    }
+
     monitors_initialized = true;
     return true;
 }
@@ -3396,6 +3504,7 @@ static void destroy_monitors() {
         destroy_mp_common(VMPRESS_LEVEL_MEDIUM);
         destroy_mp_common(VMPRESS_LEVEL_LOW);
     }
+    destroy_direct_reclaim_monitoring();
 }
 
 static void drop_reaper_comm() {
@@ -3796,6 +3905,7 @@ static bool update_props() {
     filecache_min_kb = GET_LMK_PROPERTY(int64, "filecache_min_kb", 0);
     stall_limit_critical = GET_LMK_PROPERTY(int64, "stall_limit_critical", 100);
     delay_monitors_until_boot = GET_LMK_PROPERTY(bool, "delay_monitors_until_boot", false);
+    direct_reclaim_threshold_ms = GET_LMK_PROPERTY(int64, "direct_reclaim_threshold_ms", 0);
 
     reaper.enable_debug(debug_process_killing);
 
