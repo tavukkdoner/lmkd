@@ -92,6 +92,9 @@ properties:
                                  cycle after kill used to allow blocking of killing
                                  critical processes when not enough memory was freed
                                  in a kill cycle. Default score = 0.
+  - `ro.lmk.direct_reclaim_threshold_ms`: threshold for how long we have been in direct
+                                 reclaim, in ms, before performing a DIRECT_RECL_STUCK
+                                 kill. Default = 0 (disabled)
 
 lmkd will set the following Android properties according to current system
 configurations:
