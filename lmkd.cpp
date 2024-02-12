@@ -36,8 +36,10 @@
 
 #include <algorithm>
 #include <array>
+#include <memory>
 #include <shared_mutex>
 
+#include <bpf/WaitForProgsLoaded.h>
 #include <cutils/properties.h>
 #include <cutils/sockets.h>
 #include <liblmkd_utils.h>
@@ -46,6 +48,7 @@
 #include <log/log.h>
 #include <log/log_event_list.h>
 #include <log/log_time.h>
+#include <memevents/memevents.h>
 #include <private/android_filesystem_config.h>
 #include <processgroup/processgroup.h>
 #include <psi/psi.h>
@@ -189,6 +192,10 @@ struct psi_threshold {
     int threshold_ms;
 };
 
+/* Listener for direct reclaim state changes */
+static std::unique_ptr<android::bpf::memevents::MemEventListener> memevent_listener(nullptr);
+static int memevent_listener_fd = -1;
+
 static int level_oomadj[VMPRESS_LEVEL_COUNT];
 static int mpevfd[VMPRESS_LEVEL_COUNT] = { -1, -1, -1 };
 static bool pidfd_supported;
@@ -219,6 +226,7 @@ static int64_t stall_limit_critical;
 static bool use_psi_monitors = false;
 static int kpoll_fd;
 static bool delay_monitors_until_boot;
+static int direct_reclaim_threshold_ms;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
     { PSI_SOME, 70 },    /* 70ms out of 1sec for partial stall */
     { PSI_SOME, 100 },   /* 100ms out of 1sec for partial stall */
@@ -3796,6 +3804,7 @@ static bool update_props() {
     filecache_min_kb = GET_LMK_PROPERTY(int64, "filecache_min_kb", 0);
     stall_limit_critical = GET_LMK_PROPERTY(int64, "stall_limit_critical", 100);
     delay_monitors_until_boot = GET_LMK_PROPERTY(bool, "delay_monitors_until_boot", false);
+    direct_reclaim_threshold_ms = GET_LMK_PROPERTY(int64, "direct_reclaim_threshold_ms", 100);
 
     reaper.enable_debug(debug_process_killing);
 
@@ -3819,6 +3828,23 @@ int main(int argc, char **argv) {
     if (!update_props()) {
         ALOGE("Failed to initialize props, exiting.");
         return -1;
+    }
+
+    if (!memevent_listener) {
+        // Make sure bpf programs are loaded
+        android::bpf::waitForProgsLoaded();
+        memevent_listener = std::make_unique<android::bpf::memevents::MemEventListener>(
+                android::bpf::memevents::MemEventClient::LMKD);
+
+        if (memevent_listener->registerEvent(MEM_EVENT_DIRECT_RECLAIM_BEGIN) &&
+            memevent_listener->registerEvent(MEM_EVENT_DIRECT_RECLAIM_END)) {
+            memevent_listener_fd = memevent_listener->getRingBufferFd();
+            ALOGE("Success in loading memevent listener with fd: %d", memevent_listener_fd);
+        } else {
+            ALOGE("Failed to register for direct reclaim state changes");
+            memevent_listener->deregisterAllEvents();
+            return -1;
+        }
     }
 
     ctx = create_android_logger(KILLINFO_LOG_TAG);
