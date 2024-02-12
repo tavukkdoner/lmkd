@@ -49,3 +49,6 @@ on property:persist.device_config.lmkd_native.swap_util_max=*
 
 on property:persist.device_config.lmkd_native.filecache_min_kb=*
     setprop lmkd.reinit ${sys.boot_completed:-0}
+
+on property:persist.device_config.lmkd_native.direct_reclaim_threshold_ms=*
+    setprop lmkd.reinit ${sys.boot_completed:-0}
