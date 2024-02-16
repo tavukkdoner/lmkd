@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5dcd9cf_bda5c75c",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3314,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-02-16T02:16:16Z",
+      "side": 1,
+      "message": "This function is only for PSI monitors, you should do EPOLL_CTL_ADD directly.",
+      "range": {
+        "startLine": 3314,
+        "startChar": 8,
+        "endLine": 3314,
+        "endChar": 28
+      },
+      "revId": "b7690ba5d5ac9bd60e31f17ad44926effc6ea074",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2bf32a63_fc07fa7f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3325,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-02-16T02:16:16Z",
+      "side": 1,
+      "message": "same here",
+      "range": {
+        "startLine": 3325,
+        "startChar": 12,
+        "endLine": 3325,
+        "endChar": 34
+      },
+      "revId": "b7690ba5d5ac9bd60e31f17ad44926effc6ea074",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a374314_11cb0c7c",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3909,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-02-16T02:16:16Z",
+      "side": 1,
+      "message": "I\u0027m not sure 100ms is the right value here. Until we have a good idea I would set it to 0 and disable by default (would not even init_direct_reclaim_monitoring()).",
+      "range": {
+        "startLine": 3909,
+        "startChar": 89,
+        "endLine": 3909,
+        "endChar": 92
+      },
+      "revId": "b7690ba5d5ac9bd60e31f17ad44926effc6ea074",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
