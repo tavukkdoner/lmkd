@@ -1,0 +1,211 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b4046a06_5f6cc785",
+        "filename": "Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-04T21:01:31Z",
+      "side": 1,
+      "message": "Is this necessary? We should try to keep LMKD as small as possible because it\u0027s mlock\u0027ed in the memory.",
+      "range": {
+        "startLine": 47,
+        "startChar": 9,
+        "endLine": 47,
+        "endChar": 16
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b4abf8a_4a790acd",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2856,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-04T21:01:31Z",
+      "side": 1,
+      "message": "We should not need to rely on this anymore. In fact I would like to replace current mechanism of reading vmstats to defect reclaim with memevents.",
+      "range": {
+        "startLine": 2856,
+        "startChar": 15,
+        "endLine": 2856,
+        "endChar": 44
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f97afd65_f1a2fefe",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3259,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-04T21:01:31Z",
+      "side": 1,
+      "message": "why maybe? They are unused.",
+      "range": {
+        "startLine": 3259,
+        "startChar": 42,
+        "endLine": 3259,
+        "endChar": 48
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cc2faaad_8dba0309",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3266,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-04T21:01:31Z",
+      "side": 1,
+      "message": "We should reset direct_reclaim_start_tm to 0 here to avoid false direct reclaim stuck issues.",
+      "range": {
+        "startLine": 3266,
+        "startChar": 8,
+        "endLine": 3266,
+        "endChar": 15
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b457f026_349bb268",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3271,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-04T21:01:31Z",
+      "side": 1,
+      "message": "same here",
+      "range": {
+        "startLine": 3271,
+        "startChar": 8,
+        "endLine": 3271,
+        "endChar": 15
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8c7f73f2_56590cda",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3276,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-04T21:01:31Z",
+      "side": 1,
+      "message": "when would this happen? Should we reset reset direct_reclaim_start_tm to 0 here too?",
+      "range": {
+        "startLine": 3275,
+        "startChar": 11,
+        "endLine": 3276,
+        "endChar": 48
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1dbc2ac5_add4bd53",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3367,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-04T21:01:31Z",
+      "side": 1,
+      "message": "We should reset direct_reclaim_start_tm to 0 when direct_reclaim_threshold_ms\u003d\u003d0. Consider a case when user changed ro.lmk.direct_reclaim_threshold_ms property from non-0 to 0 value and issued `lmkd --reinit`. If the system was under direct reclaim when this happens direct_reclaim_threshold_ms will be non-0 and will stay non-zero forever and we will think we are always in direct reclaim.",
+      "range": {
+        "startLine": 3367,
+        "startChar": 12,
+        "endLine": 3367,
+        "endChar": 39
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b2646646_2b2ad11b",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3368,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-04T21:01:31Z",
+      "side": 1,
+      "message": "This should have its own function, not be a part of init_psi_monitors(). Nothing to do with PSI.",
+      "range": {
+        "startLine": 3365,
+        "startChar": 0,
+        "endLine": 3368,
+        "endChar": 48
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d3ee5e9_771faf58",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3503,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-04T21:01:31Z",
+      "side": 1,
+      "message": "you should destroy_direct_reclaim_monitoring() here in case `lmkd --reinit` is called.",
+      "range": {
+        "startLine": 3503,
+        "startChar": 12,
+        "endLine": 3503,
+        "endChar": 28
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
