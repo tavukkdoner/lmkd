@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "38dbf485_39d227a8",
+        "filename": "Android.bp",
+        "patchSetId": 4
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-05T18:17:51Z",
+      "side": 1,
+      "message": "We do need it to utilize the `waitForProgsLoaded()`, which will wait for bpfloader to load BPF programs.",
+      "parentUuid": "b4046a06_5f6cc785",
+      "range": {
+        "startLine": 47,
+        "startChar": 9,
+        "endLine": 47,
+        "endChar": 16
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9b4abf8a_4a790acd",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-03-04T21:01:31Z",
       "side": 1,
       "message": "We should not need to rely on this anymore. In fact I would like to replace current mechanism of reading vmstats to defect reclaim with memevents.",
+      "range": {
+        "startLine": 2856,
+        "startChar": 15,
+        "endLine": 2856,
+        "endChar": 44
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e3a242d_858601dc",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2856,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-05T18:17:51Z",
+      "side": 1,
+      "message": "Done. We are now defaulting to use memevents for direct reclaim monitoring.",
+      "parentUuid": "9b4abf8a_4a790acd",
       "range": {
         "startLine": 2856,
         "startChar": 15,
@@ -70,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "40a3a0e9_0f89096c",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3259,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-05T18:17:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f97afd65_f1a2fefe",
+      "range": {
+        "startLine": 3259,
+        "startChar": 42,
+        "endLine": 3259,
+        "endChar": 48
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cc2faaad_8dba0309",
@@ -83,6 +155,30 @@
       "writtenOn": "2024-03-04T21:01:31Z",
       "side": 1,
       "message": "We should reset direct_reclaim_start_tm to 0 here to avoid false direct reclaim stuck issues.",
+      "range": {
+        "startLine": 3266,
+        "startChar": 8,
+        "endLine": 3266,
+        "endChar": 15
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a8394b4b_3c6f9538",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3266,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-05T18:17:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cc2faaad_8dba0309",
       "range": {
         "startLine": 3266,
         "startChar": 8,
@@ -116,6 +212,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "720c843e_bacacb55",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3271,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-05T18:17:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b457f026_349bb268",
+      "range": {
+        "startLine": 3271,
+        "startChar": 8,
+        "endLine": 3271,
+        "endChar": 15
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8c7f73f2_56590cda",
@@ -129,6 +249,30 @@
       "writtenOn": "2024-03-04T21:01:31Z",
       "side": 1,
       "message": "when would this happen? Should we reset reset direct_reclaim_start_tm to 0 here too?",
+      "range": {
+        "startLine": 3275,
+        "startChar": 11,
+        "endLine": 3276,
+        "endChar": 48
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "226b697b_9dd527d5",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3276,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-05T18:17:51Z",
+      "side": 1,
+      "message": "Since `getMemEvents(dr_events)` cannot guarantee that it will have something in the ring buffer, as it can be called without the `listen()`/`poll` notifying us of a new event. This is not the case for our implementation.\n\nI updated the logic by removing this `if (dr_events.empty())` and adjusting if-else when we check the event type received.",
+      "parentUuid": "8c7f73f2_56590cda",
       "range": {
         "startLine": 3275,
         "startChar": 11,
@@ -162,6 +306,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cec5c8f8_a90c2cbf",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3367,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-05T18:17:51Z",
+      "side": 1,
+      "message": "Done. This logic was also moved in `init_monitors()`, and we always default to initialize direct reclaim monitoring",
+      "parentUuid": "1dbc2ac5_add4bd53",
+      "range": {
+        "startLine": 3367,
+        "startChar": 12,
+        "endLine": 3367,
+        "endChar": 39
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b2646646_2b2ad11b",
@@ -185,6 +353,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "355eb4b2_c9a2ee05",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3368,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-05T18:17:51Z",
+      "side": 1,
+      "message": "Done, moved to `init_monitors()`.",
+      "parentUuid": "b2646646_2b2ad11b",
+      "range": {
+        "startLine": 3365,
+        "startChar": 0,
+        "endLine": 3368,
+        "endChar": 48
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0d3ee5e9_771faf58",
@@ -198,6 +390,30 @@
       "writtenOn": "2024-03-04T21:01:31Z",
       "side": 1,
       "message": "you should destroy_direct_reclaim_monitoring() here in case `lmkd --reinit` is called.",
+      "range": {
+        "startLine": 3503,
+        "startChar": 12,
+        "endLine": 3503,
+        "endChar": 28
+      },
+      "revId": "e5723b5555b7abd52e1a7103f89db04ffa89ddb7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba46a968_301add48",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3503,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-05T18:17:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0d3ee5e9_771faf58",
       "range": {
         "startLine": 3503,
         "startChar": 12,
