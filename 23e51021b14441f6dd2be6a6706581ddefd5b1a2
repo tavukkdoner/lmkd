@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce1ed787_1e6cf50d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 2864,
+      "author": {
+        "id": 1856921
+      },
+      "writtenOn": "2024-03-05T04:41:52Z",
+      "side": 1,
+      "message": "Please use strlcpy instead.",
+      "revId": "23e51021b14441f6dd2be6a6706581ddefd5b1a2",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
