@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b623d27e_3bc834f8",
+        "filename": "Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-07T22:48:13Z",
+      "side": 1,
+      "message": "I\u0027m worried about the growth in size after this change. Please check lmkd RSS before and after this change. I wonder if there is a way to avoid linking this library which I expect to be quite sizable.\n\nI think waitForProgsLoaded() simply checks `bpf.progs_loaded` system property in a loop until it gets set, so it should be easy to implement it without linking the whole library in case it adds considerable size.",
+      "range": {
+        "startLine": 47,
+        "startChar": 9,
+        "endLine": 47,
+        "endChar": 16
+      },
+      "revId": "1659e7bc33decaa564d7864507196da76f968626",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd52e412_e37f0a8d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2853,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-07T22:48:13Z",
+      "side": 1,
+      "message": "Currently this patch does several things: adds support to listen for libmemevents and introduces a new kill reason. Let\u0027s separate the new kill reason into its own patch.",
+      "range": {
+        "startLine": 2849,
+        "startChar": 4,
+        "endLine": 2853,
+        "endChar": 45
+      },
+      "revId": "1659e7bc33decaa564d7864507196da76f968626",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "576fdf56_67f6d3cf",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 3271,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-07T22:48:13Z",
+      "side": 1,
+      "message": "Can this vector contain multiple events?",
+      "range": {
+        "startLine": 3271,
+        "startChar": 8,
+        "endLine": 3271,
+        "endChar": 17
+      },
+      "revId": "1659e7bc33decaa564d7864507196da76f968626",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
