@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e19b4f38_bed3adc0",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2607,
+      "author": {
+        "id": 1132673
+      },
+      "writtenOn": "2024-03-08T12:23:14Z",
+      "side": 1,
+      "message": "explicitly initialize to 0 ?",
+      "range": {
+        "startLine": 2607,
+        "startChar": 37,
+        "endLine": 2607,
+        "endChar": 38
+      },
+      "revId": "4a08ad2f279d930425843eee87445ecf1ad9bc10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
