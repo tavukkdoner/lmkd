@@ -22,6 +22,29 @@
       },
       "revId": "4a08ad2f279d930425843eee87445ecf1ad9bc10",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f9810a66_a7c520a2",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 2865,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-12T18:20:40Z",
+      "side": 1,
+      "message": "Why only visible apps are excluded here? For example if you are listening to the music and the app is not at the top this will kill the player and there will be user-perceptible effect.\n\nAlso, please post more data in the bug on how the system benefits from this new kill logic.",
+      "range": {
+        "startLine": 2865,
+        "startChar": 24,
+        "endLine": 2865,
+        "endChar": 39
+      },
+      "revId": "4a08ad2f279d930425843eee87445ecf1ad9bc10",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
