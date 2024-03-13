@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "69f8698d_1b01f755",
+        "filename": "Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-13T19:54:55Z",
+      "side": 1,
+      "message": "VmLck:  10769680 kB (without `libbase`)\nVmLck:  10845456 kB  (with the only `libbase`)\n~0.7% increase in size\n\nNot sure if this is considered a significant increase? What action should we take?",
+      "parentUuid": "b623d27e_3bc834f8",
+      "range": {
+        "startLine": 47,
+        "startChar": 9,
+        "endLine": 47,
+        "endChar": 16
+      },
+      "revId": "1659e7bc33decaa564d7864507196da76f968626",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "bd52e412_e37f0a8d",
         "filename": "lmkd.cpp",
         "patchSetId": 5
