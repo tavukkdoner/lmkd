@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2fb5615d_35be13d3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-13T17:24:33Z",
+      "side": 1,
+      "message": "needs a description: what this patch does and why",
+      "revId": "53beff756ce9fc653a0a655137b423613904d75b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
