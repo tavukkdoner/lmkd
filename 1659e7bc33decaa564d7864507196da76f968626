@@ -47,6 +47,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "03c2961e_622663df",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2853,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-13T06:43:04Z",
+      "side": 1,
+      "message": "Done. This change is left as new kill reason, and aosp/3001286 adds the support for memevents and direct reclaim monitoring.",
+      "parentUuid": "bd52e412_e37f0a8d",
+      "range": {
+        "startLine": 2849,
+        "startChar": 4,
+        "endLine": 2853,
+        "endChar": 45
+      },
+      "revId": "1659e7bc33decaa564d7864507196da76f968626",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "576fdf56_67f6d3cf",
@@ -60,6 +84,30 @@
       "writtenOn": "2024-03-07T22:48:13Z",
       "side": 1,
       "message": "Can this vector contain multiple events?",
+      "range": {
+        "startLine": 3271,
+        "startChar": 8,
+        "endLine": 3271,
+        "endChar": 17
+      },
+      "revId": "1659e7bc33decaa564d7864507196da76f968626",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fd45c6ec_b0b4f651",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 3271,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-13T06:43:04Z",
+      "side": 1,
+      "message": "Yes, the vector can contain multiple registered events. By the time we fetch the memevents from the bpf rb, we might\u0027ve gone in/out of direct reclaim, which would be reflected more than one event in the vector.\n\nDue to this we always use the the last/latest event as the last known direct reclaims state to make mitigate for this case.",
+      "parentUuid": "576fdf56_67f6d3cf",
       "range": {
         "startLine": 3271,
         "startChar": 8,
