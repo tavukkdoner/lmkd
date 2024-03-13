@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d333d1d_66e04e3d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3263,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-13T19:47:16Z",
+      "side": 1,
+      "message": "No, the vector can contain multiple registered events. By the time we fetch the memevents from the bpf rb, we might\u0027ve gone in/out of direct reclaim, which would be reflected in the size, and content, of the vector.\n\nDue to this we always use the the last/latest event as the last known direct reclaims state to make mitigate for this case.",
+      "parentUuid": "f81c1988_a89b80ea",
+      "range": {
+        "startLine": 3263,
+        "startChar": 29,
+        "endLine": 3263,
+        "endChar": 50
+      },
+      "revId": "7c4837bf795ef87fc9112b8f0765141cafe93372",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7470a1ed_91e0cdad",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-03-13T17:22:13Z",
       "side": 1,
       "message": "This should be done only if EPOLL_CTL_ADD succeeded in `init_direct_reclaim_monitoring`. Consider the case that `epoll_ctl(epollfd, EPOLL_CTL_ADD,...)` call at L3298 failed and `destroy_direct_reclaim_monitoring` at L3481 is called to undo any initialization that was done. The above code will try to do EPOLL_CTL_DEL and fail and then it will decrement `maxevents`, which is wrong, it was not incremented by `init_direct_reclaim_monitoring`.",
+      "range": {
+        "startLine": 3312,
+        "startChar": 8,
+        "endLine": 3315,
+        "endChar": 20
+      },
+      "revId": "7c4837bf795ef87fc9112b8f0765141cafe93372",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b96b532a_38014f11",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3315,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-13T19:47:16Z",
+      "side": 1,
+      "message": "Done. If the `EPOLL_CTL_ADD` fails then we set the `memevent_listener_fd` to `-1`.",
+      "parentUuid": "7470a1ed_91e0cdad",
       "range": {
         "startLine": 3312,
         "startChar": 8,
