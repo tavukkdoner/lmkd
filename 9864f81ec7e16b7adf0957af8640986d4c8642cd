@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31725d38_4c62b1c7",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3304,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-13T20:09:19Z",
+      "side": 1,
+      "message": "I think you are missing `memevent_listener.reset()` here.",
+      "range": {
+        "startLine": 3304,
+        "startChar": 8,
+        "endLine": 3304,
+        "endChar": 28
+      },
+      "revId": "9864f81ec7e16b7adf0957af8640986d4c8642cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}

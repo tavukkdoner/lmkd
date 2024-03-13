@@ -50,6 +50,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "602f8693_992bf0fc",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3263,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-13T20:09:19Z",
+      "side": 1,
+      "message": "Well, it\u0027s not an issue for now but once we add more events, let\u0027s say MEM_EVENT_KSWAPD_BEGIN/MEM_EVENT_KSWAPD_END, this won\u0027t work because there might be other events which we are ignoring by looking just at the last one. Please consider handling all received events.",
+      "parentUuid": "2d333d1d_66e04e3d",
+      "range": {
+        "startLine": 3263,
+        "startChar": 29,
+        "endLine": 3263,
+        "endChar": 50
+      },
+      "revId": "7c4837bf795ef87fc9112b8f0765141cafe93372",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7470a1ed_91e0cdad",
         "filename": "lmkd.cpp",
         "patchSetId": 2
