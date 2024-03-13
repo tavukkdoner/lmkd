@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f81c1988_a89b80ea",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3263,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-13T17:22:13Z",
+      "side": 1,
+      "message": "Will this vector always have only one event?",
+      "range": {
+        "startLine": 3263,
+        "startChar": 29,
+        "endLine": 3263,
+        "endChar": 50
+      },
+      "revId": "7c4837bf795ef87fc9112b8f0765141cafe93372",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7470a1ed_91e0cdad",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3315,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-13T17:22:13Z",
+      "side": 1,
+      "message": "This should be done only if EPOLL_CTL_ADD succeeded in `init_direct_reclaim_monitoring`. Consider the case that `epoll_ctl(epollfd, EPOLL_CTL_ADD,...)` call at L3298 failed and `destroy_direct_reclaim_monitoring` at L3481 is called to undo any initialization that was done. The above code will try to do EPOLL_CTL_DEL and fail and then it will decrement `maxevents`, which is wrong, it was not incremented by `init_direct_reclaim_monitoring`.",
+      "range": {
+        "startLine": 3312,
+        "startChar": 8,
+        "endLine": 3315,
+        "endChar": 20
+      },
+      "revId": "7c4837bf795ef87fc9112b8f0765141cafe93372",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
