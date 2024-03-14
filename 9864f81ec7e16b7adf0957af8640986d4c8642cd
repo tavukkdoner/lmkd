@@ -3,6 +3,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f2151e05_12c815e8",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3296,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2024-03-14T03:58:22Z",
+      "side": 1,
+      "message": "Carlos I think the issue is that you are using `EPOLLPRI` instead of `EPOLLIN`. Unlike the PSI trigger the mask the ring buffer used is\n\n```\n\tif (ringbuf_avail_data_sz(rb_map-\u003erb))\n\t\treturn EPOLLIN | EPOLLRDNORM;\n```\n\nhttps://github.com/torvalds/linux/blob/259f7d5e2baf87fcbb4fabc46526c9c47fed1914/kernel/bpf/ringbuf.c#L318-L319",
+      "range": {
+        "startLine": 3296,
+        "startChar": 18,
+        "endLine": 3296,
+        "endChar": 26
+      },
+      "revId": "9864f81ec7e16b7adf0957af8640986d4c8642cd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "31725d38_4c62b1c7",
         "filename": "lmkd.cpp",
         "patchSetId": 3
