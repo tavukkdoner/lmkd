@@ -16,6 +16,24 @@
       "message": "needs a description: what this patch does and why",
       "revId": "53beff756ce9fc653a0a655137b423613904d75b",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f238f66c_e59e6089",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-15T22:15:55Z",
+      "side": 1,
+      "message": "Done. Also updated the `README.md` to document the added configurable threshold.",
+      "parentUuid": "2fb5615d_35be13d3",
+      "revId": "53beff756ce9fc653a0a655137b423613904d75b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

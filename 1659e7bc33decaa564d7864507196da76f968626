@@ -72,6 +72,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a315301e_59739ed0",
+        "filename": "Android.bp",
+        "patchSetId": 5
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-15T22:15:55Z",
+      "side": 1,
+      "message": "Rss: 3984K (without `libbase`)\nRss: 4060K (with `libbase`)\n76K RSS (~1.91%) increase",
+      "parentUuid": "c5fbeb41_31ef9884",
+      "range": {
+        "startLine": 47,
+        "startChar": 9,
+        "endLine": 47,
+        "endChar": 16
+      },
+      "revId": "1659e7bc33decaa564d7864507196da76f968626",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bd52e412_e37f0a8d",
