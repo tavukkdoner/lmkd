@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b2df5ee_75fed67b",
+        "filename": "lmkd.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 3932,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-19T17:50:50Z",
+      "side": 1,
+      "message": "```Kernel support for direct_reclaim_threshold_ms is not found```. I don\u0027t want to mention kernel versions because we tend to backport features all the time. By dynamically detecting feature support instead of tying it to a specific kernel version you make the mechanism more resilient to changes in the future.",
+      "range": {
+        "startLine": 3932,
+        "startChar": 15,
+        "endLine": 3932,
+        "endChar": 72
+      },
+      "revId": "ae7806a271e7f37101b5cf6fc1d0bd64d7e8e1d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
