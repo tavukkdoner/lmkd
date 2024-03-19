@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "434d9987_c2b02c5f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-19T17:43:39Z",
+      "side": 1,
+      "message": "Instead of checking the kernel version (which is fragile)., I would set this flag based on the fact that we were able to successfully `init_direct_reclaim_monitoring()`. Is there any downside of detecting this feature that way?",
+      "range": {
+        "startLine": 201,
+        "startChar": 45,
+        "endLine": 201,
+        "endChar": 91
+      },
+      "revId": "72c433863e7651e7f20d7569628fc74d08333d4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31927f86_5b1436cc",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 2690,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-19T17:43:39Z",
+      "side": 1,
+      "message": "You still need to reset `init_pgrefill` and `init_pgscan_kswapd`. I would suggest combining these checks even though it will be resetting `init_pgscan_direct` which might not be needed anymore. That way it\u0027s simpler and consistent.\n\n```\nin_direct_reclaim \u003d isBpfRingBufferSupported ? \n      direct_reclaim_start_tm.tv_sec !\u003d 0 || direct_reclaim_start_tm.tv_nsec !\u003d 0 : \n      vs.field.pgscan_direct !\u003d init_pgscan_direct;\n\nif (in_direct_reclaim) {\n...\n```",
+      "range": {
+        "startLine": 2690,
+        "startChar": 7,
+        "endLine": 2690,
+        "endChar": 33
+      },
+      "revId": "72c433863e7651e7f20d7569628fc74d08333d4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "079e1b09_e765de04",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3284,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-19T17:43:39Z",
+      "side": 1,
+      "message": "I would process the events in the chronological order (from the first vector element to the last) without terminating the loop. I understand the current version is more efficient but once you get more event types here you won\u0027t be able to skip earlier ones like you do now and you would have to change the loop. Let\u0027s process them all and if MEM_EVENT_DIRECT_RECLAIM_BEGIN and MEM_EVENT_DIRECT_RECLAIM_END both are found in the list then we will register the transition unnecessarily but it\u0027s not a big price to pay for being future proof.",
+      "range": {
+        "startLine": 3274,
+        "startChar": 0,
+        "endLine": 3284,
+        "endChar": 5
+      },
+      "revId": "72c433863e7651e7f20d7569628fc74d08333d4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ba05f868_7c461788",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3347,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-19T17:43:39Z",
+      "side": 1,
+      "message": "I think this code is simpler:\n\n```\n    if (memevent_listener_fd \u003c 0)\n        return;\n\n    if (epoll_ctl(epollfd, EPOLL_CTL_DEL, memevent_listener_fd, NULL) \u003c 0)\n            ALOGE(\"Failed to unregister direct reclaim monitoring; errno\u003d%d\", errno);\n\n        maxevents--;\n    }\n    memevent_listener.reset();\n    /*\n     * We never want to manually close this file descriptor, we always want to allow\n     * the `memevent_listener` destructor to handle the bpf\u0027s ring buffer opening and\n     * closing.\n     */\n    memevent_listener_fd \u003d -1;\n\n    direct_reclaim_start_tm.tv_sec \u003d 0;\n    direct_reclaim_start_tm.tv_nsec \u003d 0;\n```",
+      "range": {
+        "startLine": 3332,
+        "startChar": 0,
+        "endLine": 3347,
+        "endChar": 40
+      },
+      "revId": "72c433863e7651e7f20d7569628fc74d08333d4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aca95440_6fc62e36",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3502,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-19T17:43:39Z",
+      "side": 1,
+      "message": "I think init_direct_reclaim_monitoring() undoes all initialization when it fails now, so no need to call `destroy_direct_reclaim_monitoring()` ?\n\nIf we can detect the feature presence like this: ```isBpfRingBufferSupported \u003d init_direct_reclaim_monitoring();``` I think that would be ideal.",
+      "range": {
+        "startLine": 3502,
+        "startChar": 8,
+        "endLine": 3502,
+        "endChar": 41
+      },
+      "revId": "72c433863e7651e7f20d7569628fc74d08333d4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
