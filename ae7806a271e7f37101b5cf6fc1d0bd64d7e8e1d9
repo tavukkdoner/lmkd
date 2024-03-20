@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "90cbe170_b7a7b6d2",
+        "filename": "lmkd.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-20T22:51:00Z",
+      "side": 1,
+      "message": "For now we are planning to rely only on the next polling event, given that the psi monitor will wake us up.",
+      "parentUuid": "65ec1b82_b3924eb3",
+      "range": {
+        "startLine": 233,
+        "startChar": 11,
+        "endLine": 233,
+        "endChar": 38
+      },
+      "revId": "ae7806a271e7f37101b5cf6fc1d0bd64d7e8e1d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6b2df5ee_75fed67b",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-03-19T17:50:50Z",
       "side": 1,
       "message": "```Kernel support for direct_reclaim_threshold_ms is not found```. I don\u0027t want to mention kernel versions because we tend to backport features all the time. By dynamically detecting feature support instead of tying it to a specific kernel version you make the mechanism more resilient to changes in the future.",
+      "range": {
+        "startLine": 3932,
+        "startChar": 15,
+        "endLine": 3932,
+        "endChar": 72
+      },
+      "revId": "ae7806a271e7f37101b5cf6fc1d0bd64d7e8e1d9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "877d1df7_4785b015",
+        "filename": "lmkd.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 3932,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-20T22:51:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6b2df5ee_75fed67b",
       "range": {
         "startLine": 3932,
         "startChar": 15,
