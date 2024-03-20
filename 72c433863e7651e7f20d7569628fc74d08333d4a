@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "110d3352_9bb2d57c",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-20T01:34:25Z",
+      "side": 1,
+      "message": "Done. `isBpfRingBufferSupported` renamed to `is_memevents_direct_reclaim_monitor_enabled`.",
+      "parentUuid": "434d9987_c2b02c5f",
+      "range": {
+        "startLine": 201,
+        "startChar": 45,
+        "endLine": 201,
+        "endChar": 91
+      },
+      "revId": "72c433863e7651e7f20d7569628fc74d08333d4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "31927f86_5b1436cc",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-03-19T17:43:39Z",
       "side": 1,
       "message": "You still need to reset `init_pgrefill` and `init_pgscan_kswapd`. I would suggest combining these checks even though it will be resetting `init_pgscan_direct` which might not be needed anymore. That way it\u0027s simpler and consistent.\n\n```\nin_direct_reclaim \u003d isBpfRingBufferSupported ? \n      direct_reclaim_start_tm.tv_sec !\u003d 0 || direct_reclaim_start_tm.tv_nsec !\u003d 0 : \n      vs.field.pgscan_direct !\u003d init_pgscan_direct;\n\nif (in_direct_reclaim) {\n...\n```",
+      "range": {
+        "startLine": 2690,
+        "startChar": 7,
+        "endLine": 2690,
+        "endChar": 33
+      },
+      "revId": "72c433863e7651e7f20d7569628fc74d08333d4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "909eeb45_e3f1d625",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 2690,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-20T01:34:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "31927f86_5b1436cc",
       "range": {
         "startLine": 2690,
         "startChar": 7,
@@ -70,6 +118,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "eca25eb8_f3a384b6",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3284,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-20T01:34:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "079e1b09_e765de04",
+      "range": {
+        "startLine": 3274,
+        "startChar": 0,
+        "endLine": 3284,
+        "endChar": 5
+      },
+      "revId": "72c433863e7651e7f20d7569628fc74d08333d4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ba05f868_7c461788",
@@ -93,6 +165,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e684a4a_93ce9158",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3347,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-20T01:34:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba05f868_7c461788",
+      "range": {
+        "startLine": 3332,
+        "startChar": 0,
+        "endLine": 3347,
+        "endChar": 40
+      },
+      "revId": "72c433863e7651e7f20d7569628fc74d08333d4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "aca95440_6fc62e36",
@@ -106,6 +202,30 @@
       "writtenOn": "2024-03-19T17:43:39Z",
       "side": 1,
       "message": "I think init_direct_reclaim_monitoring() undoes all initialization when it fails now, so no need to call `destroy_direct_reclaim_monitoring()` ?\n\nIf we can detect the feature presence like this: ```isBpfRingBufferSupported \u003d init_direct_reclaim_monitoring();``` I think that would be ideal.",
+      "range": {
+        "startLine": 3502,
+        "startChar": 8,
+        "endLine": 3502,
+        "endChar": 41
+      },
+      "revId": "72c433863e7651e7f20d7569628fc74d08333d4a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "56a09c96_7b14526b",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 3502,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-20T01:34:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aca95440_6fc62e36",
       "range": {
         "startLine": 3502,
         "startChar": 8,
