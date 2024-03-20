@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "517dfa1d_205981e9",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2024-03-20T03:47:53Z",
+      "side": 1,
+      "message": "I don\u0027t think these 2 really need to be global state.",
+      "range": {
+        "startLine": 199,
+        "startChar": 0,
+        "endLine": 200,
+        "endChar": 56
+      },
+      "revId": "6f5293517e02a09339aa558b636959a9db1a8802",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6daa0e95_98744e5e",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 3305,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2024-03-20T03:47:53Z",
+      "side": 1,
+      "message": "s/Failed to register for direct reclaim state changes/Failed to register direct reclaim memevents",
+      "range": {
+        "startLine": 3305,
+        "startChar": 53,
+        "endLine": 3305,
+        "endChar": 66
+      },
+      "revId": "6f5293517e02a09339aa558b636959a9db1a8802",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d85a2a2f_97dd981e",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 3326,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2024-03-20T03:47:53Z",
+      "side": 1,
+      "message": "I think you can simplify having to maintain extra global state by getting rid of `memevent_listender_fd` and just use ` memevent_listener-\u003egetRingBufferFd()` in the local scope.",
+      "range": {
+        "startLine": 3322,
+        "startChar": 0,
+        "endLine": 3326,
+        "endChar": 34
+      },
+      "revId": "6f5293517e02a09339aa558b636959a9db1a8802",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
