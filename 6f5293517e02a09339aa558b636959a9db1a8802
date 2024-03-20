@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8acd449c_dde89050",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-20T06:47:09Z",
+      "side": 1,
+      "message": "Done. Removed.",
+      "parentUuid": "517dfa1d_205981e9",
+      "range": {
+        "startLine": 199,
+        "startChar": 0,
+        "endLine": 200,
+        "endChar": 56
+      },
+      "revId": "6f5293517e02a09339aa558b636959a9db1a8802",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6daa0e95_98744e5e",
@@ -47,6 +71,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0fecf9e2_79c79470",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 3305,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-20T06:47:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6daa0e95_98744e5e",
+      "range": {
+        "startLine": 3305,
+        "startChar": 53,
+        "endLine": 3305,
+        "endChar": 66
+      },
+      "revId": "6f5293517e02a09339aa558b636959a9db1a8802",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d85a2a2f_97dd981e",
@@ -60,6 +108,30 @@
       "writtenOn": "2024-03-20T03:47:53Z",
       "side": 1,
       "message": "I think you can simplify having to maintain extra global state by getting rid of `memevent_listender_fd` and just use ` memevent_listener-\u003egetRingBufferFd()` in the local scope.",
+      "range": {
+        "startLine": 3322,
+        "startChar": 0,
+        "endLine": 3326,
+        "endChar": 34
+      },
+      "revId": "6f5293517e02a09339aa558b636959a9db1a8802",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a52ca3f_ac3f7d59",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 3326,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-20T06:47:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d85a2a2f_97dd981e",
       "range": {
         "startLine": 3322,
         "startChar": 0,
