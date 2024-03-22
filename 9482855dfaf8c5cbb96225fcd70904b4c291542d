@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dcbcdb08_5db60014",
+        "filename": "lmkd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2024-03-22T06:03:49Z",
+      "side": 1,
+      "message": "Should we add a `DEF_DIRECT_RECL_THRESH_MS` ?\n\nMaybe default it to 16ms ? Enough time for 1 dropped frame\n\nAnd use that as the default for get prop instead of 0",
+      "range": {
+        "startLine": 151,
+        "startChar": 8,
+        "endLine": 151,
+        "endChar": 20
+      },
+      "revId": "9482855dfaf8c5cbb96225fcd70904b4c291542d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
