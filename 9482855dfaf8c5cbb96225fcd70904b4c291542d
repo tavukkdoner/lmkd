@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a90a5ff_12da04a6",
+        "filename": "README.md",
+        "patchSetId": 11
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-22T23:23:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6a8baf93_d4a8401a",
+      "range": {
+        "startLine": 95,
+        "startChar": 42,
+        "endLine": 97,
+        "endChar": 61
+      },
+      "revId": "9482855dfaf8c5cbb96225fcd70904b4c291542d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dcbcdb08_5db60014",
@@ -143,6 +167,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d57a6b39_d9cdfdb7",
+        "filename": "lmkd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-22T23:23:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5bc7bc4c_10ddd0ae",
+      "range": {
+        "startLine": 151,
+        "startChar": 8,
+        "endLine": 151,
+        "endChar": 20
+      },
+      "revId": "9482855dfaf8c5cbb96225fcd70904b4c291542d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d17d1ce6_ab33f6dd",
@@ -156,6 +204,30 @@
       "writtenOn": "2024-03-22T22:21:31Z",
       "side": 1,
       "message": "`\"device is stuck in direct reclaim (%\" PRId64 \"ms \u003e %\" PRId64 \"ms)\", direct_reclaim_duration_ms, direct_reclaim_threshold_ms`",
+      "range": {
+        "startLine": 2857,
+        "startChar": 48,
+        "endLine": 2857,
+        "endChar": 97
+      },
+      "revId": "9482855dfaf8c5cbb96225fcd70904b4c291542d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "37b0af8b_b32b7c79",
+        "filename": "lmkd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 2857,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-22T23:23:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d17d1ce6_ab33f6dd",
       "range": {
         "startLine": 2857,
         "startChar": 48,
