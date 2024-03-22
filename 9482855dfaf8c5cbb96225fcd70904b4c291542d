@@ -70,6 +70,30 @@
       },
       "revId": "9482855dfaf8c5cbb96225fcd70904b4c291542d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "efd87a30_a03917ec",
+        "filename": "lmkd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-22T22:14:25Z",
+      "side": 1,
+      "message": "I\u0027ll check with the telemtry team on the typical direct reclaim delays. In the meantime, we can move forward with the change as is, defaulting to 0/disabled.",
+      "parentUuid": "8f018c27_95a6cbd1",
+      "range": {
+        "startLine": 151,
+        "startChar": 8,
+        "endLine": 151,
+        "endChar": 20
+      },
+      "revId": "9482855dfaf8c5cbb96225fcd70904b4c291542d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
