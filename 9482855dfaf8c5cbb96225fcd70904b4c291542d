@@ -46,6 +46,30 @@
       },
       "revId": "9482855dfaf8c5cbb96225fcd70904b4c291542d",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8f018c27_95a6cbd1",
+        "filename": "lmkd.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-22T21:01:40Z",
+      "side": 1,
+      "message": "Actually, let\u0027s check with telemetry team to see what are the typical delays for direct reclaim.",
+      "parentUuid": "e18fc970_ca12c39a",
+      "range": {
+        "startLine": 151,
+        "startChar": 8,
+        "endLine": 151,
+        "endChar": 20
+      },
+      "revId": "9482855dfaf8c5cbb96225fcd70904b4c291542d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
