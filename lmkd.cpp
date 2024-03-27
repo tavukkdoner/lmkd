@@ -569,6 +569,7 @@ static long page_k; /* page size in kB */
 static bool update_props();
 static bool init_monitors();
 static void destroy_monitors();
+static bool init_direct_reclaim_monitoring();
 
 static int clamp(int low, int high, int value) {
     return std::max(std::min(value, high), low);
@@ -1537,6 +1538,11 @@ static void ctrl_command_handler(int dsock_idx) {
             } else {
                 result = 0;
             }
+
+            if (direct_reclaim_threshold_ms > 0 && !memevent_listener) {
+                ALOGW("Kernel support for direct_reclaim_threshold_ms is not found");
+                direct_reclaim_threshold_ms = 0;
+            }
         }
 
         len = lmkd_pack_set_update_props_repl(packet, result);
@@ -1568,6 +1574,29 @@ static void ctrl_command_handler(int dsock_idx) {
             exit(1);
         }
         ALOGI("Initialized monitors after boot completed.");
+        break;
+    case LMK_BOOT_COMPLETED:
+        if (nargs != 0) goto wronglen;
+
+        if (!property_get_bool("sys.boot_completed", false)) {
+            ALOGE("LMK_BOOT_COMPLETED cannot be handled before boot completed");
+            return;
+        }
+
+        /*
+         * Initialize the memevent listener after boot is completed to prevent
+         * waiting, during boot-up, for BPF programs to be loaded.
+         */
+        if (init_direct_reclaim_monitoring()) {
+            ALOGI("Using memevents for direct reclaim detection");
+        } else {
+            ALOGI("Using vmstats for direct reclaim detection");
+            if (direct_reclaim_threshold_ms > 0) {
+                ALOGW("Kernel support for direct_reclaim_threshold_ms is not found");
+                direct_reclaim_threshold_ms = 0;
+            }
+        }
+
         break;
     default:
         ALOGE("Received unknown command code %d", cmd);
@@ -3294,12 +3323,12 @@ static void direct_reclaim_state_change(int data __unused, uint32_t events __unu
 static bool init_direct_reclaim_monitoring() {
     static struct event_handler_info direct_reclaim_poll_hinfo = {0, direct_reclaim_state_change};
 
-    if (!memevent_listener) {
-        // Make sure bpf programs are loaded
-        android::bpf::waitForProgsLoaded();
-        memevent_listener = std::make_unique<android::bpf::memevents::MemEventListener>(
-                android::bpf::memevents::MemEventClient::LMKD);
-    }
+    if (memevent_listener) return true;
+
+    // Make sure bpf programs are loaded, else we'll wait until they are loaded
+    android::bpf::waitForProgsLoaded();
+    memevent_listener = std::make_unique<android::bpf::memevents::MemEventListener>(
+            android::bpf::memevents::MemEventClient::LMKD);
 
     if (!memevent_listener->ok()) {
         ALOGE("Failed to initialize memevents listener");
@@ -3326,10 +3355,6 @@ static bool init_direct_reclaim_monitoring() {
     epev.data.ptr = (void*)&direct_reclaim_poll_hinfo;
     if (epoll_ctl(epollfd, EPOLL_CTL_ADD, memevent_listener_fd, &epev) < 0) {
         ALOGE("Failed registering direct reclaim fd: %d; errno=%d", memevent_listener_fd, errno);
-        /*
-         * Reset the fd to let `destroy_direct_reclaim_monitoring` know we failed adding this fd,
-         * therefore it won't try to close the `memevent_listener_fd`.
-         */
         memevent_listener.reset();
         return false;
     }
@@ -3339,19 +3364,6 @@ static bool init_direct_reclaim_monitoring() {
 
     maxevents++;
     return true;
-}
-
-static void destroy_direct_reclaim_monitoring() {
-    if (!memevent_listener) return;
-
-    if (epoll_ctl(epollfd, EPOLL_CTL_DEL, memevent_listener->getRingBufferFd(), NULL) < 0) {
-        ALOGE("Failed to unregister direct reclaim monitoring; errno=%d", errno);
-    }
-
-    maxevents--;
-    memevent_listener.reset();
-    direct_reclaim_start_tm.tv_sec = 0;
-    direct_reclaim_start_tm.tv_nsec = 0;
 }
 
 static bool init_psi_monitors() {
@@ -3505,16 +3517,6 @@ static bool init_monitors() {
         ALOGI("Using vmpressure for memory pressure detection");
     }
 
-    if (init_direct_reclaim_monitoring()) {
-        ALOGI("Using memevents for direct reclaim detection");
-    } else {
-        ALOGI("Using vmstats for direct reclaim detection");
-        if (direct_reclaim_threshold_ms > 0) {
-            ALOGW("Kernel support for direct_reclaim_threshold_ms is not found");
-            direct_reclaim_threshold_ms = 0;
-        }
-    }
-
     monitors_initialized = true;
     return true;
 }
@@ -3529,7 +3531,6 @@ static void destroy_monitors() {
         destroy_mp_common(VMPRESS_LEVEL_MEDIUM);
         destroy_mp_common(VMPRESS_LEVEL_LOW);
     }
-    destroy_direct_reclaim_monitoring();
 }
 
 static void drop_reaper_comm() {
@@ -3885,6 +3886,39 @@ int issue_reinit() {
     return res == UPDATE_PROPS_SUCCESS ? 0 : -1;
 }
 
+static int on_boot_completed() {
+    int sock;
+
+    sock = lmkd_connect();
+    if (sock < 0) {
+        ALOGE("failed to connect to lmkd: %s", strerror(errno));
+        return -1;
+    }
+
+    enum boot_completed_notification_result res = lmkd_notify_boot_completed(sock);
+
+    switch (res) {
+        case BOOT_COMPLETED_NOTIF_SUCCESS:
+            ALOGI("lmkd received boot-completed notification successfully");
+            break;
+        case BOOT_COMPLETED_NOTIF_SEND_ERR:
+            ALOGE("failed to send lmkd request: %m");
+            break;
+        case BOOT_COMPLETED_NOTIF_RECV_ERR:
+            ALOGE("failed to receive request: %m");
+            break;
+        case BOOT_COMPLETED_NOTIF_FORMAT_ERR:
+            ALOGE("lmkd reply is invalid");
+            break;
+        case BOOT_COMPLETED_NOTIF_FAILS:
+            ALOGE("lmkd failed to receive boot-completed notification");
+            break;
+    }
+
+    close(sock);
+    return res == BOOT_COMPLETED_NOTIF_SUCCESS ? 0 : -1;
+}
+
 static bool update_props() {
     /* By default disable low level vmpressure events */
     level_oomadj[VMPRESS_LEVEL_LOW] =
@@ -3945,11 +3979,16 @@ static bool update_props() {
 }
 
 int main(int argc, char **argv) {
-    if ((argc > 1) && argv[1] && !strcmp(argv[1], "--reinit")) {
-        if (property_set(LMKD_REINIT_PROP, "")) {
-            ALOGE("Failed to reset " LMKD_REINIT_PROP " property");
+    if ((argc > 1) && argv[1]) {
+        if (!strcmp(argv[1], "--reinit")) {
+            if (property_set(LMKD_REINIT_PROP, "")) {
+                ALOGE("Failed to reset " LMKD_REINIT_PROP " property");
+            }
+            return issue_reinit();
         }
-        return issue_reinit();
+        if (!strcmp(argv[1], "--boot_completed")) {
+            return on_boot_completed();
+        }
     }
 
     if (!update_props()) {
