@@ -303,6 +303,24 @@
       "message": "memfree plus inactive(file) can use for zram space，should Multiplied by zram compression ratio when compare with swapfree threshold",
       "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dd8d32dc_75189d6f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-03-27T00:17:40Z",
+      "side": 1,
+      "message": "I received several requests from different partners and from the wear team asking for a way to control free swap calculation. The only way I have to satisfy all those requests is to introduce a new knob. Adding a knob to allow control over swap compression ratio would be a flexible way to cover all these requests:\n\nswap_compression_ratio \u003d 1 (default, current behavior) - assume no compression.\nswap_compression_ratio \u003d 0 - assume configured swap can be always fully utilized (previous behavior).\nswap_compression_ratio \u003d N - include average compression ratio in the calculation.",
+      "parentUuid": "f5043359_98d47b80",
+      "revId": "2a75718f4f1156c28d3853459002d94cd5f9bb83",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
