@@ -569,6 +569,7 @@ static long page_k; /* page size in kB */
 static bool update_props();
 static bool init_monitors();
 static void destroy_monitors();
+static bool init_direct_reclaim_monitoring();
 
 static int clamp(int low, int high, int value) {
     return std::max(std::min(value, high), low);
@@ -1568,6 +1569,29 @@ static void ctrl_command_handler(int dsock_idx) {
             exit(1);
         }
         ALOGI("Initialized monitors after boot completed.");
+        break;
+    case LMK_BOOT_COMPLETED:
+        if (nargs != 0) goto wronglen;
+
+        if (!property_get_bool("sys.boot_completed", false)) {
+            ALOGE("LMK_BOOT_COMPLETED cannot be handled before boot completed");
+            return;
+        }
+
+        /*
+         * Initialize the memevent listener until boot is completed to prevent
+         * waiting, during boot-up, for BPF programs to be loaded.
+         */
+        if (init_direct_reclaim_monitoring()) {
+            ALOGI("Using memevents for direct reclaim detection");
+        } else {
+            ALOGI("Using vmstats for direct reclaim detection");
+            if (direct_reclaim_threshold_ms > 0) {
+                ALOGW("Kernel support for direct_reclaim_threshold_ms is not found");
+                direct_reclaim_threshold_ms = 0;
+            }
+        }
+
         break;
     default:
         ALOGE("Received unknown command code %d", cmd);
@@ -3505,16 +3529,6 @@ static bool init_monitors() {
         ALOGI("Using vmpressure for memory pressure detection");
     }
 
-    if (init_direct_reclaim_monitoring()) {
-        ALOGI("Using memevents for direct reclaim detection");
-    } else {
-        ALOGI("Using vmstats for direct reclaim detection");
-        if (direct_reclaim_threshold_ms > 0) {
-            ALOGW("Kernel support for direct_reclaim_threshold_ms is not found");
-            direct_reclaim_threshold_ms = 0;
-        }
-    }
-
     monitors_initialized = true;
     return true;
 }
@@ -3885,6 +3899,23 @@ int issue_reinit() {
     return res == UPDATE_PROPS_SUCCESS ? 0 : -1;
 }
 
+int on_boot_completed() {
+    LMKD_CTRL_PACKET packet;
+    int ret, size, sock;
+
+    sock = lmkd_connect();
+    if (sock < 0) {
+        ALOGE("failed to connect to lmkd: %s", strerror(errno));
+        return -1;
+    }
+
+    size = lmkd_pack_set_boot_completed(packet);
+    ret = TEMP_FAILURE_RETRY(write(sock, packet, size));
+
+    close(sock);
+    return (ret < 0) ? -1 : 0;
+}
+
 static bool update_props() {
     /* By default disable low level vmpressure events */
     level_oomadj[VMPRESS_LEVEL_LOW] =
@@ -3935,6 +3966,16 @@ static bool update_props() {
 
     reaper.enable_debug(debug_process_killing);
 
+    /*
+     * Direct reclaim threshold flag can only be enabled if memevents listener is supported.
+     * The memevents listener will not try to be initialized until boot is completed.
+     */
+    if (direct_reclaim_threshold_ms > 0 && property_get_bool("sys.boot_completed", false) &&
+        !memevent_listener) {
+        ALOGW("Kernel support for direct_reclaim_threshold_ms is not found");
+        direct_reclaim_threshold_ms = 0;
+    }
+
     /* Call the update props hook */
     if (!lmkd_update_props_hook()) {
         ALOGE("Failed to update LMKD hook props.");
@@ -3945,11 +3986,16 @@ static bool update_props() {
 }
 
 int main(int argc, char **argv) {
-    if ((argc > 1) && argv[1] && !strcmp(argv[1], "--reinit")) {
-        if (property_set(LMKD_REINIT_PROP, "")) {
-            ALOGE("Failed to reset " LMKD_REINIT_PROP " property");
+    if ((argc > 1) && argv[1]) {
+        if (!strcmp(argv[1], "--reinit")) {
+            if (property_set(LMKD_REINIT_PROP, "")) {
+                ALOGE("Failed to reset " LMKD_REINIT_PROP " property");
+            }
+            return issue_reinit();
         }
-        return issue_reinit();
+        if (!strcmp(argv[1], "--boot_completed")) {
+            return on_boot_completed();
+        }
     }
 
     if (!update_props()) {
