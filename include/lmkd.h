@@ -37,6 +37,7 @@ enum lmk_cmd {
     LMK_UPDATE_PROPS,       /* Reinit properties */
     LMK_STAT_KILL_OCCURRED, /* Unsolicited msg to subscribed clients on proc kills for statsd log */
     LMK_START_MONITORING,   /* Start psi monitoring if it was skipped earlier */
+    LMK_BOOT_COMPLETED,     /* Notify LMKD boot is completed to finish post-boot initializations */
 };
 
 /*
@@ -268,6 +269,15 @@ static inline size_t lmkd_pack_set_update_props(LMKD_CTRL_PACKET packet) {
  */
 static inline size_t lmkd_pack_start_monitoring(LMKD_CTRL_PACKET packet) {
     packet[0] = htonl(LMK_START_MONITORING);
+    return sizeof(int);
+}
+
+/*
+ * Prepare LMK_BOOT_COMPLETED packet and return packet size in bytes.
+ * Warning: no checks performed, caller should ensure valid parameters.
+ */
+static inline size_t lmkd_pack_set_boot_completed(LMKD_CTRL_PACKET packet) {
+    packet[0] = htonl(LMK_BOOT_COMPLETED);
     return sizeof(int);
 }
 
