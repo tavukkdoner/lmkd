@@ -569,6 +569,7 @@ static long page_k; /* page size in kB */
 static bool update_props();
 static bool init_monitors();
 static void destroy_monitors();
+static bool init_direct_reclaim_monitoring();
 
 static int clamp(int low, int high, int value) {
     return std::max(std::min(value, high), low);
@@ -1568,6 +1569,25 @@ static void ctrl_command_handler(int dsock_idx) {
             exit(1);
         }
         ALOGI("Initialized monitors after boot completed.");
+        break;
+    case LMK_BOOT_COMPLETED:
+        if (nargs != 0) goto wronglen;
+
+        if (!property_get_bool("sys.boot_completed", false)) {
+            ALOGE("LMK_BOOT_COMPLETED cannot be handled before boot completed");
+            return;
+        }
+
+        if (init_direct_reclaim_monitoring()) {
+            ALOGI("Using memevents for direct reclaim detection");
+        } else {
+            ALOGI("Using vmstats for direct reclaim detection");
+            if (direct_reclaim_threshold_ms > 0) {
+                ALOGW("Kernel support for direct_reclaim_threshold_ms is not found");
+                direct_reclaim_threshold_ms = 0;
+            }
+        }
+
         break;
     default:
         ALOGE("Received unknown command code %d", cmd);
@@ -3325,11 +3345,8 @@ static bool init_direct_reclaim_monitoring() {
     epev.events = EPOLLIN;
     epev.data.ptr = (void*)&direct_reclaim_poll_hinfo;
     if (epoll_ctl(epollfd, EPOLL_CTL_ADD, memevent_listener_fd, &epev) < 0) {
-        ALOGE("Failed registering direct reclaim fd: %d; errno=%d", memevent_listener_fd, errno);
-        /*
-         * Reset the fd to let `destroy_direct_reclaim_monitoring` know we failed adding this fd,
-         * therefore it won't try to close the `memevent_listener_fd`.
-         */
+        ALOGE("Failed registering direct reclaim fd: %d, epfd=%d; errno=%d", memevent_listener_fd,
+              epollfd, errno);
         memevent_listener.reset();
         return false;
     }
@@ -3505,16 +3522,6 @@ static bool init_monitors() {
         ALOGI("Using vmpressure for memory pressure detection");
     }
 
-    if (init_direct_reclaim_monitoring()) {
-        ALOGI("Using memevents for direct reclaim detection");
-    } else {
-        ALOGI("Using vmstats for direct reclaim detection");
-        if (direct_reclaim_threshold_ms > 0) {
-            ALOGW("Kernel support for direct_reclaim_threshold_ms is not found");
-            direct_reclaim_threshold_ms = 0;
-        }
-    }
-
     monitors_initialized = true;
     return true;
 }
@@ -3608,6 +3615,8 @@ static int init(void) {
     if (epollfd == -1) {
         ALOGE("epoll_create failed (errno=%d)", errno);
         return -1;
+    } else {
+        ALOGE("epfd created: %d", epollfd);
     }
 
     // mark data connections as not connected
@@ -3885,6 +3894,22 @@ int issue_reinit() {
     return res == UPDATE_PROPS_SUCCESS ? 0 : -1;
 }
 
+int on_boot_completed() {
+    LMKD_CTRL_PACKET packet;
+    int ret, size, sock;
+
+    sock = lmkd_connect();
+    if (sock < 0) {
+        ALOGE("failed to connect to lmkd: %s", strerror(errno));
+        return -1;
+    }
+
+    size = lmkd_pack_set_boot_completed(packet);
+    ret = TEMP_FAILURE_RETRY(write(sock, packet, size));
+
+    return (ret < 0) ? -1 : 0;
+}
+
 static bool update_props() {
     /* By default disable low level vmpressure events */
     level_oomadj[VMPRESS_LEVEL_LOW] =
@@ -3945,11 +3970,16 @@ static bool update_props() {
 }
 
 int main(int argc, char **argv) {
-    if ((argc > 1) && argv[1] && !strcmp(argv[1], "--reinit")) {
-        if (property_set(LMKD_REINIT_PROP, "")) {
-            ALOGE("Failed to reset " LMKD_REINIT_PROP " property");
+    if ((argc > 1) && argv[1]) {
+        if (!strcmp(argv[1], "--reinit")) {
+            if (property_set(LMKD_REINIT_PROP, "")) {
+                ALOGE("Failed to reset " LMKD_REINIT_PROP " property");
+            }
+            return issue_reinit();
         }
-        return issue_reinit();
+        if (!strcmp(argv[1], "--boot_completed")) {
+            return on_boot_completed();
+        }
     }
 
     if (!update_props()) {
