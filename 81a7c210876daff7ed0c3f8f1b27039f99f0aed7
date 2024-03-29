@@ -22,6 +22,30 @@
       },
       "revId": "81a7c210876daff7ed0c3f8f1b27039f99f0aed7",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "99c5493b_6612ea79",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 3303,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-03-29T22:15:54Z",
+      "side": 0,
+      "message": "Simplified the logic, there is no case in which we would have listener without it already registered for direct reclaim events.\n\nUpdating the comment to provide insight that `waitForProgsLoaded()` will not only check but also wait.",
+      "parentUuid": "a3c871d8_d2fc47d8",
+      "range": {
+        "startLine": 3297,
+        "startChar": 4,
+        "endLine": 3303,
+        "endChar": 0
+      },
+      "revId": "81a7c210876daff7ed0c3f8f1b27039f99f0aed7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
