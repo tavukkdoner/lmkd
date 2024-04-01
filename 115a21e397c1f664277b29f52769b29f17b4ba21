@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ddf9d49f_4aa73b02",
+        "filename": "liblmkd_utils.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-01T19:23:03Z",
+      "side": 1,
+      "message": "switch would be more appropriate here since it\u0027s a tri-state now.",
+      "range": {
+        "startLine": 102,
+        "startChar": 4,
+        "endLine": 104,
+        "endChar": 90
+      },
+      "revId": "115a21e397c1f664277b29f52769b29f17b4ba21",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
