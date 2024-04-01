@@ -16,6 +16,24 @@
       "message": "If someone executes `lmkd --boot_complete` manually, it should not execute the second time. Please add a static variable here:\n```\nstatic bool boot_complete_handled \u003d false;\n\nif (boot_complete_handled) return;\n\n... handle boot complete\n\nboot_complete_handled \u003d true;\n```",
       "revId": "f4bf373cf28ae6f860758c4b525af42f69dc4e32",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3b6b6fe9_72728ab4",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1580,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-04-01T19:14:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fb6b51e9_254471bb",
+      "revId": "f4bf373cf28ae6f860758c4b525af42f69dc4e32",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
