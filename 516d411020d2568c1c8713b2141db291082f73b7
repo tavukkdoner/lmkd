@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "695ba257_db0b3518",
+        "filename": "include/lmkd.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2024-04-02T21:08:02Z",
+      "side": 1,
+      "message": "BOOT_COMPLETED",
+      "range": {
+        "startLine": 318,
+        "startChar": 3,
+        "endLine": 318,
+        "endChar": 15
+      },
+      "revId": "516d411020d2568c1c8713b2141db291082f73b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7fc60cd1_c1eb6856",
+        "filename": "lmkd.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 4002,
+      "author": {
+        "id": 1499410
+      },
+      "writtenOn": "2024-04-02T21:08:02Z",
+      "side": 1,
+      "message": "else if?",
+      "range": {
+        "startLine": 4002,
+        "startChar": 8,
+        "endLine": 4002,
+        "endChar": 11
+      },
+      "revId": "516d411020d2568c1c8713b2141db291082f73b7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
