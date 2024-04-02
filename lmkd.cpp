@@ -290,7 +290,7 @@ static struct event_handler_info vmpressure_hinfo[VMPRESS_LEVEL_COUNT];
 /*
  * 1 ctrl listen socket, 3 ctrl data socket, 3 memory pressure levels,
  * 1 lmk events + 1 fd to wait for process death + 1 fd to receive kill failure notifications
- * + 1 fd to receive direct reclaim state change notifications
+ * + 1 fd to receive memevent_listener notifications
  */
 #define MAX_EPOLL_EVENTS (1 + MAX_DATA_CONN + VMPRESS_LEVEL_COUNT + 1 + 1 + 1 + 1)
 static int epollfd;
@@ -570,7 +570,7 @@ static long page_k; /* page size in kB */
 static bool update_props();
 static bool init_monitors();
 static void destroy_monitors();
-static bool init_direct_reclaim_monitoring();
+static bool init_memevent_listener_monitoring();
 
 static int clamp(int low, int high, int value) {
     return std::max(std::min(value, high), low);
@@ -1590,7 +1590,7 @@ static void ctrl_command_handler(int dsock_idx) {
              * Initialize the memevent listener after boot is completed to prevent
              * waiting, during boot-up, for BPF programs to be loaded.
              */
-            if (init_direct_reclaim_monitoring()) {
+            if (init_memevent_listener_monitoring()) {
                 ALOGI("Using memevents for direct reclaim detection");
             } else {
                 ALOGI("Using vmstats for direct reclaim detection");
@@ -3296,22 +3296,22 @@ static MemcgVersion memcg_version() {
     return version;
 }
 
-static void direct_reclaim_state_change(int data __unused, uint32_t events __unused,
-                                        struct polling_params* poll_params __unused) {
+static void memevent_listener_notification(int data __unused, uint32_t events __unused,
+                                           struct polling_params* poll_params __unused) {
     struct timespec curr_tm;
     std::vector<mem_event_t> mem_events;
 
     if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
         direct_reclaim_start_tm.tv_sec = 0;
         direct_reclaim_start_tm.tv_nsec = 0;
-        ALOGE("Failed to get current time for direct reclaim state change.");
+        ALOGE("Failed to get current time for memevent listener notification.");
         return;
     }
 
     if (!memevent_listener->getMemEvents(mem_events)) {
         direct_reclaim_start_tm.tv_sec = 0;
         direct_reclaim_start_tm.tv_nsec = 0;
-        ALOGE("Failed fetching direct reclaim events.");
+        ALOGE("Failed fetching memory listener events.");
         return;
     }
 
@@ -3330,8 +3330,9 @@ static void direct_reclaim_state_change(int data __unused, uint32_t events __unu
     }
 }
 
-static bool init_direct_reclaim_monitoring() {
-    static struct event_handler_info direct_reclaim_poll_hinfo = {0, direct_reclaim_state_change};
+static bool init_memevent_listener_monitoring() {
+    static struct event_handler_info direct_reclaim_poll_hinfo = {0,
+                                                                  memevent_listener_notification};
 
     if (memevent_listener) return true;
 
@@ -3364,7 +3365,7 @@ static bool init_direct_reclaim_monitoring() {
     epev.events = EPOLLIN;
     epev.data.ptr = (void*)&direct_reclaim_poll_hinfo;
     if (epoll_ctl(epollfd, EPOLL_CTL_ADD, memevent_listener_fd, &epev) < 0) {
-        ALOGE("Failed registering direct reclaim fd: %d; errno=%d", memevent_listener_fd, errno);
+        ALOGE("Failed registering memevent listener fd: %d; errno=%d", memevent_listener_fd, errno);
         memevent_listener.reset();
         return false;
     }
