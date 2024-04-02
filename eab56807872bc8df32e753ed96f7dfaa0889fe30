@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e021c586_04d248a0",
+        "filename": "include/lmkd.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-02T22:19:48Z",
+      "side": 1,
+      "message": "LMK_UPDATE_PROPS",
+      "range": {
+        "startLine": 285,
+        "startChar": 3,
+        "endLine": 285,
+        "endChar": 21
+      },
+      "revId": "eab56807872bc8df32e753ed96f7dfaa0889fe30",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a42d8bf9_3a218640",
+        "filename": "include/lmkd.h",
+        "patchSetId": 9
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-02T22:19:48Z",
+      "side": 1,
+      "message": "LMK_BOOT_COMPLETED",
+      "range": {
+        "startLine": 318,
+        "startChar": 3,
+        "endLine": 318,
+        "endChar": 15
+      },
+      "revId": "eab56807872bc8df32e753ed96f7dfaa0889fe30",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "22f084ed_219dde81",
+        "filename": "lmkd.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 1587,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-02T22:19:48Z",
+      "side": 1,
+      "message": "better to move `result \u003d -1;` here so that each case has its own return code.",
+      "range": {
+        "startLine": 1587,
+        "startChar": 12,
+        "endLine": 1587,
+        "endChar": 80
+      },
+      "revId": "eab56807872bc8df32e753ed96f7dfaa0889fe30",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c2ee6ff5_12c31508",
+        "filename": "lmkd.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 3912,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-02T22:19:48Z",
+      "side": 1,
+      "message": "I\u0027m not sure we should be logging anything when things are going as expected. That pollutes our logs with unnecessary information.",
+      "range": {
+        "startLine": 3912,
+        "startChar": 12,
+        "endLine": 3912,
+        "endChar": 17
+      },
+      "revId": "eab56807872bc8df32e753ed96f7dfaa0889fe30",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b0e099fc_a70575d0",
+        "filename": "lmkd.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 3912,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-02T22:19:48Z",
+      "side": 1,
+      "message": "handled",
+      "range": {
+        "startLine": 3912,
+        "startChar": 24,
+        "endLine": 3912,
+        "endChar": 32
+      },
+      "revId": "eab56807872bc8df32e753ed96f7dfaa0889fe30",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "53f78440_6df7e186",
+        "filename": "lmkd.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 3915,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-02T22:19:48Z",
+      "side": 1,
+      "message": "This is not normal case, so ALOGW",
+      "range": {
+        "startLine": 3915,
+        "startChar": 12,
+        "endLine": 3915,
+        "endChar": 17
+      },
+      "revId": "eab56807872bc8df32e753ed96f7dfaa0889fe30",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
