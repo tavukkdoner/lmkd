@@ -195,9 +195,10 @@ struct psi_threshold {
     int threshold_ms;
 };
 
-/* Listener for direct reclaim state changes */
+/* Listener for direct reclaim and kswapd state changes */
 static std::unique_ptr<android::bpf::memevents::MemEventListener> memevent_listener(nullptr);
 static struct timespec direct_reclaim_start_tm;
+static struct timespec kswapd_start_tm;
 
 static int level_oomadj[VMPRESS_LEVEL_COUNT];
 static int mpevfd[VMPRESS_LEVEL_COUNT] = { -1, -1, -1 };
@@ -1591,9 +1592,9 @@ static void ctrl_command_handler(int dsock_idx) {
              * waiting, during boot-up, for BPF programs to be loaded.
              */
             if (init_memevent_listener_monitoring()) {
-                ALOGI("Using memevents for direct reclaim detection");
+                ALOGI("Using memevents for direct reclaim and kswapd detection");
             } else {
-                ALOGI("Using vmstats for direct reclaim detection");
+                ALOGI("Using vmstats for direct reclaim and kswapd detection");
                 if (direct_reclaim_threshold_ms > 0) {
                     ALOGW("Kernel support for direct_reclaim_threshold_ms is not found");
                     direct_reclaim_threshold_ms = 0;
@@ -2673,6 +2674,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     bool critical_stall = false;
     bool in_direct_reclaim;
     long direct_reclaim_duration_ms;
+    bool in_kswapd_reclaim;
 
     if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
         ALOGE("Failed to get current time");
@@ -2725,9 +2727,15 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         swap_low_threshold = 0;
     }
 
-    in_direct_reclaim = memevent_listener ? (direct_reclaim_start_tm.tv_sec != 0 ||
-                                             direct_reclaim_start_tm.tv_nsec != 0)
-                                          : (vs.field.pgscan_direct != init_pgscan_direct);
+    if (memevent_listener) {
+        in_direct_reclaim =
+                direct_reclaim_start_tm.tv_sec != 0 || direct_reclaim_start_tm.tv_nsec != 0;
+        in_kswapd_reclaim = kswapd_start_tm.tv_sec != 0 || kswapd_start_tm.tv_nsec != 0;
+    } else {
+        in_direct_reclaim = vs.field.pgscan_direct != init_pgscan_direct;
+        in_kswapd_reclaim = (vs.field.pgscan_kswapd != init_pgscan_kswapd) ||
+                            (vs.field.pgrefill != init_pgrefill);
+    }
 
     /* Identify reclaim state */
     if (in_direct_reclaim) {
@@ -2736,11 +2744,8 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         init_pgrefill = vs.field.pgrefill;
         direct_reclaim_duration_ms = get_time_diff_ms(&direct_reclaim_start_tm, &curr_tm);
         reclaim = DIRECT_RECLAIM;
-    } else if (vs.field.pgscan_kswapd != init_pgscan_kswapd) {
+    } else if (in_kswapd_reclaim) {
         init_pgscan_kswapd = vs.field.pgscan_kswapd;
-        init_pgrefill = vs.field.pgrefill;
-        reclaim = KSWAPD_RECLAIM;
-    } else if (vs.field.pgrefill != init_pgrefill) {
         init_pgrefill = vs.field.pgrefill;
         reclaim = KSWAPD_RECLAIM;
     } else if (workingset_refault_file == prev_workingset_refault) {
@@ -3315,17 +3320,25 @@ static void memevent_listener_notification(int data __unused, uint32_t events __
         return;
     }
 
-    /*
-     * `mem_events` is ordered from oldest to newest, therefore we use
-     * the last/latest direct reclaim event as the current direct reclaim
-     * state.
-     */
-    for (const mem_event_t mem_event : mem_events) {
-        if (mem_event.type == MEM_EVENT_DIRECT_RECLAIM_BEGIN) {
-            direct_reclaim_start_tm = curr_tm;
-        } else if (mem_event.type == MEM_EVENT_DIRECT_RECLAIM_END) {
-            direct_reclaim_start_tm.tv_sec = 0;
-            direct_reclaim_start_tm.tv_nsec = 0;
+    for (const mem_event_t& mem_event : mem_events) {
+        switch (mem_event.type) {
+            /* Direct Reclaim */
+            case MEM_EVENT_DIRECT_RECLAIM_BEGIN:
+                direct_reclaim_start_tm = curr_tm;
+                break;
+            case MEM_EVENT_DIRECT_RECLAIM_END:
+                direct_reclaim_start_tm.tv_sec = 0;
+                direct_reclaim_start_tm.tv_nsec = 0;
+                break;
+
+            /* kswapd */
+            case MEM_EVENT_KSWAPD_WAKE:
+                kswapd_start_tm = curr_tm;
+                break;
+            case MEM_EVENT_KSWAPD_SLEEP:
+                kswapd_start_tm.tv_sec = 0;
+                kswapd_start_tm.tv_nsec = 0;
+                break;
         }
     }
 }
@@ -3350,6 +3363,12 @@ static bool init_memevent_listener_monitoring() {
     if (!memevent_listener->registerEvent(MEM_EVENT_DIRECT_RECLAIM_BEGIN) ||
         !memevent_listener->registerEvent(MEM_EVENT_DIRECT_RECLAIM_END)) {
         ALOGE("Failed to register direct reclaim memevents");
+        memevent_listener.reset();
+        return false;
+    }
+    if (!memevent_listener->registerEvent(MEM_EVENT_KSWAPD_WAKE) ||
+        !memevent_listener->registerEvent(MEM_EVENT_KSWAPD_SLEEP)) {
+        ALOGE("Failed to register kswapd memevents");
         memevent_listener.reset();
         return false;
     }
