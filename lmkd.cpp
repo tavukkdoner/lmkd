@@ -162,6 +162,8 @@ static inline void trace_kill_end() {}
 #define DEF_COMPLETE_STALL 700
 /* ro.lmk.direct_reclaim_threshold_ms property defaults */
 #define DEF_DIRECT_RECL_THRESH_MS 0
+/* ro.lmk.swap_compression_ratio property defaults */
+#define DEF_SWAP_COMP_RATIO 1
 
 #define LMKD_REINIT_PROP "lmkd.reinit"
 
@@ -195,9 +197,10 @@ struct psi_threshold {
     int threshold_ms;
 };
 
-/* Listener for direct reclaim state changes */
+/* Listener for direct reclaim and kswapd state changes */
 static std::unique_ptr<android::bpf::memevents::MemEventListener> memevent_listener(nullptr);
 static struct timespec direct_reclaim_start_tm;
+static struct timespec kswapd_start_tm;
 
 static int level_oomadj[VMPRESS_LEVEL_COUNT];
 static int mpevfd[VMPRESS_LEVEL_COUNT] = { -1, -1, -1 };
@@ -231,6 +234,7 @@ static bool use_psi_monitors = false;
 static int kpoll_fd;
 static bool delay_monitors_until_boot;
 static int direct_reclaim_threshold_ms;
+static int swap_compression_ratio;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
     { PSI_SOME, 70 },    /* 70ms out of 1sec for partial stall */
     { PSI_SOME, 100 },   /* 100ms out of 1sec for partial stall */
@@ -1591,9 +1595,9 @@ static void ctrl_command_handler(int dsock_idx) {
              * waiting, during boot-up, for BPF programs to be loaded.
              */
             if (init_memevent_listener_monitoring()) {
-                ALOGI("Using memevents for direct reclaim detection");
+                ALOGI("Using memevents for direct reclaim and kswapd detection");
             } else {
-                ALOGI("Using vmstats for direct reclaim detection");
+                ALOGI("Using vmstats for direct reclaim and kswapd detection");
                 if (direct_reclaim_threshold_ms > 0) {
                     ALOGW("Kernel support for direct_reclaim_threshold_ms is not found");
                     direct_reclaim_threshold_ms = 0;
@@ -1945,8 +1949,12 @@ static int meminfo_parse(union meminfo *mi) {
 // from the free memory or reclaimed. Use the lowest of free_swap and easily available memory to
 // measure free swap because they represent how much swap space the system will consider to use
 // and how much it can actually use.
+// Swap compression ratio in the calculation can be adjusted using swap_compression_ratio tunable.
+// By setting swap_compression_ratio to 0, available memory can be ignored.
 static inline int64_t get_free_swap(union meminfo *mi) {
-    return std::min(mi->field.free_swap, mi->field.easy_available);
+    if (swap_compression_ratio)
+        return std::min(mi->field.free_swap, mi->field.easy_available * swap_compression_ratio);
+    return mi->field.free_swap;
 }
 
 /* /proc/vmstat parsing routines */
@@ -2673,6 +2681,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     bool critical_stall = false;
     bool in_direct_reclaim;
     long direct_reclaim_duration_ms;
+    bool in_kswapd_reclaim;
 
     if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
         ALOGE("Failed to get current time");
@@ -2725,9 +2734,15 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         swap_low_threshold = 0;
     }
 
-    in_direct_reclaim = memevent_listener ? (direct_reclaim_start_tm.tv_sec != 0 ||
-                                             direct_reclaim_start_tm.tv_nsec != 0)
-                                          : (vs.field.pgscan_direct != init_pgscan_direct);
+    if (memevent_listener) {
+        in_direct_reclaim =
+                direct_reclaim_start_tm.tv_sec != 0 || direct_reclaim_start_tm.tv_nsec != 0;
+        in_kswapd_reclaim = kswapd_start_tm.tv_sec != 0 || kswapd_start_tm.tv_nsec != 0;
+    } else {
+        in_direct_reclaim = vs.field.pgscan_direct != init_pgscan_direct;
+        in_kswapd_reclaim = (vs.field.pgscan_kswapd != init_pgscan_kswapd) ||
+                            (vs.field.pgrefill != init_pgrefill);
+    }
 
     /* Identify reclaim state */
     if (in_direct_reclaim) {
@@ -2736,11 +2751,8 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         init_pgrefill = vs.field.pgrefill;
         direct_reclaim_duration_ms = get_time_diff_ms(&direct_reclaim_start_tm, &curr_tm);
         reclaim = DIRECT_RECLAIM;
-    } else if (vs.field.pgscan_kswapd != init_pgscan_kswapd) {
+    } else if (in_kswapd_reclaim) {
         init_pgscan_kswapd = vs.field.pgscan_kswapd;
-        init_pgrefill = vs.field.pgrefill;
-        reclaim = KSWAPD_RECLAIM;
-    } else if (vs.field.pgrefill != init_pgrefill) {
         init_pgrefill = vs.field.pgrefill;
         reclaim = KSWAPD_RECLAIM;
     } else if (workingset_refault_file == prev_workingset_refault) {
@@ -3315,17 +3327,25 @@ static void memevent_listener_notification(int data __unused, uint32_t events __
         return;
     }
 
-    /*
-     * `mem_events` is ordered from oldest to newest, therefore we use
-     * the last/latest direct reclaim event as the current direct reclaim
-     * state.
-     */
-    for (const mem_event_t mem_event : mem_events) {
-        if (mem_event.type == MEM_EVENT_DIRECT_RECLAIM_BEGIN) {
-            direct_reclaim_start_tm = curr_tm;
-        } else if (mem_event.type == MEM_EVENT_DIRECT_RECLAIM_END) {
-            direct_reclaim_start_tm.tv_sec = 0;
-            direct_reclaim_start_tm.tv_nsec = 0;
+    for (const mem_event_t& mem_event : mem_events) {
+        switch (mem_event.type) {
+            /* Direct Reclaim */
+            case MEM_EVENT_DIRECT_RECLAIM_BEGIN:
+                direct_reclaim_start_tm = curr_tm;
+                break;
+            case MEM_EVENT_DIRECT_RECLAIM_END:
+                direct_reclaim_start_tm.tv_sec = 0;
+                direct_reclaim_start_tm.tv_nsec = 0;
+                break;
+
+            /* kswapd */
+            case MEM_EVENT_KSWAPD_WAKE:
+                kswapd_start_tm = curr_tm;
+                break;
+            case MEM_EVENT_KSWAPD_SLEEP:
+                kswapd_start_tm.tv_sec = 0;
+                kswapd_start_tm.tv_nsec = 0;
+                break;
         }
     }
 }
@@ -3350,6 +3370,12 @@ static bool init_memevent_listener_monitoring() {
     if (!memevent_listener->registerEvent(MEM_EVENT_DIRECT_RECLAIM_BEGIN) ||
         !memevent_listener->registerEvent(MEM_EVENT_DIRECT_RECLAIM_END)) {
         ALOGE("Failed to register direct reclaim memevents");
+        memevent_listener.reset();
+        return false;
+    }
+    if (!memevent_listener->registerEvent(MEM_EVENT_KSWAPD_WAKE) ||
+        !memevent_listener->registerEvent(MEM_EVENT_KSWAPD_SLEEP)) {
+        ALOGE("Failed to register kswapd memevents");
         memevent_listener.reset();
         return false;
     }
@@ -3979,6 +4005,8 @@ static bool update_props() {
     delay_monitors_until_boot = GET_LMK_PROPERTY(bool, "delay_monitors_until_boot", false);
     direct_reclaim_threshold_ms =
             GET_LMK_PROPERTY(int64, "direct_reclaim_threshold_ms", DEF_DIRECT_RECL_THRESH_MS);
+    swap_compression_ratio =
+            GET_LMK_PROPERTY(int64, "swap_compression_ratio", DEF_SWAP_COMP_RATIO);
 
     reaper.enable_debug(debug_process_killing);
 
