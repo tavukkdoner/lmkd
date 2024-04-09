@@ -95,6 +95,11 @@ properties:
   - `ro.lmk.direct_reclaim_threshold_ms`: direct reclaim duration threshold in
                                  milliseconds to consider the system as stuck in
                                  direct reclaim. Default = 0 (disabled)
+  - `ro.lmk.swap_compression_ratio`: swap average compression ratio to be used when
+                                 estimating how much data can be swapped. Setting it
+                                 to 0 will ignore available memory and assume that
+                                 configured swap size can be always utilized fully.
+                                 Default = 1 (no compression).
 
 lmkd will set the following Android properties according to current system
 configurations:
