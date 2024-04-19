@@ -46,15 +46,15 @@ struct psi_data {
 };
 
 /*
- * Initializes psi monitor.
+ * Initializes psi monitor for the given psi path.
  * stall_type, threshold_us and window_us are monitor parameters
  * When successful, the function returns file descriptor that can
  * be used with poll/epoll syscalls to wait for EPOLLPRI events.
  * When unsuccessful, the function returns -1 and errno is set
  * appropriately.
  */
-int init_psi_monitor(enum psi_stall_type stall_type,
-        int threshold_us, int window_us);
+int init_psi_monitor(enum psi_stall_type stall_type, int threshold_us, int window_us,
+                     const char* psi_path = PSI_PATH_MEMORY);
 
 /*
  * Registers psi monitor file descriptor fd on the epoll instance
