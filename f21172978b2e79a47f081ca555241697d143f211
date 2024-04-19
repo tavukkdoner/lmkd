@@ -1,0 +1,205 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b7d82ef_78d6862e",
+        "filename": "libpsi/include/psi/psi.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-19T21:20:59Z",
+      "side": 1,
+      "message": "Instead of that let\u0027s have:\n```\nenum psi_resource {\n    PSI_MEMORY,\n    PSI_IO,\n    PSI_CPU,\n    PSI_RESOURCE_COUNT\n};\n```",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 0
+      },
+      "revId": "f21172978b2e79a47f081ca555241697d143f211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0156d7e0_d940afab",
+        "filename": "libpsi/include/psi/psi.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-19T21:20:59Z",
+      "side": 1,
+      "message": "This would be `enum psi_resource res`",
+      "range": {
+        "startLine": 57,
+        "startChar": 21,
+        "endLine": 57,
+        "endChar": 59
+      },
+      "revId": "f21172978b2e79a47f081ca555241697d143f211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dd4eaba5_0e0b8670",
+        "filename": "libpsi/psi.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-19T21:20:59Z",
+      "side": 1,
+      "message": "```\nstatic const char* resource_file[PSI_RESOURCE_COUNT] \u003d {\n    \"/proc/pressure/memory\",\n    \"/proc/pressure/io\",\n    \"/proc/pressure/cpu\",\n};\n```",
+      "revId": "f21172978b2e79a47f081ca555241697d143f211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f3eed5a3_d0b60c06",
+        "filename": "libpsi/psi.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-19T21:20:59Z",
+      "side": 1,
+      "message": "`enum psi_resource res`",
+      "range": {
+        "startLine": 37,
+        "startChar": 21,
+        "endLine": 37,
+        "endChar": 41
+      },
+      "revId": "f21172978b2e79a47f081ca555241697d143f211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15455a10_260c21a5",
+        "filename": "libpsi/psi.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-19T21:20:59Z",
+      "side": 1,
+      "message": "`if (res \u003c PSI_MEMORY || res \u003e\u003d PSI_RESOURCE_COUNT)`",
+      "range": {
+        "startLine": 38,
+        "startChar": 8,
+        "endLine": 39,
+        "endChar": 43
+      },
+      "revId": "f21172978b2e79a47f081ca555241697d143f211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "87681328_10718f9e",
+        "filename": "libpsi/psi.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-19T21:20:59Z",
+      "side": 1,
+      "message": "`\"Invalid psi resource type: %d\", res`",
+      "range": {
+        "startLine": 40,
+        "startChar": 14,
+        "endLine": 40,
+        "endChar": 46
+      },
+      "revId": "f21172978b2e79a47f081ca555241697d143f211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ed9e39b_0e420bf7",
+        "filename": "libpsi/psi.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-19T21:20:59Z",
+      "side": 1,
+      "message": "resource_file[res]",
+      "range": {
+        "startLine": 48,
+        "startChar": 33,
+        "endLine": 48,
+        "endChar": 41
+      },
+      "revId": "f21172978b2e79a47f081ca555241697d143f211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e77e6acb_adfe4812",
+        "filename": "libpsi/psi.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-19T21:20:59Z",
+      "side": 1,
+      "message": "resource_file[res]",
+      "range": {
+        "startLine": 67,
+        "startChar": 58,
+        "endLine": 67,
+        "endChar": 66
+      },
+      "revId": "f21172978b2e79a47f081ca555241697d143f211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a99b6cc9_8f9ed420",
+        "filename": "libpsi/psi.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-04-19T21:20:59Z",
+      "side": 1,
+      "message": "resource_file[res]",
+      "range": {
+        "startLine": 74,
+        "startChar": 67,
+        "endLine": 74,
+        "endChar": 75
+      },
+      "revId": "f21172978b2e79a47f081ca555241697d143f211",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
