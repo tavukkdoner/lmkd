@@ -47,6 +47,14 @@ int lmkd_register_proc(int sock, struct lmk_procprio *params);
  */
 int lmkd_unregister_proc(int sock, struct lmk_procremove *params);
 
+/*
+ * Registers a batch of processes with lmkd and sets its oomadj score.
+ * On success returns 0.
+ * On error, -1 is returned.
+ * In the case of error errno is set appropriately.
+ */
+int lmkd_register_procs(int sock, struct lmk_procs_prio* params, const int& proc_count);
+
 enum update_props_result {
     UPDATE_PROPS_SUCCESS,
     UPDATE_PROPS_FAIL,
