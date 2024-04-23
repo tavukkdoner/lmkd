@@ -38,6 +38,7 @@ enum lmk_cmd {
     LMK_STAT_KILL_OCCURRED, /* Unsolicited msg to subscribed clients on proc kills for statsd log */
     LMK_START_MONITORING,   /* Start psi monitoring if it was skipped earlier */
     LMK_BOOT_COMPLETED,     /* Notify LMKD boot is completed */
+    LMK_PROCS_PRIO,         /* Register processes and set the same oom_adj_score */
 };
 
 /*
@@ -322,6 +323,65 @@ struct lmk_boot_completed_notif_reply {
 static inline void lmkd_pack_get_boot_completed_notif_repl(
         LMKD_CTRL_PACKET packet, struct lmk_boot_completed_notif_reply* params) {
     params->result = ntohl(packet[1]);
+}
+
+static constexpr int PROCS_PRIO_MAX_SIZE = (CTRL_PACKET_MAX_SIZE) / sizeof(lmk_procprio);
+
+struct lmk_procs_prio {
+    struct lmk_procprio procs[PROCS_PRIO_MAX_SIZE];
+};
+
+/*
+ * LMK_PROCS_PRIO_OPTIONAL_PROC_* are used for default for a proc.
+ * We use these fields to verify if a process was not provided in the packet.
+ */
+static constexpr pid_t LMK_PROCS_PRIO_OPTIONAL_PROC_PID = -1;
+static constexpr uid_t LMK_PROCS_PRIO_OPTIONAL_PROC_UID = 0;
+static constexpr int LMK_PROCS_PRIO_OPTIONAL_PROC_OOM_ADJ = -1001;
+static constexpr proc_type LMK_PROCS_PRIO_OPTIONAL_PROC_PTYPE = proc_type::PROC_TYPE_FIRST;
+
+/*
+ * For LMK_PROCS_PRIO packet get its payload.
+ * Warning: no checks performed, caller should ensure valid parameters.
+ */
+static inline void lmkd_pack_get_procs_prio(LMKD_CTRL_PACKET packet, struct lmk_procs_prio* params,
+                                            int procs_count) {
+    /* Start packet at 1 since 0 is cmd type */
+    int packetIdx = 1;
+    for (int procs_idx = 0; procs_idx < PROCS_PRIO_MAX_SIZE; procs_idx++) {
+        struct lmk_procprio proc;
+        if (procs_idx < procs_count) {
+            proc.pid = (pid_t)ntohl(packet[packetIdx++]);
+            proc.uid = (uid_t)ntohl(packet[packetIdx++]);
+            proc.oomadj = ntohl(packet[packetIdx++]);
+            proc.ptype = (enum proc_type)ntohl(packet[packetIdx++]);
+        } else {
+            proc.pid = LMK_PROCS_PRIO_OPTIONAL_PROC_PID;
+            proc.uid = LMK_PROCS_PRIO_OPTIONAL_PROC_UID;
+            proc.oomadj = LMK_PROCS_PRIO_OPTIONAL_PROC_OOM_ADJ;
+            proc.ptype = LMK_PROCS_PRIO_OPTIONAL_PROC_PTYPE;
+        }
+        params->procs[procs_idx] = proc;
+    }
+}
+
+/*
+ * Prepare LMK_PROCS_PRIO packet and return packet size in bytes.
+ * Warning: no checks performed, caller should ensure valid parameters.
+ */
+static inline size_t lmkd_pack_set_procs_prio(LMKD_CTRL_PACKET packet,
+                                              struct lmk_procs_prio* params) {
+    packet[0] = htonl(LMK_PROCS_PRIO);
+    int packetIdx = 1;
+
+    for (const auto proc : params->procs) {
+        packet[packetIdx++] = htonl(proc.pid);
+        packet[packetIdx++] = htonl(proc.uid);
+        packet[packetIdx++] = htonl(proc.oomadj);
+        packet[packetIdx++] = htonl((int)proc.ptype);
+    }
+
+    return packetIdx * sizeof(int);
 }
 
 __END_DECLS
