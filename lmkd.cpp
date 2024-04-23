@@ -1479,6 +1479,16 @@ static void cmd_target(int ntargets, LMKD_CTRL_PACKET packet) {
     }
 }
 
+static void cmd_procs_prio(LMKD_CTRL_PACKET packet, const int& procs_count, struct ucred* cred) {
+    struct lmk_procs_prio params;
+
+    lmkd_pack_get_procs_prio(packet, &params, procs_count);
+
+    for (int i = 0; i < procs_count; i++) {
+        apply_proc_prio(params.procs[i], cred);
+    }
+}
+
 static void ctrl_command_handler(int dsock_idx) {
     LMKD_CTRL_PACKET packet;
     struct ucred cred;
@@ -1487,6 +1497,7 @@ static void ctrl_command_handler(int dsock_idx) {
     int nargs;
     int targets;
     int kill_cnt;
+    int procs_prio_cnt;
     int result;
 
     len = ctrl_data_read(dsock_idx, (char *)packet, CTRL_PACKET_MAX_SIZE, &cred);
@@ -1626,6 +1637,16 @@ static void ctrl_command_handler(int dsock_idx) {
         if (ctrl_data_write(dsock_idx, (char*)packet, len) != len) {
             ALOGE("Failed to report boot-completed operation results");
         }
+        break;
+    case LMK_PROCS_PRIO:
+        /*
+         * lmk_procprio has 4 fields. We expect each request to have at least
+         * a single lmk_procprio per request.
+         */
+        if (nargs < 4 || (nargs % 4 != 0)) goto wronglen;
+        procs_prio_cnt = (nargs / 4);
+        cmd_procs_prio(packet, procs_prio_cnt, &cred);
+
         break;
     default:
         ALOGE("Received unknown command code %d", cmd);
