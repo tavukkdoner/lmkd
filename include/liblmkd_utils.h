@@ -40,6 +40,14 @@ int lmkd_connect();
 int lmkd_register_proc(int sock, struct lmk_procprio *params);
 
 /*
+ * Registers a batch of processes with lmkd and sets its oomadj score.
+ * On success returns 0.
+ * On error, -1 is returned.
+ * In the case of error errno is set appropriately.
+ */
+int lmkd_register_procs(int sock, struct lmk_procs_prio* params, const int proc_count);
+
+/*
  * Unregisters a process previously registered with lmkd.
  * On success returns 0.
  * On error, -1 is returned.
