@@ -43,6 +43,17 @@ int lmkd_register_proc(int sock, struct lmk_procprio *params) {
     return (ret < 0) ? -1 : 0;
 }
 
+int lmkd_register_procs(int sock, struct lmk_procs_prio* params, const int proc_count) {
+    LMKD_CTRL_PACKET packet;
+    size_t size;
+    int ret;
+
+    size = lmkd_pack_set_procs_prio(packet, params, proc_count);
+    ret = TEMP_FAILURE_RETRY(write(sock, packet, size));
+
+    return (ret < 0) ? -1 : 0;
+}
+
 int lmkd_unregister_proc(int sock, struct lmk_procremove *params) {
     LMKD_CTRL_PACKET packet;
     size_t size;
