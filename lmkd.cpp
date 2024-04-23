@@ -44,6 +44,7 @@
 #include <cutils/properties.h>
 #include <cutils/sockets.h>
 #include <liblmkd_utils.h>
+#include <liburing.h>
 #include <lmkd.h>
 #include <lmkd_hooks.h>
 #include <log/log.h>
@@ -201,6 +202,11 @@ struct psi_threshold {
 static std::unique_ptr<android::bpf::memevents::MemEventListener> memevent_listener(nullptr);
 static struct timespec direct_reclaim_start_tm;
 static struct timespec kswapd_start_tm;
+
+/* io_uring for LMK_PROCS_SAME_PRIO */
+static struct io_uring lmk_io_uring_ring;
+static struct io_uring_sqe* sqe;
+static struct io_uring_cqe* cqe;
 
 static int level_oomadj[VMPRESS_LEVEL_COUNT];
 static int mpevfd[VMPRESS_LEVEL_COUNT] = { -1, -1, -1 };
@@ -1464,6 +1470,154 @@ static void cmd_target(int ntargets, LMKD_CTRL_PACKET packet) {
     }
 }
 
+static void cmd_procs_prio(LMKD_CTRL_PACKET packet, const int field_count, struct ucred* cred) {
+    struct lmk_procs_prio params;
+    struct iovec iov[PROCS_PRIO_MAX_SIZE];
+    int fds[PROCS_PRIO_MAX_SIZE];
+    int64_t tgid;
+    int total_valid_processes = 0, ret;
+
+    lmkd_pack_get_procs_prio(packet, &params, field_count);
+
+    // struct io_uring_params io_uring_params;
+    // memset(&io_uring_params, 0, sizeof(io_uring_params));
+    // io_uring_params.flags |= IORING_SETUP_SQPOLL;
+    // ret = io_uring_queue_init_params(PROCS_PRIO_MAX_SIZE, &lmk_io_uring_ring, &io_uring_params);
+
+    ret = io_uring_queue_init(PROCS_PRIO_MAX_SIZE, &lmk_io_uring_ring, 0);
+    if (ret) {
+        ALOGE("LMK_PROCS_PRIO failed to setup io_uring ring: %s", strerror(-ret));
+        return;
+    }
+
+    for (int i = 0; i < PROCS_PRIO_MAX_SIZE; i++) {
+        iov[i].iov_base = malloc(pagesize);
+        iov[i].iov_len = pagesize;
+        memset(iov[i].iov_base, 0, pagesize);
+    }
+
+    ret = io_uring_register_buffers(&lmk_io_uring_ring, iov, PROCS_PRIO_MAX_SIZE);
+    if (ret) {
+        ALOGE("Failed registering buffers for LMK_PROCS_PRIO: %s", strerror(-ret));
+        return;
+    }
+
+    sqe = io_uring_get_sqe(&lmk_io_uring_ring);
+    if (!sqe) {
+        ALOGE("LMK_PROCS_PRIO failed getting SQE");
+        return;
+    }
+
+    std::fill_n(fds, PROCS_PRIO_MAX_SIZE, -1);
+    for (int i = 0; i < field_count; i++) {
+        /*
+         * Requests don't always have to provide PROCS_PRIO_MAX_SIZE of procs,
+         * therefore we need to verify if we are out of procs.
+         */
+        if (params.procs[i].pid == LMK_PROCS_PRIO_OPTIONAL_PROC_PID &&
+            params.procs[i].uid == LMK_PROCS_PRIO_OPTIONAL_PROC_UID &&
+            params.procs[i].oomadj == LMK_PROCS_PRIO_OPTIONAL_PROC_OOM_ADJ &&
+            params.procs[i].ptype == LMK_PROCS_PRIO_OPTIONAL_PROC_PTYPE)
+            continue;
+        else if (params.procs[i].oomadj < OOM_SCORE_ADJ_MIN ||
+                 params.procs[i].oomadj > OOM_SCORE_ADJ_MAX)
+            ALOGW("Skipping invalid PROCS_PRIO oomadj=%d for pid=%d", params.procs[i].oomadj,
+                  params.procs[i].pid);
+        else if (params.procs[i].ptype < PROC_TYPE_FIRST ||
+                 params.procs[i].ptype >= PROC_TYPE_COUNT)
+            ALOGW("Skipping invalid PROCS_PRIO pid=%d for invalid process type arg %d",
+                  params.procs[i].pid, params.procs[i].ptype);
+        else {
+            char path[PATH_MAX];
+            int fd;
+            ssize_t size;
+
+            snprintf(path, PATH_MAX, "/proc/%d/status", params.procs[i].pid);
+            fds[i] = open(path, O_RDONLY | O_CLOEXEC);
+            if (fds[i] < 0) continue;
+
+            sqe = io_uring_get_sqe(&lmk_io_uring_ring);
+            if (!sqe) {
+                ALOGE("LMK_PROCS_PRIO skipping pid (%d), failed to get SQE for read proc status",
+                      params.procs[i].pid);
+                close(fds[i]);
+                fds[i] = -1;
+                continue;
+            }
+
+            io_uring_prep_read_fixed(sqe, fds[i], iov[i].iov_base, pagesize, 0, i);
+            sqe->user_data = i;
+
+            total_valid_processes++;
+            ALOGE("Inserted pid=%d for proc/status read batch, with idx=%d", params.procs[i].pid,
+                  i);
+        }
+    }
+
+    if (total_valid_processes == 0) {
+        ALOGE("PROCS_PRIO exiting with no valid processes to adjust");
+        return;
+    }
+
+    ret = io_uring_submit(&lmk_io_uring_ring);
+    if (ret < 0) {
+        ALOGE("Error submitting data to sqe: %s", strerror(ret));
+        return;
+    } else {
+        ALOGI("Total submissions in SQE: %d", ret);
+    }
+
+    // Now we need to read the process status, and from those we'll see which we try to adjust their
+    // OOM score
+    for (int counter = 0; counter < total_valid_processes + 1; counter++) {
+        ret = io_uring_wait_cqe(&lmk_io_uring_ring, &cqe);
+        if (ret < 0) {
+            ALOGE("Error waiting for completion of read procs status in LMK_PROCS_PRIO: %s",
+                  strerror(-ret));
+            return;
+        }
+
+        /* Now that we have the CQE, let's process the data */
+        if (cqe->res < 0) {
+            ALOGE("Error in LMK_PROCS_PRIO for async proc status read operation: %s",
+                  strerror(-cqe->res));
+            return;
+        }
+        if (cqe->user_data < 0 || cqe->user_data > PROCS_PRIO_MAX_SIZE) {
+            ALOGE("Invalid LMK_PROCS_PRIO completion user data for read procs status: %llu",
+                  cqe->user_data);
+            return;
+        }
+
+        const int i = cqe->user_data;
+        close(fds[i]);
+        fds[i] = -1;
+
+        if (parse_status_tag((char*)iov[i].iov_base, PROC_STATUS_TGID_FIELD, &tgid) &&
+            tgid != params.procs[i].pid) {
+            ALOGE("Attempt to register a task that is not a thread group leader "
+                  "(tid %d, tgid %" PRId64 ")",
+                  params.procs[i].pid, tgid);
+            continue;
+        }
+
+        // Perform write operation
+        ALOGE("Reached good process to write oomadj=%d, pid=%d, uid=%d, in idx=%d",
+              params.procs[i].oomadj, params.procs[i].pid, params.procs[i].uid, i);
+        io_uring_cqe_seen(&lmk_io_uring_ring, cqe);
+    }
+
+    io_uring_queue_exit(&lmk_io_uring_ring);
+
+    if (cred == NULL) ALOGI("Total valid processes inserted for read=%d", total_valid_processes);
+
+    // err:
+    //     io_uring_unregister_files(&lmk_io_uring_ring);
+    //     for (int fd: fds)
+    //             if (fd >= 0) close(fd);
+    //     io_uring_queue_exit(&lmk_io_uring_ring);
+}
+
 static void ctrl_command_handler(int dsock_idx) {
     LMKD_CTRL_PACKET packet;
     struct ucred cred;
@@ -1605,12 +1759,33 @@ static void ctrl_command_handler(int dsock_idx) {
             }
             result = 0;
             boot_completed_handled = true;
+
+            LMKD_CTRL_PACKET fake_packet;
+            struct lmk_procprio fake_proc_one {
+                .pid = 1, .uid = 1, .oomadj = -777, .ptype = proc_type::PROC_TYPE_APP
+            };
+            struct lmk_procprio fake_proc_two {
+                .pid = 2, .uid = 2, .oomadj = -778, .ptype = proc_type::PROC_TYPE_APP
+            };
+            struct lmk_procs_prio fake_params;
+            fake_params.procs[0] = fake_proc_one;
+            fake_params.procs[1] = fake_proc_two;
+            lmkd_pack_set_procs_prio(fake_packet, &fake_params);
+            for (const auto temp_proc : fake_params.procs)
+                ALOGE("Copied pid=%d, uid=%d, and oomadj=%d in fake_params", temp_proc.pid,
+                      temp_proc.uid, temp_proc.oomadj);
+            cmd_procs_prio(fake_packet, 2, NULL);
         }
 
         len = lmkd_pack_set_boot_completed_notif_repl(packet, result);
         if (ctrl_data_write(dsock_idx, (char*)packet, len) != len) {
             ALOGE("Failed to report boot-completed operation results");
         }
+
+        break;
+    case LMK_PROCS_PRIO:
+        if (nargs < 5 || (nargs - 5) % 2 != 0) goto wronglen;
+        cmd_procs_prio(packet, nargs, &cred);
         break;
     default:
         ALOGE("Received unknown command code %d", cmd);
