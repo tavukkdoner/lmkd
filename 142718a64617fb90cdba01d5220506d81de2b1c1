@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "01b07fb6_60dafa50",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1510,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-04-24T20:26:57Z",
+      "side": 1,
+      "message": "We shouldn\u0027t try to fetch the `sqe` until we are ready to perform an action with it. This showed to have side effects, specifically submitting duplicate first entries.",
+      "range": {
+        "startLine": 1505,
+        "startChar": 0,
+        "endLine": 1510,
+        "endChar": 0
+      },
+      "revId": "142718a64617fb90cdba01d5220506d81de2b1c1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
