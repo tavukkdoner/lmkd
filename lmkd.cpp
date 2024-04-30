@@ -1119,21 +1119,116 @@ static char *proc_get_name(int pid, char *buf, size_t buf_size) {
     return buf;
 }
 
-static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred *cred) {
-    struct proc *procp;
-    char path[LINE_MAX];
-    char val[20];
+static void register_oom_adj_proc(struct lmk_procprio& proc, struct ucred* cred,
+                                  char* proc_oom_path, size_t proc_oom_path_size, char* val,
+                                  size_t val_size) {
     int soft_limit_mult;
-    struct lmk_procprio params;
     bool is_system_server;
     struct passwd *pwdrec;
+    struct proc* procp;
+
+    if (use_inkernel_interface) {
+        stats_store_taskname(proc.pid, proc_get_name(proc.pid, proc_oom_path, proc_oom_path_size));
+        return;
+    }
+
+    /* lmkd should not change soft limits for services */
+    if (proc.ptype == PROC_TYPE_APP && per_app_memcg) {
+        if (proc.oomadj >= 900) {
+            soft_limit_mult = 0;
+        } else if (proc.oomadj >= 800) {
+            soft_limit_mult = 0;
+        } else if (proc.oomadj >= 700) {
+            soft_limit_mult = 0;
+        } else if (proc.oomadj >= 600) {
+            // Launcher should be perceptible, don't kill it.
+            proc.oomadj = 200;
+            soft_limit_mult = 1;
+        } else if (proc.oomadj >= 500) {
+            soft_limit_mult = 0;
+        } else if (proc.oomadj >= 400) {
+            soft_limit_mult = 0;
+        } else if (proc.oomadj >= 300) {
+            soft_limit_mult = 1;
+        } else if (proc.oomadj >= 200) {
+            soft_limit_mult = 8;
+        } else if (proc.oomadj >= 100) {
+            soft_limit_mult = 10;
+        } else if (proc.oomadj >= 0) {
+            soft_limit_mult = 20;
+        } else {
+            // Persistent processes will have a large
+            // soft limit 512MB.
+            soft_limit_mult = 64;
+        }
+
+        std::string soft_limit_path;
+        if (!CgroupGetAttributePathForTask("MemSoftLimit", proc.pid, &soft_limit_path)) {
+            ALOGE("Querying MemSoftLimit path failed");
+            return;
+        }
+
+        snprintf(val, val_size, "%d", soft_limit_mult * EIGHT_MEGA);
+
+        /*
+         * system_server process has no memcg under /dev/memcg/apps but should be
+         * registered with lmkd. This is the best way so far to identify it.
+         */
+        is_system_server = (proc.oomadj == SYSTEM_ADJ && (pwdrec = getpwnam("system")) != NULL &&
+                            proc.uid == pwdrec->pw_uid);
+        writefilestring(soft_limit_path.c_str(), val, !is_system_server);
+    }
+
+    procp = pid_lookup(proc.pid);
+    if (!procp) {
+        int pidfd = -1;
+
+        if (pidfd_supported) {
+            pidfd = TEMP_FAILURE_RETRY(pidfd_open(proc.pid, 0));
+            if (pidfd < 0) {
+                ALOGE("pidfd_open for pid %d failed; errno=%d", proc.pid, errno);
+                return;
+            }
+        }
+
+        procp = static_cast<struct proc*>(calloc(1, sizeof(struct proc)));
+        if (!procp) {
+            // Oh, the irony.  May need to rebuild our state.
+            return;
+        }
+
+        procp->pid = proc.pid;
+        procp->pidfd = pidfd;
+        procp->uid = proc.uid;
+        procp->reg_pid = cred->pid;
+        procp->oomadj = proc.oomadj;
+        procp->valid = true;
+        proc_insert(procp);
+    } else {
+        if (!claim_record(procp, cred->pid)) {
+            char buf[LINE_MAX];
+            char *taskname = proc_get_name(cred->pid, buf, sizeof(buf));
+            /* Only registrant of the record can remove it */
+            ALOGE("%s (%d, %d) attempts to modify a process registered by another client",
+                taskname ? taskname : "A process ", cred->uid, cred->pid);
+            return;
+        }
+        proc_unslot(procp);
+        procp->oomadj = proc.oomadj;
+        proc_slot(procp);
+    }
+}
+
+static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred* cred) {
+    char path[LINE_MAX];
+    char val[20];
+    struct lmk_procprio params;
     int64_t tgid;
     char buf[pagesize];
 
     lmkd_pack_get_procprio(packet, field_count, &params);
 
-    if (params.oomadj < OOM_SCORE_ADJ_MIN ||
-        params.oomadj > OOM_SCORE_ADJ_MAX) {
+    if (params.oomadj < OOM_SCORE_ADJ_MIN || params.oomadj > OOM_SCORE_ADJ_MAX) {
         ALOGE("Invalid PROCPRIO oomadj argument %d", params.oomadj);
         return;
     }
@@ -1147,7 +1242,8 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
     if (read_proc_status(params.pid, buf, sizeof(buf))) {
         if (parse_status_tag(buf, PROC_STATUS_TGID_FIELD, &tgid) && tgid != params.pid) {
             ALOGE("Attempt to register a task that is not a thread group leader "
-                  "(tid %d, tgid %" PRId64 ")", params.pid, tgid);
+                  "(tid %d, tgid %" PRId64 ")",
+                  params.pid, tgid);
             return;
         }
     }
@@ -1158,103 +1254,13 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
     snprintf(path, sizeof(path), "/proc/%d/oom_score_adj", params.pid);
     snprintf(val, sizeof(val), "%d", params.oomadj);
     if (!writefilestring(path, val, false)) {
-        ALOGW("Failed to open %s; errno=%d: process %d might have been killed",
-              path, errno, params.pid);
+        ALOGW("Failed to open %s; errno=%d: process %d might have been killed", path, errno,
+              params.pid);
         /* If this file does not exist the process is dead. */
         return;
     }
 
-    if (use_inkernel_interface) {
-        stats_store_taskname(params.pid, proc_get_name(params.pid, path, sizeof(path)));
-        return;
-    }
-
-    /* lmkd should not change soft limits for services */
-    if (params.ptype == PROC_TYPE_APP && per_app_memcg) {
-        if (params.oomadj >= 900) {
-            soft_limit_mult = 0;
-        } else if (params.oomadj >= 800) {
-            soft_limit_mult = 0;
-        } else if (params.oomadj >= 700) {
-            soft_limit_mult = 0;
-        } else if (params.oomadj >= 600) {
-            // Launcher should be perceptible, don't kill it.
-            params.oomadj = 200;
-            soft_limit_mult = 1;
-        } else if (params.oomadj >= 500) {
-            soft_limit_mult = 0;
-        } else if (params.oomadj >= 400) {
-            soft_limit_mult = 0;
-        } else if (params.oomadj >= 300) {
-            soft_limit_mult = 1;
-        } else if (params.oomadj >= 200) {
-            soft_limit_mult = 8;
-        } else if (params.oomadj >= 100) {
-            soft_limit_mult = 10;
-        } else if (params.oomadj >=   0) {
-            soft_limit_mult = 20;
-        } else {
-            // Persistent processes will have a large
-            // soft limit 512MB.
-            soft_limit_mult = 64;
-        }
-
-        std::string path;
-        if (!CgroupGetAttributePathForTask("MemSoftLimit", params.pid, &path)) {
-            ALOGE("Querying MemSoftLimit path failed");
-            return;
-        }
-
-        snprintf(val, sizeof(val), "%d", soft_limit_mult * EIGHT_MEGA);
-
-        /*
-         * system_server process has no memcg under /dev/memcg/apps but should be
-         * registered with lmkd. This is the best way so far to identify it.
-         */
-        is_system_server = (params.oomadj == SYSTEM_ADJ &&
-                            (pwdrec = getpwnam("system")) != NULL &&
-                            params.uid == pwdrec->pw_uid);
-        writefilestring(path.c_str(), val, !is_system_server);
-    }
-
-    procp = pid_lookup(params.pid);
-    if (!procp) {
-        int pidfd = -1;
-
-        if (pidfd_supported) {
-            pidfd = TEMP_FAILURE_RETRY(pidfd_open(params.pid, 0));
-            if (pidfd < 0) {
-                ALOGE("pidfd_open for pid %d failed; errno=%d", params.pid, errno);
-                return;
-            }
-        }
-
-        procp = static_cast<struct proc*>(calloc(1, sizeof(struct proc)));
-        if (!procp) {
-            // Oh, the irony.  May need to rebuild our state.
-            return;
-        }
-
-        procp->pid = params.pid;
-        procp->pidfd = pidfd;
-        procp->uid = params.uid;
-        procp->reg_pid = cred->pid;
-        procp->oomadj = params.oomadj;
-        procp->valid = true;
-        proc_insert(procp);
-    } else {
-        if (!claim_record(procp, cred->pid)) {
-            char buf[LINE_MAX];
-            char *taskname = proc_get_name(cred->pid, buf, sizeof(buf));
-            /* Only registrant of the record can remove it */
-            ALOGE("%s (%d, %d) attempts to modify a process registered by another client",
-                taskname ? taskname : "A process ", cred->uid, cred->pid);
-            return;
-        }
-        proc_unslot(procp);
-        procp->oomadj = params.oomadj;
-        proc_slot(procp);
-    }
+    register_oom_adj_proc(params, cred, path, sizeof(path), val, sizeof(val));
 }
 
 static void cmd_procremove(LMKD_CTRL_PACKET packet, struct ucred *cred) {
