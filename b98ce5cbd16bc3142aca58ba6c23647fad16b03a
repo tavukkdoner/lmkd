@@ -24,6 +24,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0b77423_eaee4b00",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1123,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-01T20:32:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "17101c07_428d0a6c",
+      "range": {
+        "startLine": 1123,
+        "startChar": 34,
+        "endLine": 1123,
+        "endChar": 80
+      },
+      "revId": "b98ce5cbd16bc3142aca58ba6c23647fad16b03a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f337b9f1_b87bd282",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-05-01T18:09:25Z",
       "side": 1,
       "message": "You are passing this buffer just so that you can reuse it and you don\u0027t really need its content? Don\u0027t so that. Just have a local buffer for whatever you are using it for.",
+      "range": {
+        "startLine": 1123,
+        "startChar": 82,
+        "endLine": 1124,
+        "endChar": 49
+      },
+      "revId": "b98ce5cbd16bc3142aca58ba6c23647fad16b03a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ca50f4a_10e28977",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1124,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-01T20:32:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f337b9f1_b87bd282",
       "range": {
         "startLine": 1123,
         "startChar": 82,
