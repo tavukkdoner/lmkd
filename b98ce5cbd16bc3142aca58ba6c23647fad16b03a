@@ -128,6 +128,24 @@
       "parentUuid": "f8edd654_239bc81e",
       "revId": "b98ce5cbd16bc3142aca58ba6c23647fad16b03a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a3252ea0_5e3898dc",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1209,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-01T23:11:44Z",
+      "side": 1,
+      "message": "Done. We are no longer planning to refactor oom_score_adj writing code, per [this thread](https://android-review.googlesource.com/c/platform/system/memory/lmkd/+/3068766/comment/c59ff46d_d8c096cf/).",
+      "parentUuid": "ea92eb11_45157ad4",
+      "revId": "b98ce5cbd16bc3142aca58ba6c23647fad16b03a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
