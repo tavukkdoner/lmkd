@@ -46,6 +46,30 @@
       },
       "revId": "20de82dde24f5097d777b7a2681623b06a6f5206",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "68d0aa89_644d1977",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1165,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-01T22:22:51Z",
+      "side": 0,
+      "message": "Ah, I missed stats_store_taskname() usage. Ok, let\u0027s keep it this part as is. No need to over-optimize at the expense of clean interfaces.",
+      "parentUuid": "e12eb8b3_29d4957c",
+      "range": {
+        "startLine": 1158,
+        "startChar": 4,
+        "endLine": 1165,
+        "endChar": 5
+      },
+      "revId": "20de82dde24f5097d777b7a2681623b06a6f5206",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
