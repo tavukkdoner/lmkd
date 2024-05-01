@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "17101c07_428d0a6c",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1123,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-01T18:09:25Z",
+      "side": 1,
+      "message": "You are using these parameters only for the `if (use_inkernel_interface)` case. Instead just handle that case outside of this function and do not pass these additional parameters:\n```\nstatic void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred* cred) {\n...\n    if (use_inkernel_interface)\n        stats_store_taskname(...);\n    else\n        register_oom_adj_proc(params, cred);\n}\n```",
+      "range": {
+        "startLine": 1123,
+        "startChar": 34,
+        "endLine": 1123,
+        "endChar": 80
+      },
+      "revId": "b98ce5cbd16bc3142aca58ba6c23647fad16b03a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f337b9f1_b87bd282",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1124,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-01T18:09:25Z",
+      "side": 1,
+      "message": "You are passing this buffer just so that you can reuse it and you don\u0027t really need its content? Don\u0027t so that. Just have a local buffer for whatever you are using it for.",
+      "range": {
+        "startLine": 1123,
+        "startChar": 82,
+        "endLine": 1124,
+        "endChar": 49
+      },
+      "revId": "b98ce5cbd16bc3142aca58ba6c23647fad16b03a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
