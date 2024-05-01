@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c59ff46d_d8c096cf",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1165,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-01T20:59:27Z",
+      "side": 0,
+      "message": "let\u0027s factor this as a separate function too",
+      "range": {
+        "startLine": 1158,
+        "startChar": 4,
+        "endLine": 1165,
+        "endChar": 5
+      },
+      "revId": "20de82dde24f5097d777b7a2681623b06a6f5206",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
