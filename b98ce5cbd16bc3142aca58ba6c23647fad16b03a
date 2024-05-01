@@ -110,6 +110,24 @@
       "message": "We could pass the `path` array, from `cmd_procprio`, to remove the need of creating this buffer.",
       "revId": "b98ce5cbd16bc3142aca58ba6c23647fad16b03a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea92eb11_45157ad4",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1209,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-01T22:20:54Z",
+      "side": 1,
+      "message": "No, tricks like that only need to be employed in extreme situations when you are hitting memory limitation. You can instead refactor oom_score_adj writing code into a separate function and move `path` variable there to make its lifetime shorter and not overlap with this one.",
+      "parentUuid": "f8edd654_239bc81e",
+      "revId": "b98ce5cbd16bc3142aca58ba6c23647fad16b03a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
