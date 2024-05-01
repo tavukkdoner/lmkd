@@ -22,6 +22,30 @@
       },
       "revId": "20de82dde24f5097d777b7a2681623b06a6f5206",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e12eb8b3_29d4957c",
+        "filename": "lmkd.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1165,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-01T21:42:56Z",
+      "side": 0,
+      "message": "Looks like we use the `path` result for the `stats_store_taskname` below. So we wouldn\u0027t get the memory stack optimization with the refactor.\n\nAlternatively, we could pass the `path` array to the `register_oom_adj_proc()` to remove the need of the `char buf[LINE_MAX]` allocation. What do you think?",
+      "parentUuid": "c59ff46d_d8c096cf",
+      "range": {
+        "startLine": 1158,
+        "startChar": 4,
+        "endLine": 1165,
+        "endChar": 5
+      },
+      "revId": "20de82dde24f5097d777b7a2681623b06a6f5206",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
