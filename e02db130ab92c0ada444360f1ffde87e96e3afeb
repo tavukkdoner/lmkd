@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd9d3238_16332739",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1258,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-01T01:27:27Z",
+      "side": 1,
+      "message": "This unrelated reformatting should not be mixed with functional changes. Please make them in a separate CL.",
+      "range": {
+        "startLine": 1231,
+        "startChar": 7,
+        "endLine": 1258,
+        "endChar": 26
+      },
+      "revId": "e02db130ab92c0ada444360f1ffde87e96e3afeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
