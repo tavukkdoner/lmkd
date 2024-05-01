@@ -22,6 +22,30 @@
       },
       "revId": "e02db130ab92c0ada444360f1ffde87e96e3afeb",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6fdee27c_993d3c38",
+        "filename": "lmkd.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1258,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-01T05:30:55Z",
+      "side": 1,
+      "message": "Done. These formatting changes were made automatically by the clang-formatter.",
+      "parentUuid": "fd9d3238_16332739",
+      "range": {
+        "startLine": 1231,
+        "startChar": 7,
+        "endLine": 1258,
+        "endChar": 26
+      },
+      "revId": "e02db130ab92c0ada444360f1ffde87e96e3afeb",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
