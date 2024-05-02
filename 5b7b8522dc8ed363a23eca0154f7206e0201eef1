@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8137a604_cfb304b3",
+        "filename": "lmkd.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1249,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-02T21:29:19Z",
+      "side": 1,
+      "message": "This one holds process name and not a procfs path. It can be more than 64 bytes long.",
+      "range": {
+        "startLine": 1249,
+        "startChar": 21,
+        "endLine": 1249,
+        "endChar": 36
+      },
+      "revId": "5b7b8522dc8ed363a23eca0154f7206e0201eef1",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
