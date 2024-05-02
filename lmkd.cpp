@@ -120,6 +120,8 @@ static inline void trace_kill_end() {}
 #define STRINGIFY(x) STRINGIFY_INTERNAL(x)
 #define STRINGIFY_INTERNAL(x) #x
 
+#define PROCFS_PATH_MAX 64
+
 /*
  * Read lmk property with persist.device_config.lmkd_native.<name> overriding ro.lmk.<name>
  * persist.device_config.lmkd_native.* properties are being set by experiments. If a new property
@@ -1026,11 +1028,11 @@ static inline long get_time_diff_ms(struct timespec *from,
 
 /* Reads /proc/pid/status into buf. */
 static bool read_proc_status(int pid, char *buf, size_t buf_sz) {
-    char path[PATH_MAX];
+    char path[PROCFS_PATH_MAX];
     int fd;
     ssize_t size;
 
-    snprintf(path, PATH_MAX, "/proc/%d/status", pid);
+    snprintf(path, PROCFS_PATH_MAX, "/proc/%d/status", pid);
     fd = open(path, O_RDONLY | O_CLOEXEC);
     if (fd < 0) {
         return false;
@@ -1067,7 +1069,7 @@ static bool parse_status_tag(char *buf, const char *tag, int64_t *out) {
 }
 
 static int proc_get_size(int pid) {
-    char path[PATH_MAX];
+    char path[PROCFS_PATH_MAX];
     char line[LINE_MAX];
     int fd;
     int rss = 0;
@@ -1075,7 +1077,7 @@ static int proc_get_size(int pid) {
     ssize_t ret;
 
     /* gid containing AID_READPROC required */
-    snprintf(path, PATH_MAX, "/proc/%d/statm", pid);
+    snprintf(path, PROCFS_PATH_MAX, "/proc/%d/statm", pid);
     fd = open(path, O_RDONLY | O_CLOEXEC);
     if (fd == -1)
         return -1;
@@ -1093,13 +1095,13 @@ static int proc_get_size(int pid) {
 }
 
 static char *proc_get_name(int pid, char *buf, size_t buf_size) {
-    char path[PATH_MAX];
+    char path[PROCFS_PATH_MAX];
     int fd;
     char *cp;
     ssize_t ret;
 
     /* gid containing AID_READPROC required */
-    snprintf(path, PATH_MAX, "/proc/%d/cmdline", pid);
+    snprintf(path, PROCFS_PATH_MAX, "/proc/%d/cmdline", pid);
     fd = open(path, O_RDONLY | O_CLOEXEC);
     if (fd == -1) {
         return NULL;
@@ -1121,7 +1123,7 @@ static char *proc_get_name(int pid, char *buf, size_t buf_size) {
 
 static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred *cred) {
     struct proc *procp;
-    char path[LINE_MAX];
+    char path[PROCFS_PATH_MAX];
     char val[20];
     int soft_limit_mult;
     struct lmk_procprio params;
