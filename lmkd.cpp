@@ -1228,8 +1228,7 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred*
 
     lmkd_pack_get_procprio(packet, field_count, &params);
 
-    if (params.oomadj < OOM_SCORE_ADJ_MIN ||
-        params.oomadj > OOM_SCORE_ADJ_MAX) {
+    if (params.oomadj < OOM_SCORE_ADJ_MIN || params.oomadj > OOM_SCORE_ADJ_MAX) {
         ALOGE("Invalid PROCPRIO oomadj argument %d", params.oomadj);
         return;
     }
@@ -1243,7 +1242,8 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred*
     if (read_proc_status(params.pid, buf, sizeof(buf))) {
         if (parse_status_tag(buf, PROC_STATUS_TGID_FIELD, &tgid) && tgid != params.pid) {
             ALOGE("Attempt to register a task that is not a thread group leader "
-                  "(tid %d, tgid %" PRId64 ")", params.pid, tgid);
+                  "(tid %d, tgid %" PRId64 ")",
+                  params.pid, tgid);
             return;
         }
     }
@@ -1254,8 +1254,8 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred*
     snprintf(path, sizeof(path), "/proc/%d/oom_score_adj", params.pid);
     snprintf(val, sizeof(val), "%d", params.oomadj);
     if (!writefilestring(path, val, false)) {
-        ALOGW("Failed to open %s; errno=%d: process %d might have been killed",
-              path, errno, params.pid);
+        ALOGW("Failed to open %s; errno=%d: process %d might have been killed", path, errno,
+              params.pid);
         /* If this file does not exist the process is dead. */
         return;
     }
