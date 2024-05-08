@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fe752421_a32ca82c",
+        "filename": "include/lmkd.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-08T19:32:05Z",
+      "side": 1,
+      "message": "why do you need to fill up  params-\u003eprocs completely? You can specify that it will fill only procs_count entries.",
+      "range": {
+        "startLine": 358,
+        "startChar": 10,
+        "endLine": 363,
+        "endChar": 9
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "47e655da_1a0a2f85",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "include/lmkd.h",
+              "range": {
+                "startLine": 334,
+                "startChar": 0,
+                "endLine": 343,
+                "endChar": 0
+              },
+              "replacement": ""
+            },
+            {
+              "path": "include/lmkd.h",
+              "range": {
+                "startLine": 358,
+                "startChar": 0,
+                "endLine": 363,
+                "endChar": 0
+              },
+              "replacement": ""
+            }
+          ]
+        }
+      ],
+      "revId": "363d9810fb7c0e0956a25c605b5817660dea1bde",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a33a5168_0bc0d781",
+        "filename": "include/lmkd.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-08T19:32:05Z",
+      "side": 1,
+      "message": "You don\u0027t need to fill the struct and then copy it again just set params-\u003eprocs directly like this:\n\n```\nstruct lmk_procprio *proc \u003d \u0026params-\u003eprocs[0];\nfor (int procs_idx \u003d 0; procs_idx \u003c procs_count; procs_idx++, proc++) {\n        proc-\u003epid \u003d (pid_t)ntohl(packet[packetIdx++]);\n        proc-\u003euid \u003d (uid_t)ntohl(packet[packetIdx++]);\n        ...\n}\n```",
+      "range": {
+        "startLine": 364,
+        "startChar": 8,
+        "endLine": 364,
+        "endChar": 40
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "98c9880b_782e5df3",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "include/lmkd.h",
+              "range": {
+                "startLine": 351,
+                "startChar": 0,
+                "endLine": 365,
+                "endChar": 0
+              },
+              "replacement": "    struct lmk_procprio *proc \u003d \u0026params-\u003eprocs[0];\n    for (int procs_idx \u003d 0; procs_idx \u003c procs_count; procs_idx++, proc++) {\n        proc-\u003epid \u003d (pid_t)ntohl(packet[packetIdx++]);\n        proc-\u003euid \u003d (uid_t)ntohl(packet[packetIdx++]);\n        proc-\u003eoomadj \u003d ntohl(packet[packetIdx++]);\n        proc-\u003eptype \u003d (enum proc_type)ntohl(packet[packetIdx++]);\n"
+            }
+          ]
+        }
+      ],
+      "revId": "363d9810fb7c0e0956a25c605b5817660dea1bde",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
