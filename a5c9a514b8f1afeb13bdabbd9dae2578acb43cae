@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7b6f62db_4d399296",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-09T19:59:51Z",
+      "side": 1,
+      "message": "This description is way too complex and dependent on the future work. I would suggest:\n```\nRefactor cmd_procprio() to reuse its main functionality for bulk updates later on.\n```",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 50
+      },
+      "revId": "a5c9a514b8f1afeb13bdabbd9dae2578acb43cae",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
