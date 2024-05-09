@@ -3,6 +3,47 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5b41fd38_a0866d53",
+        "filename": "include/lmkd.h",
+        "patchSetId": 17
+      },
+      "lineNbr": 328,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-09T21:38:00Z",
+      "side": 1,
+      "message": "Should be `struct lmk_procprio`",
+      "range": {
+        "startLine": 328,
+        "startChar": 61,
+        "endLine": 328,
+        "endChar": 73
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "8f1b1d6a_03abeae8",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "include/lmkd.h",
+              "range": {
+                "startLine": 328,
+                "startChar": 0,
+                "endLine": 329,
+                "endChar": 0
+              },
+              "replacement": "#define PROCS_PRIO_MAX_SIZE ((CTRL_PACKET_MAX_SIZE) / sizeof(struct lmk_procprio))\n"
+            }
+          ]
+        }
+      ],
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3d4a0f7f_69423e38",
         "filename": "include/lmkd.h",
         "patchSetId": 17
