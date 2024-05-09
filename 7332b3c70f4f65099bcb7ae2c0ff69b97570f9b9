@@ -22,6 +22,285 @@
       },
       "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea2aef4b_43d16389",
+        "filename": "include/lmkd.h",
+        "patchSetId": 17
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-09T20:26:12Z",
+      "side": 1,
+      "message": "I think we should do that once we have more data on average bulk allocation sizes. Otherwise we will be guessing what this number should be. Maybe we can get this data from telemetry?",
+      "parentUuid": "3d4a0f7f_69423e38",
+      "range": {
+        "startLine": 331,
+        "startChar": 30,
+        "endLine": 331,
+        "endChar": 49
+      },
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5c8dc566_cde9df75",
+        "filename": "include/lmkd.h",
+        "patchSetId": 17
+      },
+      "lineNbr": 339,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-09T20:26:12Z",
+      "side": 1,
+      "message": "why not just `const int`?",
+      "range": {
+        "startLine": 339,
+        "startChar": 44,
+        "endLine": 339,
+        "endChar": 54
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "f7123228_fde7762d",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "include/lmkd.h",
+              "range": {
+                "startLine": 339,
+                "startChar": 0,
+                "endLine": 340,
+                "endChar": 0
+              },
+              "replacement": "                                            const int procs_count) {\n"
+            },
+            {
+              "path": "include/lmkd.h",
+              "range": {
+                "startLine": 356,
+                "startChar": 0,
+                "endLine": 357,
+                "endChar": 0
+              },
+              "replacement": "                                              const int procs_count) {\n"
+            }
+          ]
+        }
+      ],
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ee8657e_928e2768",
+        "filename": "include/lmkd.h",
+        "patchSetId": 17
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-09T20:26:12Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 356,
+        "startChar": 46,
+        "endLine": 356,
+        "endChar": 68
+      },
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ee28bfc0_bf8937a1",
+        "filename": "liblmkd_utils.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-09T20:26:12Z",
+      "side": 1,
+      "message": "`const int`",
+      "range": {
+        "startLine": 57,
+        "startChar": 65,
+        "endLine": 57,
+        "endChar": 75
+      },
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3575948d_771a578d",
+        "filename": "liblmkd_utils.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-09T20:26:12Z",
+      "side": 1,
+      "message": "I would move it right after `lmkd_register_proc`",
+      "range": {
+        "startLine": 57,
+        "startChar": 4,
+        "endLine": 57,
+        "endChar": 23
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "3aed5de4_16826a42",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "liblmkd_utils.cpp",
+              "range": {
+                "startLine": 46,
+                "startChar": 0,
+                "endLine": 47,
+                "endChar": 0
+              },
+              "replacement": "int lmkd_register_procs(int sock, struct lmk_procs_prio* params, const int\u0026 proc_count) {\n"
+            },
+            {
+              "path": "liblmkd_utils.cpp",
+              "range": {
+                "startLine": 51,
+                "startChar": 0,
+                "endLine": 52,
+                "endChar": 0
+              },
+              "replacement": "    size \u003d lmkd_pack_set_procs_prio(packet, params, proc_count);\n"
+            },
+            {
+              "path": "liblmkd_utils.cpp",
+              "range": {
+                "startLine": 57,
+                "startChar": 0,
+                "endLine": 58,
+                "endChar": 0
+              },
+              "replacement": "int lmkd_unregister_proc(int sock, struct lmk_procremove *params) {\n"
+            },
+            {
+              "path": "liblmkd_utils.cpp",
+              "range": {
+                "startLine": 62,
+                "startChar": 0,
+                "endLine": 63,
+                "endChar": 0
+              },
+              "replacement": "    size \u003d lmkd_pack_set_procremove(packet, params);\n"
+            }
+          ]
+        }
+      ],
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b79dab1_29e9a353",
+        "filename": "lmkd.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 1647,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-09T20:26:12Z",
+      "side": 1,
+      "message": "Why can\u0027t these checks and calculations be done inside lmkd_pack_get_procs_prio()? We can pass packer and nargs directly to that function and make it calculate the number of lmk_procprio records. That way if lmk_procprio format/size changes we will have to change in one place only.\n\n```\nprocs_count \u003d lmkd_pack_get_procs_prio(packet, \u0026params, nargs);\nif (procs_count \u003c 0) // packet format was invalid\n```",
+      "range": {
+        "startLine": 1642,
+        "startChar": 8,
+        "endLine": 1647,
+        "endChar": 37
+      },
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea8a5d85_d1446564",
+        "filename": "tests/lmkd_tests.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-09T20:26:12Z",
+      "side": 1,
+      "message": "why?",
+      "range": {
+        "startLine": 299,
+        "startChar": 8,
+        "endLine": 299,
+        "endChar": 27
+      },
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "43fc52b5_0c779e3b",
+        "filename": "tests/lmkd_tests.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-09T20:26:12Z",
+      "side": 1,
+      "message": "This is fragile. Instead you could send some request which requires response from LMKD and wait for it to arrive. LMKD serves requests in the order it receives them, so once you get the reply you know previous requests were served (unless io_uring can execute asynchronously?). I would suggest some harmless request requiring a reply from LMKD, like LMK_GETKILLCNT.",
+      "range": {
+        "startLine": 314,
+        "startChar": 4,
+        "endLine": 314,
+        "endChar": 13
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "d0f13790_fc185e1d",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "tests/lmkd_tests.cpp",
+              "range": {
+                "startLine": 314,
+                "startChar": 0,
+                "endLine": 315,
+                "endChar": 0
+              },
+              "replacement": "    struct lmk_getkillcnt getkillcnt_request;\n    getkillcnt_request.uid \u003d parent_uid;\n    ASSERT_FALSE(lmkd_getkillcnt(sock, \u0026getkillcnt_request) \u003c 0)\n            \u003c\u003c \"Failed to communicate with lmkd, err\u003d\" \u003c\u003c strerror(errno);\n"
+            }
+          ]
+        }
+      ],
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
