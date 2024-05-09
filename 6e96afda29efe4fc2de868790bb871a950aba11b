@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ac0901c_7ff88804",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1810,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-09T20:34:55Z",
+      "side": 1,
+      "message": "Is there any other way to detect if io_uring is supported by the kernel? Using kernel version to detect a feature is fragile. We often backports some useful features and that would break this check. A quick Google search yields this alternative:\n```\nif (syscall(__NR_io_uring_register, 0, IORING_UNREGISTER_BUFFERS, NULL, 0) \u0026\u0026 errno \u003d\u003d ENOSYS) {\n    // No io_uring\n} else {\n    // io_uring\n}\n```\nAnd of course this should be done during init and result stored so that we do not call this syscall for every LMK_PROCS_PRIO packet.",
+      "range": {
+        "startLine": 1810,
+        "startChar": 12,
+        "endLine": 1810,
+        "endChar": 30
+      },
+      "revId": "6e96afda29efe4fc2de868790bb871a950aba11b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d4e2d34c_5d0a7c3d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1814,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-09T20:34:55Z",
+      "side": 1,
+      "message": "You are duplicating this call here and inside cmd_procs_prio(). Why not check for isIoUringSupported inside cmd_procs_prio() and have separate case handling in there?",
+      "range": {
+        "startLine": 1814,
+        "startChar": 11,
+        "endLine": 1814,
+        "endChar": 74
+      },
+      "revId": "6e96afda29efe4fc2de868790bb871a950aba11b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
