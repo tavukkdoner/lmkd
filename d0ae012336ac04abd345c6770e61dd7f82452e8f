@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8371d8d1_1a8fb07f",
+        "filename": "lmkd.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1222,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-09T23:24:29Z",
+      "side": 1,
+      "message": "Oh, this will copy the structure. Please change it to `const struct lmk_procprio\u0026 params`",
+      "range": {
+        "startLine": 1222,
+        "startChar": 28,
+        "endLine": 1222,
+        "endChar": 54
+      },
+      "revId": "d0ae012336ac04abd345c6770e61dd7f82452e8f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
