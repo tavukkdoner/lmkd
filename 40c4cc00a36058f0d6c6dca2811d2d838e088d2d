@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4fccb163_a34efeab",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1489,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-10T17:18:28Z",
+      "side": 1,
+      "message": "`const int`",
+      "range": {
+        "startLine": 1489,
+        "startChar": 76,
+        "endLine": 1489,
+        "endChar": 86
+      },
+      "revId": "40c4cc00a36058f0d6c6dca2811d2d838e088d2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "20998783_eb96d134",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1537,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-10T17:18:28Z",
+      "side": 1,
+      "message": "what if all params were invalid or `open` failed for all of them and `num_requests` \nis 0?",
+      "range": {
+        "startLine": 1537,
+        "startChar": 10,
+        "endLine": 1537,
+        "endChar": 25
+      },
+      "revId": "40c4cc00a36058f0d6c6dca2811d2d838e088d2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc6c2bda_9305d7ed",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1543,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-10T17:18:28Z",
+      "side": 1,
+      "message": "Just use the standard `for (int i \u003d 0; i \u003c num_requests; i++)`. It will save you headache in the future.",
+      "range": {
+        "startLine": 1543,
+        "startChar": 4,
+        "endLine": 1543,
+        "endChar": 44
+      },
+      "revId": "40c4cc00a36058f0d6c6dca2811d2d838e088d2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "84908490_6be33d60",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1604,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-10T17:18:28Z",
+      "side": 1,
+      "message": "same, need to handle `num_requests \u003d\u003d 0` case.",
+      "range": {
+        "startLine": 1604,
+        "startChar": 10,
+        "endLine": 1604,
+        "endChar": 25
+      },
+      "revId": "40c4cc00a36058f0d6c6dca2811d2d838e088d2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f6184399_ac35ed83",
+        "filename": "lmkd.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 1611,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-10T17:18:28Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 1611,
+        "startChar": 9,
+        "endLine": 1611,
+        "endChar": 43
+      },
+      "revId": "40c4cc00a36058f0d6c6dca2811d2d838e088d2d",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
