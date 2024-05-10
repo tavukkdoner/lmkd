@@ -36,8 +36,11 @@
 
 #include <algorithm>
 #include <array>
+#include <memory>
 #include <shared_mutex>
+#include <vector>
 
+#include <bpf/WaitForProgsLoaded.h>
 #include <cutils/properties.h>
 #include <cutils/sockets.h>
 #include <liblmkd_utils.h>
@@ -46,6 +49,7 @@
 #include <log/log.h>
 #include <log/log_event_list.h>
 #include <log/log_time.h>
+#include <memevents/memevents.h>
 #include <private/android_filesystem_config.h>
 #include <processgroup/processgroup.h>
 #include <psi/psi.h>
@@ -91,9 +95,9 @@ static inline void trace_kill_end() {}
 #define PROC_STATUS_TGID_FIELD "Tgid:"
 #define PROC_STATUS_RSS_FIELD "VmRSS:"
 #define PROC_STATUS_SWAP_FIELD "VmSwap:"
-#define LINE_MAX 128
 
 #define PERCEPTIBLE_APP_ADJ 200
+#define PREVIOUS_APP_ADJ 700
 
 /* Android Logger event logtags (see event.logtags) */
 #define KILLINFO_LOG_TAG 10195355
@@ -115,6 +119,8 @@ static inline void trace_kill_end() {}
 
 #define STRINGIFY(x) STRINGIFY_INTERNAL(x)
 #define STRINGIFY_INTERNAL(x) #x
+
+#define PROCFS_PATH_MAX 64
 
 /*
  * Read lmk property with persist.device_config.lmkd_native.<name> overriding ro.lmk.<name>
@@ -156,6 +162,12 @@ static inline void trace_kill_end() {}
 #define DEF_PARTIAL_STALL 70
 /* ro.lmk.psi_complete_stall_ms property defaults */
 #define DEF_COMPLETE_STALL 700
+/* ro.lmk.direct_reclaim_threshold_ms property defaults */
+#define DEF_DIRECT_RECL_THRESH_MS 0
+/* ro.lmk.swap_compression_ratio property defaults */
+#define DEF_SWAP_COMP_RATIO 1
+/* ro.lmk.lowmem_min_oom_score defaults */
+#define DEF_LOWMEM_MIN_SCORE (PREVIOUS_APP_ADJ + 1)
 
 #define LMKD_REINIT_PROP "lmkd.reinit"
 
@@ -189,11 +201,18 @@ struct psi_threshold {
     int threshold_ms;
 };
 
+/* Listener for direct reclaim and kswapd state changes */
+static std::unique_ptr<android::bpf::memevents::MemEventListener> memevent_listener(nullptr);
+static struct timespec direct_reclaim_start_tm;
+static struct timespec kswapd_start_tm;
+
 static int level_oomadj[VMPRESS_LEVEL_COUNT];
 static int mpevfd[VMPRESS_LEVEL_COUNT] = { -1, -1, -1 };
 static bool pidfd_supported;
 static int last_kill_pid_or_fd = -1;
 static struct timespec last_kill_tm;
+static bool monitors_initialized;
+static bool boot_completed_handled = false;
 
 /* lmkd configurable parameters */
 static bool debug_process_killing;
@@ -203,6 +222,7 @@ static int64_t downgrade_pressure;
 static bool low_ram_device;
 static bool kill_heaviest_task;
 static unsigned long kill_timeout_ms;
+static int pressure_after_kill_min_score;
 static bool use_minfree_levels;
 static bool per_app_memcg;
 static int swap_free_low_percentage;
@@ -216,6 +236,10 @@ static int64_t filecache_min_kb;
 static int64_t stall_limit_critical;
 static bool use_psi_monitors = false;
 static int kpoll_fd;
+static bool delay_monitors_until_boot;
+static int direct_reclaim_threshold_ms;
+static int swap_compression_ratio;
+static int lowmem_min_oom_score;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
     { PSI_SOME, 70 },    /* 70ms out of 1sec for partial stall */
     { PSI_SOME, 100 },   /* 100ms out of 1sec for partial stall */
@@ -275,8 +299,9 @@ static struct event_handler_info vmpressure_hinfo[VMPRESS_LEVEL_COUNT];
 /*
  * 1 ctrl listen socket, 3 ctrl data socket, 3 memory pressure levels,
  * 1 lmk events + 1 fd to wait for process death + 1 fd to receive kill failure notifications
+ * + 1 fd to receive memevent_listener notifications
  */
-#define MAX_EPOLL_EVENTS (1 + MAX_DATA_CONN + VMPRESS_LEVEL_COUNT + 1 + 1 + 1)
+#define MAX_EPOLL_EVENTS (1 + MAX_DATA_CONN + VMPRESS_LEVEL_COUNT + 1 + 1 + 1 + 1)
 static int epollfd;
 static int maxevents;
 
@@ -465,6 +490,7 @@ enum vmstat_field {
     VS_PGSCAN_KSWAPD,
     VS_PGSCAN_DIRECT,
     VS_PGSCAN_DIRECT_THROTTLE,
+    VS_PGREFILL,
     VS_FIELD_COUNT
 };
 
@@ -477,6 +503,7 @@ static const char* const vmstat_field_names[VS_FIELD_COUNT] = {
     "pgscan_kswapd",
     "pgscan_direct",
     "pgscan_direct_throttle",
+    "pgrefill",
 };
 
 union vmstat {
@@ -489,6 +516,7 @@ union vmstat {
         int64_t pgscan_kswapd;
         int64_t pgscan_direct;
         int64_t pgscan_direct_throttle;
+        int64_t pgrefill;
     } field;
     int64_t arr[VS_FIELD_COUNT];
 };
@@ -545,12 +573,13 @@ static uint16_t killcnt[MAX_DISTINCT_OOM_ADJ];
 static int killcnt_free_idx = 0;
 static uint32_t killcnt_total = 0;
 
-/* PAGE_SIZE / 1024 */
-static long page_k;
+static int pagesize;
+static long page_k; /* page size in kB */
 
 static bool update_props();
 static bool init_monitors();
 static void destroy_monitors();
+static bool init_memevent_listener_monitoring();
 
 static int clamp(int low, int high, int value) {
     return std::max(std::min(value, high), low);
@@ -622,7 +651,7 @@ static ssize_t read_all(int fd, char *buf, size_t max_len)
  */
 static char *reread_file(struct reread_data *data) {
     /* start with page-size buffer and increase if needed */
-    static ssize_t buf_size = PAGE_SIZE;
+    static ssize_t buf_size = pagesize;
     static char *new_buf, *buf = NULL;
     ssize_t size;
 
@@ -810,22 +839,6 @@ static void stats_write_lmk_kill_occurred_pid(int pid, struct kill_stat *kill_st
     }
 }
 
-/*
- * Write the state_changed over the data socket to be propagated via AMS to statsd
- */
-static void stats_write_lmk_state_changed(enum lmk_state state) {
-    LMKD_CTRL_PACKET packet_state_changed;
-    const size_t len = lmkd_pack_set_state_changed(packet_state_changed, state);
-    if (len == 0) {
-        return;
-    }
-    for (int i = 0; i < MAX_DATA_CONN; i++) {
-        if (data_sock[i].sock >= 0 && data_sock[i].async_event_mask & 1 << LMK_ASYNC_EVENT_STAT) {
-            ctrl_data_write(i, (char*)packet_state_changed, len);
-        }
-    }
-}
-
 static void poll_kernel(int poll_fd) {
     if (poll_fd == -1) {
         // not waiting
@@ -859,7 +872,7 @@ static void poll_kernel(int poll_fd) {
         if (fields_read == 10 && group_leader_pid == pid) {
             ctrl_data_write_lmk_kill_occurred((pid_t)pid, (uid_t)uid);
             mem_st.process_start_time_ns = starttime * (NS_PER_SEC / sysconf(_SC_CLK_TCK));
-            mem_st.rss_in_bytes = rss_in_pages * PAGE_SIZE;
+            mem_st.rss_in_bytes = rss_in_pages * pagesize;
 
             struct kill_stat kill_st = {
                 .uid = static_cast<int32_t>(uid),
@@ -1018,11 +1031,11 @@ static inline long get_time_diff_ms(struct timespec *from,
 
 /* Reads /proc/pid/status into buf. */
 static bool read_proc_status(int pid, char *buf, size_t buf_sz) {
-    char path[PATH_MAX];
+    char path[PROCFS_PATH_MAX];
     int fd;
     ssize_t size;
 
-    snprintf(path, PATH_MAX, "/proc/%d/status", pid);
+    snprintf(path, PROCFS_PATH_MAX, "/proc/%d/status", pid);
     fd = open(path, O_RDONLY | O_CLOEXEC);
     if (fd < 0) {
         return false;
@@ -1059,7 +1072,7 @@ static bool parse_status_tag(char *buf, const char *tag, int64_t *out) {
 }
 
 static int proc_get_size(int pid) {
-    char path[PATH_MAX];
+    char path[PROCFS_PATH_MAX];
     char line[LINE_MAX];
     int fd;
     int rss = 0;
@@ -1067,7 +1080,7 @@ static int proc_get_size(int pid) {
     ssize_t ret;
 
     /* gid containing AID_READPROC required */
-    snprintf(path, PATH_MAX, "/proc/%d/statm", pid);
+    snprintf(path, PROCFS_PATH_MAX, "/proc/%d/statm", pid);
     fd = open(path, O_RDONLY | O_CLOEXEC);
     if (fd == -1)
         return -1;
@@ -1085,13 +1098,13 @@ static int proc_get_size(int pid) {
 }
 
 static char *proc_get_name(int pid, char *buf, size_t buf_size) {
-    char path[PATH_MAX];
+    char path[PROCFS_PATH_MAX];
     int fd;
     char *cp;
     ssize_t ret;
 
     /* gid containing AID_READPROC required */
-    snprintf(path, PATH_MAX, "/proc/%d/cmdline", pid);
+    snprintf(path, PROCFS_PATH_MAX, "/proc/%d/cmdline", pid);
     fd = open(path, O_RDONLY | O_CLOEXEC);
     if (fd == -1) {
         return NULL;
@@ -1111,21 +1124,111 @@ static char *proc_get_name(int pid, char *buf, size_t buf_size) {
     return buf;
 }
 
-static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred *cred) {
-    struct proc *procp;
-    char path[LINE_MAX];
+static void register_oom_adj_proc(const struct lmk_procprio& proc, struct ucred* cred) {
     char val[20];
     int soft_limit_mult;
-    struct lmk_procprio params;
     bool is_system_server;
     struct passwd *pwdrec;
+    struct proc* procp;
+    int oom_adj_score = proc.oomadj;
+
+    /* lmkd should not change soft limits for services */
+    if (proc.ptype == PROC_TYPE_APP && per_app_memcg) {
+        if (proc.oomadj >= 900) {
+            soft_limit_mult = 0;
+        } else if (proc.oomadj >= 800) {
+            soft_limit_mult = 0;
+        } else if (proc.oomadj >= 700) {
+            soft_limit_mult = 0;
+        } else if (proc.oomadj >= 600) {
+            // Launcher should be perceptible, don't kill it.
+            oom_adj_score = 200;
+            soft_limit_mult = 1;
+        } else if (proc.oomadj >= 500) {
+            soft_limit_mult = 0;
+        } else if (proc.oomadj >= 400) {
+            soft_limit_mult = 0;
+        } else if (proc.oomadj >= 300) {
+            soft_limit_mult = 1;
+        } else if (proc.oomadj >= 200) {
+            soft_limit_mult = 8;
+        } else if (proc.oomadj >= 100) {
+            soft_limit_mult = 10;
+        } else if (proc.oomadj >= 0) {
+            soft_limit_mult = 20;
+        } else {
+            // Persistent processes will have a large
+            // soft limit 512MB.
+            soft_limit_mult = 64;
+        }
+
+        std::string soft_limit_path;
+        if (!CgroupGetAttributePathForTask("MemSoftLimit", proc.pid, &soft_limit_path)) {
+            ALOGE("Querying MemSoftLimit path failed");
+            return;
+        }
+
+        snprintf(val, sizeof(val), "%d", soft_limit_mult * EIGHT_MEGA);
+
+        /*
+         * system_server process has no memcg under /dev/memcg/apps but should be
+         * registered with lmkd. This is the best way so far to identify it.
+         */
+        is_system_server = (oom_adj_score == SYSTEM_ADJ && (pwdrec = getpwnam("system")) != NULL &&
+                            proc.uid == pwdrec->pw_uid);
+        writefilestring(soft_limit_path.c_str(), val, !is_system_server);
+    }
+
+    procp = pid_lookup(proc.pid);
+    if (!procp) {
+        int pidfd = -1;
+
+        if (pidfd_supported) {
+            pidfd = TEMP_FAILURE_RETRY(pidfd_open(proc.pid, 0));
+            if (pidfd < 0) {
+                ALOGE("pidfd_open for pid %d failed; errno=%d", proc.pid, errno);
+                return;
+            }
+        }
+
+        procp = static_cast<struct proc*>(calloc(1, sizeof(struct proc)));
+        if (!procp) {
+            // Oh, the irony.  May need to rebuild our state.
+            return;
+        }
+
+        procp->pid = proc.pid;
+        procp->pidfd = pidfd;
+        procp->uid = proc.uid;
+        procp->reg_pid = cred->pid;
+        procp->oomadj = oom_adj_score;
+        procp->valid = true;
+        proc_insert(procp);
+    } else {
+        if (!claim_record(procp, cred->pid)) {
+            char buf[LINE_MAX];
+            char *taskname = proc_get_name(cred->pid, buf, sizeof(buf));
+            /* Only registrant of the record can remove it */
+            ALOGE("%s (%d, %d) attempts to modify a process registered by another client",
+                taskname ? taskname : "A process ", cred->uid, cred->pid);
+            return;
+        }
+        proc_unslot(procp);
+        procp->oomadj = oom_adj_score;
+        proc_slot(procp);
+    }
+}
+
+static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred* cred) {
+    char path[PROCFS_PATH_MAX];
+    char val[20];
+    struct lmk_procprio params;
     int64_t tgid;
-    char buf[PAGE_SIZE];
+    char buf[pagesize];
 
     lmkd_pack_get_procprio(packet, field_count, &params);
 
-    if (params.oomadj < OOM_SCORE_ADJ_MIN ||
-        params.oomadj > OOM_SCORE_ADJ_MAX) {
+    if (params.oomadj < OOM_SCORE_ADJ_MIN || params.oomadj > OOM_SCORE_ADJ_MAX) {
         ALOGE("Invalid PROCPRIO oomadj argument %d", params.oomadj);
         return;
     }
@@ -1139,7 +1242,8 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
     if (read_proc_status(params.pid, buf, sizeof(buf))) {
         if (parse_status_tag(buf, PROC_STATUS_TGID_FIELD, &tgid) && tgid != params.pid) {
             ALOGE("Attempt to register a task that is not a thread group leader "
-                  "(tid %d, tgid %" PRId64 ")", params.pid, tgid);
+                  "(tid %d, tgid %" PRId64 ")",
+                  params.pid, tgid);
             return;
         }
     }
@@ -1150,8 +1254,8 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
     snprintf(path, sizeof(path), "/proc/%d/oom_score_adj", params.pid);
     snprintf(val, sizeof(val), "%d", params.oomadj);
     if (!writefilestring(path, val, false)) {
-        ALOGW("Failed to open %s; errno=%d: process %d might have been killed",
-              path, errno, params.pid);
+        ALOGW("Failed to open %s; errno=%d: process %d might have been killed", path, errno,
+              params.pid);
         /* If this file does not exist the process is dead. */
         return;
     }
@@ -1161,92 +1265,7 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred 
         return;
     }
 
-    /* lmkd should not change soft limits for services */
-    if (params.ptype == PROC_TYPE_APP && per_app_memcg) {
-        if (params.oomadj >= 900) {
-            soft_limit_mult = 0;
-        } else if (params.oomadj >= 800) {
-            soft_limit_mult = 0;
-        } else if (params.oomadj >= 700) {
-            soft_limit_mult = 0;
-        } else if (params.oomadj >= 600) {
-            // Launcher should be perceptible, don't kill it.
-            params.oomadj = 200;
-            soft_limit_mult = 1;
-        } else if (params.oomadj >= 500) {
-            soft_limit_mult = 0;
-        } else if (params.oomadj >= 400) {
-            soft_limit_mult = 0;
-        } else if (params.oomadj >= 300) {
-            soft_limit_mult = 1;
-        } else if (params.oomadj >= 200) {
-            soft_limit_mult = 8;
-        } else if (params.oomadj >= 100) {
-            soft_limit_mult = 10;
-        } else if (params.oomadj >=   0) {
-            soft_limit_mult = 20;
-        } else {
-            // Persistent processes will have a large
-            // soft limit 512MB.
-            soft_limit_mult = 64;
-        }
-
-        std::string path;
-        if (!CgroupGetAttributePathForTask("MemSoftLimit", params.pid, &path)) {
-            ALOGE("Querying MemSoftLimit path failed");
-            return;
-        }
-
-        snprintf(val, sizeof(val), "%d", soft_limit_mult * EIGHT_MEGA);
-
-        /*
-         * system_server process has no memcg under /dev/memcg/apps but should be
-         * registered with lmkd. This is the best way so far to identify it.
-         */
-        is_system_server = (params.oomadj == SYSTEM_ADJ &&
-                            (pwdrec = getpwnam("system")) != NULL &&
-                            params.uid == pwdrec->pw_uid);
-        writefilestring(path.c_str(), val, !is_system_server);
-    }
-
-    procp = pid_lookup(params.pid);
-    if (!procp) {
-        int pidfd = -1;
-
-        if (pidfd_supported) {
-            pidfd = TEMP_FAILURE_RETRY(pidfd_open(params.pid, 0));
-            if (pidfd < 0) {
-                ALOGE("pidfd_open for pid %d failed; errno=%d", params.pid, errno);
-                return;
-            }
-        }
-
-        procp = static_cast<struct proc*>(calloc(1, sizeof(struct proc)));
-        if (!procp) {
-            // Oh, the irony.  May need to rebuild our state.
-            return;
-        }
-
-        procp->pid = params.pid;
-        procp->pidfd = pidfd;
-        procp->uid = params.uid;
-        procp->reg_pid = cred->pid;
-        procp->oomadj = params.oomadj;
-        procp->valid = true;
-        proc_insert(procp);
-    } else {
-        if (!claim_record(procp, cred->pid)) {
-            char buf[LINE_MAX];
-            char *taskname = proc_get_name(cred->pid, buf, sizeof(buf));
-            /* Only registrant of the record can remove it */
-            ALOGE("%s (%d, %d) attempts to modify a process registered by another client",
-                taskname ? taskname : "A process ", cred->uid, cred->pid);
-            return;
-        }
-        proc_unslot(procp);
-        procp->oomadj = params.oomadj;
-        proc_slot(procp);
-    }
+    register_oom_adj_proc(params, cred);
 }
 
 static void cmd_procremove(LMKD_CTRL_PACKET packet, struct ucred *cred) {
@@ -1526,7 +1545,7 @@ static void ctrl_command_handler(int dsock_idx) {
             goto wronglen;
         result = -1;
         if (update_props()) {
-            if (!use_inkernel_interface) {
+            if (!use_inkernel_interface && monitors_initialized) {
                 /* Reinitialize monitors to apply new settings */
                 destroy_monitors();
                 if (init_monitors()) {
@@ -1534,6 +1553,11 @@ static void ctrl_command_handler(int dsock_idx) {
                 }
             } else {
                 result = 0;
+            }
+
+            if (direct_reclaim_threshold_ms > 0 && !memevent_listener) {
+                ALOGW("Kernel support for direct_reclaim_threshold_ms is not found");
+                direct_reclaim_threshold_ms = 0;
             }
         }
 
@@ -1547,6 +1571,56 @@ static void ctrl_command_handler(int dsock_idx) {
             /* New settings can't be supported, crash to be restarted */
             ALOGE("New configuration is not supported. Exiting...");
             exit(1);
+        }
+        break;
+    case LMK_START_MONITORING:
+        if (nargs != 0)
+            goto wronglen;
+        // Registration is needed only if it was skipped earlier.
+        if (monitors_initialized)
+            return;
+        if (!property_get_bool("sys.boot_completed", false)) {
+            ALOGE("LMK_START_MONITORING cannot be handled before boot completed");
+            return;
+        }
+
+        if (!init_monitors()) {
+            /* Failure to start psi monitoring, crash to be restarted */
+            ALOGE("Failure to initialize monitoring. Exiting...");
+            exit(1);
+        }
+        ALOGI("Initialized monitors after boot completed.");
+        break;
+    case LMK_BOOT_COMPLETED:
+        if (nargs != 0) goto wronglen;
+
+        if (boot_completed_handled) {
+            /* Notify we have already handled post boot-up operations */
+            result = 1;
+        } else if (!property_get_bool("sys.boot_completed", false)) {
+            ALOGE("LMK_BOOT_COMPLETED cannot be handled before boot completed");
+            result = -1;
+        } else {
+            /*
+             * Initialize the memevent listener after boot is completed to prevent
+             * waiting, during boot-up, for BPF programs to be loaded.
+             */
+            if (init_memevent_listener_monitoring()) {
+                ALOGI("Using memevents for direct reclaim and kswapd detection");
+            } else {
+                ALOGI("Using vmstats for direct reclaim and kswapd detection");
+                if (direct_reclaim_threshold_ms > 0) {
+                    ALOGW("Kernel support for direct_reclaim_threshold_ms is not found");
+                    direct_reclaim_threshold_ms = 0;
+                }
+            }
+            result = 0;
+            boot_completed_handled = true;
+        }
+
+        len = lmkd_pack_set_boot_completed_notif_repl(packet, result);
+        if (ctrl_data_write(dsock_idx, (char*)packet, len) != len) {
+            ALOGE("Failed to report boot-completed operation results");
         }
         break;
     default:
@@ -1886,8 +1960,12 @@ static int meminfo_parse(union meminfo *mi) {
 // from the free memory or reclaimed. Use the lowest of free_swap and easily available memory to
 // measure free swap because they represent how much swap space the system will consider to use
 // and how much it can actually use.
+// Swap compression ratio in the calculation can be adjusted using swap_compression_ratio tunable.
+// By setting swap_compression_ratio to 0, available memory can be ignored.
 static inline int64_t get_free_swap(union meminfo *mi) {
-    return std::min(mi->field.free_swap, mi->field.easy_available);
+    if (swap_compression_ratio)
+        return std::min(mi->field.free_swap, mi->field.easy_available * swap_compression_ratio);
+    return mi->field.free_swap;
 }
 
 /* /proc/vmstat parsing routines */
@@ -1968,24 +2046,24 @@ static int psi_parse(struct reread_data *file_data, struct psi_stats stats[], bo
 
 static int psi_parse_mem(struct psi_data *psi_data) {
     static struct reread_data file_data = {
-        .filename = PSI_PATH_MEMORY,
-        .fd = -1,
+            .filename = psi_resource_file[PSI_MEMORY],
+            .fd = -1,
     };
     return psi_parse(&file_data, psi_data->mem_stats, true);
 }
 
 static int psi_parse_io(struct psi_data *psi_data) {
     static struct reread_data file_data = {
-        .filename = PSI_PATH_IO,
-        .fd = -1,
+            .filename = psi_resource_file[PSI_IO],
+            .fd = -1,
     };
     return psi_parse(&file_data, psi_data->io_stats, true);
 }
 
 static int psi_parse_cpu(struct psi_data *psi_data) {
     static struct reread_data file_data = {
-        .filename = PSI_PATH_CPU,
-        .fd = -1,
+            .filename = psi_resource_file[PSI_CPU],
+            .fd = -1,
     };
     return psi_parse(&file_data, psi_data->cpu_stats, false);
 }
@@ -2315,7 +2393,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     int64_t tgid;
     int64_t rss_kb;
     int64_t swap_kb;
-    char buf[PAGE_SIZE];
+    char buf[pagesize];
     char desc[LINE_MAX];
 
     if (!procp->valid || !read_proc_status(pid, buf, sizeof(buf))) {
@@ -2348,7 +2426,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     snprintf(desc, sizeof(desc), "lmk,%d,%d,%d,%d,%d", pid, ki ? (int)ki->kill_reason : -1,
              procp->oomadj, min_oom_score, ki ? ki->max_thrashing : -1);
 
-    result = lmkd_free_memory_before_kill_hook(procp, rss_kb / page_k, min_oom_score,
+    result = lmkd_free_memory_before_kill_hook(procp, rss_kb / page_k, procp->oomadj,
                                                ki ? (int)ki->kill_reason : -1);
     if (result > 0) {
       /*
@@ -2423,7 +2501,6 @@ static int find_and_kill_process(int min_score_adj, struct kill_info *ki, union 
                                  struct psi_data *pd) {
     int i;
     int killed_size = 0;
-    bool lmk_state_change_start = false;
     bool choose_heaviest_task = kill_heaviest_task;
 
     for (i = OOM_SCORE_ADJ_MAX; i >= min_score_adj; i--) {
@@ -2446,20 +2523,12 @@ static int find_and_kill_process(int min_score_adj, struct kill_info *ki, union 
 
             killed_size = kill_one_process(procp, min_score_adj, ki, mi, wi, tm, pd);
             if (killed_size >= 0) {
-                if (!lmk_state_change_start) {
-                    lmk_state_change_start = true;
-                    stats_write_lmk_state_changed(STATE_START);
-                }
                 break;
             }
         }
         if (killed_size) {
             break;
         }
-    }
-
-    if (lmk_state_change_start) {
-        stats_write_lmk_state_changed(STATE_STOP);
     }
 
     return killed_size;
@@ -2591,6 +2660,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     static int64_t base_file_lru;
     static int64_t init_pgscan_kswapd;
     static int64_t init_pgscan_direct;
+    static int64_t init_pgrefill;
     static bool killing;
     static int thrashing_limit = thrashing_limit_pct;
     static struct zone_watermarks watermarks;
@@ -2620,6 +2690,9 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
     long since_thrashing_reset_ms;
     int64_t workingset_refault_file;
     bool critical_stall = false;
+    bool in_direct_reclaim;
+    long direct_reclaim_duration_ms;
+    bool in_kswapd_reclaim;
 
     if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
         ALOGE("Failed to get current time");
@@ -2672,13 +2745,26 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         swap_low_threshold = 0;
     }
 
+    if (memevent_listener) {
+        in_direct_reclaim =
+                direct_reclaim_start_tm.tv_sec != 0 || direct_reclaim_start_tm.tv_nsec != 0;
+        in_kswapd_reclaim = kswapd_start_tm.tv_sec != 0 || kswapd_start_tm.tv_nsec != 0;
+    } else {
+        in_direct_reclaim = vs.field.pgscan_direct != init_pgscan_direct;
+        in_kswapd_reclaim = (vs.field.pgscan_kswapd != init_pgscan_kswapd) ||
+                            (vs.field.pgrefill != init_pgrefill);
+    }
+
     /* Identify reclaim state */
-    if (vs.field.pgscan_direct != init_pgscan_direct) {
+    if (in_direct_reclaim) {
         init_pgscan_direct = vs.field.pgscan_direct;
         init_pgscan_kswapd = vs.field.pgscan_kswapd;
+        init_pgrefill = vs.field.pgrefill;
+        direct_reclaim_duration_ms = get_time_diff_ms(&direct_reclaim_start_tm, &curr_tm);
         reclaim = DIRECT_RECLAIM;
-    } else if (vs.field.pgscan_kswapd != init_pgscan_kswapd) {
+    } else if (in_kswapd_reclaim) {
         init_pgscan_kswapd = vs.field.pgscan_kswapd;
+        init_pgrefill = vs.field.pgrefill;
         reclaim = KSWAPD_RECLAIM;
     } else if (workingset_refault_file == prev_workingset_refault) {
         /*
@@ -2732,6 +2818,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         max_thrashing = thrashing;
     }
 
+update_watermarks:
     /*
      * Refresh watermarks once per min in case user updated one of the margins.
      * TODO: b/140521024 replace this periodic update with an API for AMS to notify LMKD
@@ -2765,6 +2852,7 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
          * This might happen when a process is consuming memory faster than reclaim can
          * free even after a kill. Mostly happens when running memory stress tests.
          */
+        min_score_adj = pressure_after_kill_min_score;
         kill_reason = PRESSURE_AFTER_KILL;
         strncpy(kill_desc, "min watermark is breached even after kill", sizeof(kill_desc));
     } else if (level == VMPRESS_LEVEL_CRITICAL && events != 0) {
@@ -2828,6 +2916,12 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
             min_score_adj = PERCEPTIBLE_APP_ADJ + 1;
         }
         check_filecache = true;
+    } else if (reclaim == DIRECT_RECLAIM && direct_reclaim_threshold_ms > 0 &&
+               direct_reclaim_duration_ms > direct_reclaim_threshold_ms) {
+        kill_reason = DIRECT_RECL_STUCK;
+        snprintf(kill_desc, sizeof(kill_desc),
+                 "device is stuck in direct reclaim (%" PRId64 "ms > %dms)",
+                 direct_reclaim_duration_ms, direct_reclaim_threshold_ms);
     } else if (check_filecache) {
         int64_t file_lru_kb = (vs.field.nr_inactive_file + vs.field.nr_active_file) * page_k;
 
@@ -2844,6 +2938,14 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
         }
     }
 
+    /* Check if a cached app should be killed */
+    if (kill_reason == NONE && wmark < WMARK_HIGH) {
+        kill_reason = LOW_MEM;
+        snprintf(kill_desc, sizeof(kill_desc), "%s watermark is breached",
+            wmark < WMARK_LOW ? "min" : "low");
+        min_score_adj = lowmem_min_oom_score;
+    }
+
     /* Kill a process if necessary */
     if (kill_reason != NONE) {
         struct kill_info ki = {
@@ -2852,6 +2954,14 @@ static void mp_event_psi(int data, uint32_t events, struct polling_params *poll_
             .thrashing = (int)thrashing,
             .max_thrashing = max_thrashing,
         };
+        static bool first_kill = true;
+
+        /* Make sure watermarks are correct before the first kill */
+        if (first_kill) {
+            first_kill = false;
+            watermarks.high_wmark = 0;  // force recomputation
+            goto update_watermarks;
+        }
 
         /* Allow killing perceptible apps if the system is stalled */
         if (critical_stall) {
@@ -3206,7 +3316,7 @@ static MemcgVersion __memcg_version() {
     if (!CgroupGetControllerPath("memory", &memcg_path)) {
         return MemcgVersion::kNotFound;
     }
-    return CgroupGetControllerPath(CGROUPV2_CONTROLLER_NAME, &cgroupv2_path) &&
+    return CgroupGetControllerPath(CGROUPV2_HIERARCHY_NAME, &cgroupv2_path) &&
                            cgroupv2_path == memcg_path
                    ? MemcgVersion::kV2
                    : MemcgVersion::kV1;
@@ -3216,6 +3326,101 @@ static MemcgVersion memcg_version() {
     static MemcgVersion version = __memcg_version();
 
     return version;
+}
+
+static void memevent_listener_notification(int data __unused, uint32_t events __unused,
+                                           struct polling_params* poll_params __unused) {
+    struct timespec curr_tm;
+    std::vector<mem_event_t> mem_events;
+
+    if (clock_gettime(CLOCK_MONOTONIC_COARSE, &curr_tm) != 0) {
+        direct_reclaim_start_tm.tv_sec = 0;
+        direct_reclaim_start_tm.tv_nsec = 0;
+        ALOGE("Failed to get current time for memevent listener notification.");
+        return;
+    }
+
+    if (!memevent_listener->getMemEvents(mem_events)) {
+        direct_reclaim_start_tm.tv_sec = 0;
+        direct_reclaim_start_tm.tv_nsec = 0;
+        ALOGE("Failed fetching memory listener events.");
+        return;
+    }
+
+    for (const mem_event_t& mem_event : mem_events) {
+        switch (mem_event.type) {
+            /* Direct Reclaim */
+            case MEM_EVENT_DIRECT_RECLAIM_BEGIN:
+                direct_reclaim_start_tm = curr_tm;
+                break;
+            case MEM_EVENT_DIRECT_RECLAIM_END:
+                direct_reclaim_start_tm.tv_sec = 0;
+                direct_reclaim_start_tm.tv_nsec = 0;
+                break;
+
+            /* kswapd */
+            case MEM_EVENT_KSWAPD_WAKE:
+                kswapd_start_tm = curr_tm;
+                break;
+            case MEM_EVENT_KSWAPD_SLEEP:
+                kswapd_start_tm.tv_sec = 0;
+                kswapd_start_tm.tv_nsec = 0;
+                break;
+        }
+    }
+}
+
+static bool init_memevent_listener_monitoring() {
+    static struct event_handler_info direct_reclaim_poll_hinfo = {0,
+                                                                  memevent_listener_notification};
+
+    if (memevent_listener) return true;
+
+    // Make sure bpf programs are loaded, else we'll wait until they are loaded
+    android::bpf::waitForProgsLoaded();
+    memevent_listener = std::make_unique<android::bpf::memevents::MemEventListener>(
+            android::bpf::memevents::MemEventClient::LMKD);
+
+    if (!memevent_listener->ok()) {
+        ALOGE("Failed to initialize memevents listener");
+        memevent_listener.reset();
+        return false;
+    }
+
+    if (!memevent_listener->registerEvent(MEM_EVENT_DIRECT_RECLAIM_BEGIN) ||
+        !memevent_listener->registerEvent(MEM_EVENT_DIRECT_RECLAIM_END)) {
+        ALOGE("Failed to register direct reclaim memevents");
+        memevent_listener.reset();
+        return false;
+    }
+    if (!memevent_listener->registerEvent(MEM_EVENT_KSWAPD_WAKE) ||
+        !memevent_listener->registerEvent(MEM_EVENT_KSWAPD_SLEEP)) {
+        ALOGE("Failed to register kswapd memevents");
+        memevent_listener.reset();
+        return false;
+    }
+
+    int memevent_listener_fd = memevent_listener->getRingBufferFd();
+    if (memevent_listener_fd < 0) {
+        memevent_listener.reset();
+        ALOGE("Invalid memevent_listener fd: %d", memevent_listener_fd);
+        return false;
+    }
+
+    struct epoll_event epev;
+    epev.events = EPOLLIN;
+    epev.data.ptr = (void*)&direct_reclaim_poll_hinfo;
+    if (epoll_ctl(epollfd, EPOLL_CTL_ADD, memevent_listener_fd, &epev) < 0) {
+        ALOGE("Failed registering memevent_listener fd: %d; errno=%d", memevent_listener_fd, errno);
+        memevent_listener.reset();
+        return false;
+    }
+
+    direct_reclaim_start_tm.tv_sec = 0;
+    direct_reclaim_start_tm.tv_nsec = 0;
+
+    maxevents++;
+    return true;
 }
 
 static bool init_psi_monitors() {
@@ -3368,6 +3573,8 @@ static bool init_monitors() {
     } else {
         ALOGI("Using vmpressure for memory pressure detection");
     }
+
+    monitors_initialized = true;
     return true;
 }
 
@@ -3451,10 +3658,9 @@ static int init(void) {
     int i;
     int ret;
 
-    page_k = sysconf(_SC_PAGESIZE);
-    if (page_k == -1)
-        page_k = PAGE_SIZE;
-    page_k /= 1024;
+    // Initialize page size
+    pagesize = getpagesize();
+    page_k = pagesize / 1024;
 
     epollfd = epoll_create(MAX_EPOLL_EVENTS);
     if (epollfd == -1) {
@@ -3507,8 +3713,13 @@ static int init(void) {
             }
         }
     } else {
-        if (!init_monitors()) {
-            return -1;
+        // Do not register monitors until boot completed for devices configured
+        // for delaying monitors. This is done to save CPU cycles for low
+        // resource devices during boot up.
+        if (!delay_monitors_until_boot || property_get_bool("sys.boot_completed", false)) {
+            if (!init_monitors()) {
+                return -1;
+            }
         }
         /* let the others know it does support reporting kills */
         property_set("sys.lmk.reportkills", "1");
@@ -3732,6 +3943,41 @@ int issue_reinit() {
     return res == UPDATE_PROPS_SUCCESS ? 0 : -1;
 }
 
+static int on_boot_completed() {
+    int sock;
+
+    sock = lmkd_connect();
+    if (sock < 0) {
+        ALOGE("failed to connect to lmkd: %s", strerror(errno));
+        return -1;
+    }
+
+    enum boot_completed_notification_result res = lmkd_notify_boot_completed(sock);
+
+    switch (res) {
+        case BOOT_COMPLETED_NOTIF_SUCCESS:
+            break;
+        case BOOT_COMPLETED_NOTIF_ALREADY_HANDLED:
+            ALOGW("lmkd already handled boot-completed operations");
+            break;
+        case BOOT_COMPLETED_NOTIF_SEND_ERR:
+            ALOGE("failed to send lmkd request: %m");
+            break;
+        case BOOT_COMPLETED_NOTIF_RECV_ERR:
+            ALOGE("failed to receive request: %m");
+            break;
+        case BOOT_COMPLETED_NOTIF_FORMAT_ERR:
+            ALOGE("lmkd reply is invalid");
+            break;
+        case BOOT_COMPLETED_NOTIF_FAILS:
+            ALOGE("lmkd failed to receive boot-completed notification");
+            break;
+    }
+
+    close(sock);
+    return res == BOOT_COMPLETED_NOTIF_SUCCESS ? 0 : -1;
+}
+
 static bool update_props() {
     /* By default disable low level vmpressure events */
     level_oomadj[VMPRESS_LEVEL_LOW] =
@@ -3754,6 +4000,8 @@ static bool update_props() {
     low_ram_device = property_get_bool("ro.config.low_ram", false);
     kill_timeout_ms =
         (unsigned long)GET_LMK_PROPERTY(int32, "kill_timeout_ms", 100);
+    pressure_after_kill_min_score =
+        (unsigned long)GET_LMK_PROPERTY(int32, "pressure_after_kill_min_score", 0);
     use_minfree_levels =
         GET_LMK_PROPERTY(bool, "use_minfree_levels", false);
     per_app_memcg =
@@ -3770,10 +4018,18 @@ static bool update_props() {
     thrashing_limit_decay_pct = clamp(0, 100, GET_LMK_PROPERTY(int32, "thrashing_limit_decay",
         low_ram_device ? DEF_THRASHING_DECAY_LOWRAM : DEF_THRASHING_DECAY));
     thrashing_critical_pct = std::max(
-            0, GET_LMK_PROPERTY(int32, "thrashing_limit_critical", thrashing_limit_pct * 2));
+            0, GET_LMK_PROPERTY(int32, "thrashing_limit_critical", thrashing_limit_pct * 3));
     swap_util_max = clamp(0, 100, GET_LMK_PROPERTY(int32, "swap_util_max", 100));
     filecache_min_kb = GET_LMK_PROPERTY(int64, "filecache_min_kb", 0);
     stall_limit_critical = GET_LMK_PROPERTY(int64, "stall_limit_critical", 100);
+    delay_monitors_until_boot = GET_LMK_PROPERTY(bool, "delay_monitors_until_boot", false);
+    direct_reclaim_threshold_ms =
+            GET_LMK_PROPERTY(int64, "direct_reclaim_threshold_ms", DEF_DIRECT_RECL_THRESH_MS);
+    swap_compression_ratio =
+            GET_LMK_PROPERTY(int64, "swap_compression_ratio", DEF_SWAP_COMP_RATIO);
+    lowmem_min_oom_score =
+            std::max(PERCEPTIBLE_APP_ADJ + 1,
+                     GET_LMK_PROPERTY(int32, "lowmem_min_oom_score", DEF_LOWMEM_MIN_SCORE));
 
     reaper.enable_debug(debug_process_killing);
 
@@ -3787,11 +4043,15 @@ static bool update_props() {
 }
 
 int main(int argc, char **argv) {
-    if ((argc > 1) && argv[1] && !strcmp(argv[1], "--reinit")) {
-        if (property_set(LMKD_REINIT_PROP, "")) {
-            ALOGE("Failed to reset " LMKD_REINIT_PROP " property");
+    if ((argc > 1) && argv[1]) {
+        if (!strcmp(argv[1], "--reinit")) {
+            if (property_set(LMKD_REINIT_PROP, "")) {
+                ALOGE("Failed to reset " LMKD_REINIT_PROP " property");
+            }
+            return issue_reinit();
+        } else if (!strcmp(argv[1], "--boot_completed")) {
+            return on_boot_completed();
         }
-        return issue_reinit();
     }
 
     if (!update_props()) {
