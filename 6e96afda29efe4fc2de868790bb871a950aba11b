@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0339edbb_6af9e384",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1810,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-10T10:15:14Z",
+      "side": 1,
+      "message": "io_uring is supported from kernels 5.1 and above, but `IORING_OP_READ` and `IORING_OP_WRITE` were introduced until 5.6. The suggestion doesn\u0027t provide the data to verify that the current kernel supports read/write operations.\n\nI also checked `io_uring_probe`, which would allow to check for supported operations and capabilities, but this functionality is only supported in kernel versions 5.6 as well.\n\nFrom other io_uring integrations, in android, we can see that this check is already being done:\n- [system/core/fs_mgr/libsnapshot/snapuserd/utility.cpp](https://cs.android.com/android/platform/superproject/main/+/main:system/core/fs_mgr/libsnapshot/snapuserd/utility.cpp;l\u003d50-62;drc\u003de57ef38bb2fbf213ec7e23ca659f731ef4b517ab)\n- [system/core/fastboot/device/usb.cpp](https://cs.android.com/android/platform/superproject/main/+/main:system/core/fastboot/device/usb.cpp;l\u003d212-224;drc\u003de21b7a552d18baf7745787023961bf89b8703a55)",
+      "parentUuid": "5ac0901c_7ff88804",
+      "range": {
+        "startLine": 1810,
+        "startChar": 12,
+        "endLine": 1810,
+        "endChar": 30
+      },
+      "revId": "6e96afda29efe4fc2de868790bb871a950aba11b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d4e2d34c_5d0a7c3d",
         "filename": "lmkd.cpp",
         "patchSetId": 5
@@ -37,6 +61,30 @@
       "writtenOn": "2024-05-09T20:34:55Z",
       "side": 1,
       "message": "You are duplicating this call here and inside cmd_procs_prio(). Why not check for isIoUringSupported inside cmd_procs_prio() and have separate case handling in there?",
+      "range": {
+        "startLine": 1814,
+        "startChar": 11,
+        "endLine": 1814,
+        "endChar": 74
+      },
+      "revId": "6e96afda29efe4fc2de868790bb871a950aba11b",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "52149bc9_15884d45",
+        "filename": "lmkd.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1814,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-10T10:15:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d4e2d34c_5d0a7c3d",
       "range": {
         "startLine": 1814,
         "startChar": 11,
