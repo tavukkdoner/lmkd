@@ -42,6 +42,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a70a60e3_102e796b",
+        "filename": "include/lmkd.h",
+        "patchSetId": 17
+      },
+      "lineNbr": 328,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-10T09:28:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5b41fd38_a0866d53",
+      "range": {
+        "startLine": 328,
+        "startChar": 61,
+        "endLine": 328,
+        "endChar": 73
+      },
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3d4a0f7f_69423e38",
@@ -79,6 +103,30 @@
       "side": 1,
       "message": "I think we should do that once we have more data on average bulk allocation sizes. Otherwise we will be guessing what this number should be. Maybe we can get this data from telemetry?",
       "parentUuid": "3d4a0f7f_69423e38",
+      "range": {
+        "startLine": 331,
+        "startChar": 30,
+        "endLine": 331,
+        "endChar": 49
+      },
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "959e7c7f_bbefd595",
+        "filename": "include/lmkd.h",
+        "patchSetId": 17
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-10T09:28:40Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "ea2aef4b_43d16389",
       "range": {
         "startLine": 331,
         "startChar": 30,
@@ -140,6 +188,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d01715c_481d6fb7",
+        "filename": "include/lmkd.h",
+        "patchSetId": 17
+      },
+      "lineNbr": 339,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-10T09:28:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5c8dc566_cde9df75",
+      "range": {
+        "startLine": 339,
+        "startChar": 44,
+        "endLine": 339,
+        "endChar": 54
+      },
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8ee8657e_928e2768",
@@ -153,6 +225,30 @@
       "writtenOn": "2024-05-09T20:26:12Z",
       "side": 1,
       "message": "ditto",
+      "range": {
+        "startLine": 356,
+        "startChar": 46,
+        "endLine": 356,
+        "endChar": 68
+      },
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1458b772_b5b123ac",
+        "filename": "include/lmkd.h",
+        "patchSetId": 17
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-10T09:28:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8ee8657e_928e2768",
       "range": {
         "startLine": 356,
         "startChar": 46,
@@ -257,6 +353,54 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e5931d00_2e2fc0ab",
+        "filename": "liblmkd_utils.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-10T09:28:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3575948d_771a578d",
+      "range": {
+        "startLine": 57,
+        "startChar": 4,
+        "endLine": 57,
+        "endChar": 23
+      },
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "32ad6a71_d1236612",
+        "filename": "liblmkd_utils.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-10T09:28:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ee28bfc0_bf8937a1",
+      "range": {
+        "startLine": 57,
+        "startChar": 65,
+        "endLine": 57,
+        "endChar": 75
+      },
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6b79dab1_29e9a353",
@@ -280,6 +424,30 @@
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b70077e4_2984f2e8",
+        "filename": "lmkd.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 1647,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-10T09:28:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6b79dab1_29e9a353",
+      "range": {
+        "startLine": 1642,
+        "startChar": 8,
+        "endLine": 1647,
+        "endChar": 37
+      },
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ea8a5d85_d1446564",
@@ -293,6 +461,30 @@
       "writtenOn": "2024-05-09T20:26:12Z",
       "side": 1,
       "message": "why?",
+      "range": {
+        "startLine": 299,
+        "startChar": 8,
+        "endLine": 299,
+        "endChar": 27
+      },
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d0039b1_f5ec8b46",
+        "filename": "tests/lmkd_tests.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-10T09:28:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ea8a5d85_d1446564",
       "range": {
         "startLine": 299,
         "startChar": 8,
@@ -340,6 +532,30 @@
           ]
         }
       ],
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d71f0f12_7e367a5b",
+        "filename": "tests/lmkd_tests.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-10T09:28:40Z",
+      "side": 1,
+      "message": "Makes sense, went ahead and utilized the LMKD boot complete request.\n\n`io_uring` is async, but `PROCS_PRIO` has to wait for the read/write async calls to finish to then perform some register logic afterwards.",
+      "parentUuid": "43fc52b5_0c779e3b",
+      "range": {
+        "startLine": 314,
+        "startChar": 4,
+        "endLine": 314,
+        "endChar": 13
+      },
       "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
