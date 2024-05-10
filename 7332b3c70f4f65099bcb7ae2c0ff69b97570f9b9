@@ -558,6 +558,30 @@
       },
       "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d6beb30_75081fa5",
+        "filename": "tests/lmkd_tests.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-10T16:58:09Z",
+      "side": 1,
+      "message": "boot complete request seems a bit more risky (might have side-effects) than LMK_GETKILLCNT (which is only to get info). I would suggest you create a function similar to `lmkd_notify_boot_completed` which sends `LMK_GETKILLCNT` request and waits for the reply and use it here instead.",
+      "parentUuid": "d71f0f12_7e367a5b",
+      "range": {
+        "startLine": 314,
+        "startChar": 4,
+        "endLine": 314,
+        "endChar": 13
+      },
+      "revId": "7332b3c70f4f65099bcb7ae2c0ff69b97570f9b9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }

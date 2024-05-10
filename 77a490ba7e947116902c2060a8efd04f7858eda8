@@ -1,0 +1,171 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc1b8048_9c2218da",
+        "filename": "include/lmkd.h",
+        "patchSetId": 19
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-10T16:58:09Z",
+      "side": 1,
+      "message": "This is not technically correct because that struct might be packed and take less space. The right calculation would be \n```\n#define PROCS_PRIO_MAX_SIZE (CTRL_PACKET_MAX_SIZE / (LMK_PROCPRIO_TOTAL_FIELDS * sizeof(int)))\n```\neven better:\n```\nstruct lmk_procprio {\n    pid_t pid;\n    uid_t uid;\n    int oomadj;\n    enum proc_type ptype;\n};\n#define LMK_PROCPRIO_TOTAL_FIELDS 4\n#define LMK_PROCPRIO_SIZE (LMK_PROCPRIO_TOTAL_FIELDS * sizeof(int))\n...\n#define PROCS_PRIO_MAX_SIZE (CTRL_PACKET_MAX_SIZE / LMK_PROCPRIO_SIZE)\n```\n\nI would also rename `PROCS_PRIO_MAX_SIZE` into `PROCS_PRIO_MAX_RECORD_COUNT` and `LMK_PROCPRIO_TOTAL_FIELDS` into `LMK_PROCPRIO_FIELD_COUNT`",
+      "range": {
+        "startLine": 329,
+        "startChar": 54,
+        "endLine": 329,
+        "endChar": 81
+      },
+      "revId": "77a490ba7e947116902c2060a8efd04f7858eda8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "255a5109_eb24564d",
+        "filename": "lmkd.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 1482,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-10T16:58:09Z",
+      "side": 1,
+      "message": "`const int`",
+      "range": {
+        "startLine": 1482,
+        "startChar": 52,
+        "endLine": 1482,
+        "endChar": 62
+      },
+      "revId": "77a490ba7e947116902c2060a8efd04f7858eda8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0715526e_3d7435d4",
+        "filename": "tests/lmkd_tests.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 313,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-10T16:58:09Z",
+      "side": 1,
+      "message": "Instead of exposing `sock` you should implement a function similar to `SendProcsPrioRequest`, like `SendGetKillCountRequest`",
+      "range": {
+        "startLine": 313,
+        "startChar": 60,
+        "endLine": 313,
+        "endChar": 75
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "f194a454_1a63bd37",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "tests/lmkd_tests.cpp",
+              "range": {
+                "startLine": 83,
+                "startChar": 0,
+                "endLine": 84,
+                "endChar": 0
+              },
+              "replacement": "        ASSERT_FALSE((sock_ \u003d lmkd_connect()) \u003c 0)\n"
+            },
+            {
+              "path": "tests/lmkd_tests.cpp",
+              "range": {
+                "startLine": 89,
+                "startChar": 0,
+                "endLine": 90,
+                "endChar": 0
+              },
+              "replacement": "            EXPECT_EQ(lmkd_update_props(sock_), UPDATE_PROPS_SUCCESS)\n"
+            },
+            {
+              "path": "tests/lmkd_tests.cpp",
+              "range": {
+                "startLine": 98,
+                "startChar": 0,
+                "endLine": 99,
+                "endChar": 0
+              },
+              "replacement": "        close(sock_);\n"
+            },
+            {
+              "path": "tests/lmkd_tests.cpp",
+              "range": {
+                "startLine": 108,
+                "startChar": 0,
+                "endLine": 109,
+                "endChar": 0
+              },
+              "replacement": "        ASSERT_FALSE(lmkd_register_proc(sock_, \u0026params) \u003c 0)\n"
+            },
+            {
+              "path": "tests/lmkd_tests.cpp",
+              "range": {
+                "startLine": 118,
+                "startChar": 0,
+                "endLine": 119,
+                "endChar": 0
+              },
+              "replacement": "        ASSERT_FALSE(lmkd_register_procs(sock_, \u0026procs_prio_request, procs_count) \u003c 0)\n"
+            },
+            {
+              "path": "tests/lmkd_tests.cpp",
+              "range": {
+                "startLine": 121,
+                "startChar": 0,
+                "endLine": 121,
+                "endChar": 0
+              },
+              "replacement": "\n    void SendBootCompletedNotification() {\n        const auto lmkd_boot_notif \u003d lmkd_notify_boot_completed(sock_);\n        if (lmkd_boot_notif \u003d\u003d BOOT_COMPLETED_NOTIF_SEND_ERR ||\n            lmkd_boot_notif \u003d\u003d BOOT_COMPLETED_NOTIF_RECV_ERR) {\n            FAIL() \u003c\u003c \"Failed to communicate with lmkd\";\n        }\n    }\n"
+            },
+            {
+              "path": "tests/lmkd_tests.cpp",
+              "range": {
+                "startLine": 180,
+                "startChar": 0,
+                "endLine": 182,
+                "endChar": 0
+              },
+              "replacement": ""
+            },
+            {
+              "path": "tests/lmkd_tests.cpp",
+              "range": {
+                "startLine": 184,
+                "startChar": 0,
+                "endLine": 185,
+                "endChar": 0
+              },
+              "replacement": "    int sock_;\n"
+            },
+            {
+              "path": "tests/lmkd_tests.cpp",
+              "range": {
+                "startLine": 313,
+                "startChar": 0,
+                "endLine": 318,
+                "endChar": 0
+              },
+              "replacement": "    SendBootCompletedNotification();\n"
+            }
+          ]
+        }
+      ],
+      "revId": "77a490ba7e947116902c2060a8efd04f7858eda8",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
