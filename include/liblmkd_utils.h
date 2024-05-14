@@ -85,6 +85,14 @@ enum boot_completed_notification_result {
  */
 enum boot_completed_notification_result lmkd_notify_boot_completed(int sock);
 
+enum get_kill_count_err_result {
+    GET_KILL_COUNT_SEND_ERR = -1,
+    GET_KILL_COUNT_RECV_ERR = -2,
+    GET_KILL_COUNT_FORMAT_ERR = -3,
+};
+
+int lmkd_get_kill_count(int sock, struct lmk_getkillcnt* params);
+
 __END_DECLS
 
 #endif /* _LIBLMKD_UTILS_H_ */
