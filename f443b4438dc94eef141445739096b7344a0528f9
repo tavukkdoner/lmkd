@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eba8d6c9_cdd45492",
+        "filename": "tests/lmkd_tests.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-17T23:25:05Z",
+      "side": 1,
+      "message": "You should use `struct lmk_getkillcnt *get_kill_cnt_request` otherwise the struct is copied unnecessarily.",
+      "range": {
+        "startLine": 122,
+        "startChar": 33,
+        "endLine": 122,
+        "endChar": 76
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "d3d16ab0_2d8578a9",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "tests/lmkd_tests.cpp",
+              "range": {
+                "startLine": 122,
+                "startChar": 0,
+                "endLine": 123,
+                "endChar": 0
+              },
+              "replacement": "    void SendGetKillCountRequest(struct lmk_getkillcnt *get_kill_cnt_request) {\n"
+            },
+            {
+              "path": "tests/lmkd_tests.cpp",
+              "range": {
+                "startLine": 319,
+                "startChar": 0,
+                "endLine": 320,
+                "endChar": 0
+              },
+              "replacement": "    SendGetKillCountRequest(\u0026kill_cnt_req);\n"
+            }
+          ]
+        }
+      ],
+      "revId": "f443b4438dc94eef141445739096b7344a0528f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "28192977_c7746309",
+        "filename": "tests/lmkd_tests.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-17T23:25:05Z",
+      "side": 1,
+      "message": "nit: you could shorten it by initializing like this:\n\n```\nstruct lmk_getkillcnt kill_cnt_req \u003d { .min_oomadj \u003d -1000, .max_oomadj \u003d 1000 };\n```",
+      "range": {
+        "startLine": 316,
+        "startChar": 4,
+        "endLine": 318,
+        "endChar": 35
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "715ce974_55164706",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "tests/lmkd_tests.cpp",
+              "range": {
+                "startLine": 316,
+                "startChar": 0,
+                "endLine": 319,
+                "endChar": 0
+              },
+              "replacement": "    struct lmk_getkillcnt kill_cnt_req \u003d {.min_oomadj \u003d -1000, .max_oomadj \u003d 1000};\n"
+            }
+          ]
+        }
+      ],
+      "revId": "f443b4438dc94eef141445739096b7344a0528f9",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
