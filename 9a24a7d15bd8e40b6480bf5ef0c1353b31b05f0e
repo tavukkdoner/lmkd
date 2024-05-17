@@ -1,0 +1,39 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d6fe720_2f6c4f86",
+        "filename": "include/liblmkd_utils.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-05-17T23:15:26Z",
+      "side": 1,
+      "message": "Please add a comment explaining what this does and return values, especially error cases.",
+      "fixSuggestions": [
+        {
+          "fixId": "3b4bce79_2950dfee",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "include/liblmkd_utils.h",
+              "range": {
+                "startLine": 94,
+                "startChar": 0,
+                "endLine": 94,
+                "endChar": 0
+              },
+              "replacement": "/*\n * Get the number of kills LMKD has performed.\n * On success returns 0.\n * On error, -1 is returned.\n * In the case of error errno is set appropriately.\n */\n"
+            }
+          ]
+        }
+      ],
+      "revId": "9a24a7d15bd8e40b6480bf5ef0c1353b31b05f0e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
