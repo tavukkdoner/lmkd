@@ -117,6 +117,30 @@
       },
       "revId": "01ec4bcd6ee5986217a9dbd0fa9811e300e6932a",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c40f664_8f28ad82",
+        "filename": "lmkd.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1612,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-05-31T22:58:04Z",
+      "side": 1,
+      "message": "Done. Adjusted the correct ALOGW and readjusted the wrong ALOGW.",
+      "parentUuid": "8cce378e_cbfc6606",
+      "range": {
+        "startLine": 1612,
+        "startChar": 8,
+        "endLine": 1612,
+        "endChar": 13
+      },
+      "revId": "01ec4bcd6ee5986217a9dbd0fa9811e300e6932a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
