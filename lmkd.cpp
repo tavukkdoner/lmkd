@@ -3123,8 +3123,7 @@ update_watermarks:
     } else if (reclaim == DIRECT_RECLAIM && direct_reclaim_threshold_ms > 0 &&
                direct_reclaim_duration_ms > direct_reclaim_threshold_ms) {
         kill_reason = DIRECT_RECL_STUCK;
-        snprintf(kill_desc, sizeof(kill_desc),
-                 "device is stuck in direct reclaim (%" PRId64 "ms > %dms)",
+        snprintf(kill_desc, sizeof(kill_desc), "device is stuck in direct reclaim (%ldms > %dms)",
                  direct_reclaim_duration_ms, direct_reclaim_threshold_ms);
     } else if (check_filecache) {
         int64_t file_lru_kb = (vs.field.nr_inactive_file + vs.field.nr_active_file) * page_k;
