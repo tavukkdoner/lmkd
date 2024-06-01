@@ -118,6 +118,27 @@ enum boot_completed_notification_result lmkd_notify_boot_completed(int sock) {
     return res;
 }
 
+int lmkd_get_kill_count(int sock, struct lmk_getkillcnt* params) {
+    LMKD_CTRL_PACKET packet;
+    int size;
+
+    size = lmkd_pack_set_getkillcnt(packet, params);
+    if (TEMP_FAILURE_RETRY(write(sock, packet, size)) < 0) {
+        return (int)GET_KILL_COUNT_SEND_ERR;
+    }
+
+    size = TEMP_FAILURE_RETRY(read(sock, packet, CTRL_PACKET_MAX_SIZE));
+    if (size < 0) {
+        return (int)GET_KILL_COUNT_RECV_ERR;
+    }
+
+    if (size != 2 * sizeof(int) || lmkd_pack_get_cmd(packet) != LMK_GETKILLCNT) {
+        return (int)GET_KILL_COUNT_FORMAT_ERR;
+    }
+
+    return packet[1];
+}
+
 int create_memcg(uid_t uid, pid_t pid) {
     return createProcessGroup(uid, pid, true) == 0 ? 0 : -1;
 }
