@@ -1219,14 +1219,11 @@ static void register_oom_adj_proc(const struct lmk_procprio& proc, struct ucred*
     }
 }
 
-static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred* cred) {
+static void apply_proc_prio(const struct lmk_procprio& params, struct ucred* cred) {
     char path[PROCFS_PATH_MAX];
     char val[20];
-    struct lmk_procprio params;
     int64_t tgid;
     char buf[pagesize];
-
-    lmkd_pack_get_procprio(packet, field_count, &params);
 
     if (params.oomadj < OOM_SCORE_ADJ_MIN || params.oomadj > OOM_SCORE_ADJ_MAX) {
         ALOGE("Invalid PROCPRIO oomadj argument %d", params.oomadj);
@@ -1266,6 +1263,13 @@ static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred*
     }
 
     register_oom_adj_proc(params, cred);
+}
+
+static void cmd_procprio(LMKD_CTRL_PACKET packet, int field_count, struct ucred* cred) {
+    struct lmk_procprio proc_prio;
+
+    lmkd_pack_get_procprio(packet, field_count, &proc_prio);
+    apply_proc_prio(proc_prio, cred);
 }
 
 static void cmd_procremove(LMKD_CTRL_PACKET packet, struct ucred *cred) {
