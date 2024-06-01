@@ -1479,6 +1479,20 @@ static void cmd_target(int ntargets, LMKD_CTRL_PACKET packet) {
     }
 }
 
+static void cmd_procs_prio(LMKD_CTRL_PACKET packet, const int field_count, struct ucred* cred) {
+    struct lmk_procs_prio params;
+
+    const int procs_count = lmkd_pack_get_procs_prio(packet, &params, field_count);
+    if (procs_count < 0) {
+        ALOGE("LMK_PROCS_PRIO received invalid packet format");
+        return;
+    }
+
+    for (int i = 0; i < procs_count; i++) {
+        apply_proc_prio(params.procs[i], cred);
+    }
+}
+
 static void ctrl_command_handler(int dsock_idx) {
     LMKD_CTRL_PACKET packet;
     struct ucred cred;
@@ -1626,6 +1640,9 @@ static void ctrl_command_handler(int dsock_idx) {
         if (ctrl_data_write(dsock_idx, (char*)packet, len) != len) {
             ALOGE("Failed to report boot-completed operation results");
         }
+        break;
+    case LMK_PROCS_PRIO:
+        cmd_procs_prio(packet, nargs, &cred);
         break;
     default:
         ALOGE("Received unknown command code %d", cmd);
