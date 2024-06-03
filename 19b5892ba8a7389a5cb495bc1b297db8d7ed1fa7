@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "60b440af_3e0ebadc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1930620
+      },
+      "writtenOn": "2024-06-03T15:26:57Z",
+      "side": 1,
+      "message": "@carlosgalo@google.com looks like the wrong bug number FYI",
+      "revId": "19b5892ba8a7389a5cb495bc1b297db8d7ed1fa7",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
