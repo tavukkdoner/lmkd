@@ -210,6 +210,9 @@ TEST_F(LmkdTest, TargetReaping) {
         FAIL() << "Target process " << pid << " was not killed";
     }
 
+    // wait 200ms for the reaper thread to write its output in the logcat
+    usleep(200000);
+
     std::string regex = StringPrintf("((" LMKD_KILL_TEMPLATE ")|(" LMKD_REAP_TEMPLATE
                                      ")|(" LMKD_REAP_FAIL_TEMPLATE "))",
                                      pid, pid, pid);
