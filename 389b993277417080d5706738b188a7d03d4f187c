@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a4c4c95_0bc9272a",
+        "filename": "include/lmkd.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 1157738
+      },
+      "writtenOn": "2024-07-16T23:45:45Z",
+      "side": 1,
+      "message": "This is technically correct but in this lmkd protocol we always operated with `int` and having rss_kb as `int` still allows us to have up to 2048GB of RSS. I don\u0027t think we are going to hit that limit anytime soon, so let\u0027s keep it `int`. That way this code becomes simply `packet[3] \u003d htonl(rss_kb);`",
+      "range": {
+        "startLine": 253,
+        "startChar": 4,
+        "endLine": 254,
+        "endChar": 34
+      },
+      "fixSuggestions": [
+        {
+          "fixId": "5f7e2390_79a18cac",
+          "description": "prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "include/lmkd.h",
+              "range": {
+                "startLine": 253,
+                "startChar": 0,
+                "endLine": 255,
+                "endChar": 0
+              },
+              "replacement": "    packet[3] \u003d htonl(rss_kb);\n"
+            },
+            {
+              "path": "include/lmkd.h",
+              "range": {
+                "startLine": 256,
+                "startChar": 0,
+                "endLine": 257,
+                "endChar": 0
+              },
+              "replacement": "    return 4 * sizeof(int);\n"
+            }
+          ]
+        }
+      ],
+      "revId": "389b993277417080d5706738b188a7d03d4f187c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    }
+  ]
+}
