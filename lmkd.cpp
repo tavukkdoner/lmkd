@@ -40,8 +40,6 @@
 #include <shared_mutex>
 #include <vector>
 
-#include <BpfSyscallWrappers.h>
-#include <android-base/unique_fd.h>
 #include <bpf/KernelUtils.h>
 #include <bpf/WaitForProgsLoaded.h>
 #include <cutils/properties.h>
@@ -61,6 +59,9 @@
 #include "reaper.h"
 #include "statslog.h"
 #include "watchdog.h"
+
+#define BPF_FD_JUST_USE_INT
+#include "BpfSyscallWrappers.h"
 
 /*
  * Define LMKD_TRACE_KILLS to record lmkd kills in kernel traces
@@ -2115,12 +2116,12 @@ static bool meminfo_parse_line(char *line, union meminfo *mi) {
 }
 
 static int64_t read_gpu_total_kb() {
-    static android::base::unique_fd fd(
-            android::bpf::mapRetrieveRO("/sys/fs/bpf/map_gpuMem_gpu_mem_total_map"));
+    static int fd = android::bpf::bpfFdGet(
+            "/sys/fs/bpf/map_gpuMem_gpu_mem_total_map", BPF_F_RDONLY);
     static constexpr uint64_t kBpfKeyGpuTotalUsage = 0;
     uint64_t value;
 
-    if (!fd.ok()) {
+    if (fd < 0) {
         return 0;
     }
 
