@@ -50,6 +50,30 @@
       ],
       "revId": "389b993277417080d5706738b188a7d03d4f187c",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "83e48d60_c44c42b7",
+        "filename": "include/lmkd.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 1956645
+      },
+      "writtenOn": "2024-07-17T08:14:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a4c4c95_0bc9272a",
+      "range": {
+        "startLine": 253,
+        "startChar": 4,
+        "endLine": 254,
+        "endChar": 34
+      },
+      "revId": "389b993277417080d5706738b188a7d03d4f187c",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889"
     }
   ]
 }
