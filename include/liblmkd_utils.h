@@ -40,6 +40,14 @@ int lmkd_connect();
 int lmkd_register_proc(int sock, struct lmk_procprio *params);
 
 /*
+ * Registers a batch of processes with lmkd and sets its oomadj score.
+ * On success returns 0.
+ * On error, -1 is returned.
+ * In the case of error errno is set appropriately.
+ */
+int lmkd_register_procs(int sock, struct lmk_procs_prio* params, const int proc_count);
+
+/*
  * Unregisters a process previously registered with lmkd.
  * On success returns 0.
  * On error, -1 is returned.
@@ -70,6 +78,33 @@ enum update_props_result lmkd_update_props(int sock);
  * In the case of error errno is set appropriately.
  */
 int create_memcg(uid_t uid, pid_t pid);
+
+enum boot_completed_notification_result {
+    BOOT_COMPLETED_NOTIF_SUCCESS,
+    BOOT_COMPLETED_NOTIF_FAILS,
+    BOOT_COMPLETED_NOTIF_ALREADY_HANDLED,
+    BOOT_COMPLETED_NOTIF_SEND_ERR,
+    BOOT_COMPLETED_NOTIF_RECV_ERR,
+    BOOT_COMPLETED_NOTIF_FORMAT_ERR,
+};
+
+/*
+ * Notify LMKD the device has finished booting up.
+ */
+enum boot_completed_notification_result lmkd_notify_boot_completed(int sock);
+
+enum get_kill_count_err_result {
+    GET_KILL_COUNT_SEND_ERR = -1,
+    GET_KILL_COUNT_RECV_ERR = -2,
+    GET_KILL_COUNT_FORMAT_ERR = -3,
+};
+
+/*
+ * Get the number of kills LMKD has performed.
+ * On success returns number of kills.
+ * On error, get_kill_count_err_result integer value.
+ */
+int lmkd_get_kill_count(int sock, struct lmk_getkillcnt* params);
 
 __END_DECLS
 
