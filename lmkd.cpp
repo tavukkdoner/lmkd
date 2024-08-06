@@ -37,6 +37,7 @@
 #include <algorithm>
 #include <array>
 #include <memory>
+#include <optional>
 #include <shared_mutex>
 #include <vector>
 
@@ -58,6 +59,7 @@
 #include <processgroup/processgroup.h>
 #include <psi/psi.h>
 
+#include "memevents/bpf_types.h"
 #include "reaper.h"
 #include "statslog.h"
 #include "watchdog.h"
@@ -3545,12 +3547,18 @@ static void memevent_listener_notification(int data __unused, uint32_t events __
     }
 
     if (!memevent_listener->getMemEvents(mem_events)) {
+        // Direct reclaim
         direct_reclaim_start_tm.tv_sec = 0;
         direct_reclaim_start_tm.tv_nsec = 0;
+        // kswapd
+        kswapd_start_tm.tv_sec = 0;
+        kswapd_start_tm.tv_nsec = 0;
         ALOGE("Failed fetching memory listener events.");
         return;
     }
 
+    // Optional data if kswapd is currently awake
+    std::optional<struct mem_event_t::EventData::KswapdWake> maybe_kswapd_wake_data = std::nullopt;
     for (const mem_event_t& mem_event : mem_events) {
         switch (mem_event.type) {
             /* Direct Reclaim */
@@ -3565,10 +3573,12 @@ static void memevent_listener_notification(int data __unused, uint32_t events __
             /* kswapd */
             case MEM_EVENT_KSWAPD_WAKE:
                 kswapd_start_tm = curr_tm;
+                maybe_kswapd_wake_data = mem_event.event_data.kswapd_wake;
                 break;
             case MEM_EVENT_KSWAPD_SLEEP:
                 kswapd_start_tm.tv_sec = 0;
                 kswapd_start_tm.tv_nsec = 0;
+                maybe_kswapd_wake_data = std::nullopt;
                 break;
         }
     }
