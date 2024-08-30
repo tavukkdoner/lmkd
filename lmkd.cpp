@@ -2469,6 +2469,7 @@ static int64_t get_memory_usage(struct reread_data *file_data) {
     char *buf;
 
     if ((buf = reread_file(file_data)) == NULL) {
+        ALOGE("%s buf is null", file_data->filename);
         return -1;
     }
 
@@ -2480,6 +2481,7 @@ static int64_t get_memory_usage(struct reread_data *file_data) {
         ALOGE("No memory!");
         return -1;
     }
+    ALOGI("%ld mem_usage", (long)mem_usage);
     return mem_usage;
 }
 
@@ -3063,9 +3065,11 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
     }
 
     if ((mem_usage = get_memory_usage(&mem_usage_file_data)) < 0) {
+        ALOGI("MemUsage called do_kill");
         goto do_kill;
     }
     if ((memsw_usage = get_memory_usage(&memsw_usage_file_data)) < 0) {
+        ALOGI("MemAndSwapUsage called do_kill");
         goto do_kill;
     }
 
