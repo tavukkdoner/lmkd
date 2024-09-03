@@ -3374,6 +3374,7 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
 
     // Calculate percent for swappinness.
     mem_pressure = (mem_usage * 100) / memsw_usage;
+    ALOGI("%ld mem_pressure", (long)mem_pressure);
 
     if (enable_pressure_upgrade && level != VMPRESS_LEVEL_CRITICAL) {
         // We are swapping too much.
