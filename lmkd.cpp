@@ -220,6 +220,7 @@ static bool use_psi_monitors = false;
 static int kpoll_fd;
 static bool delay_monitors_until_boot;
 static char* excluded_tasknames;
+static bool debug_mem_info;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
     { PSI_SOME, 70 },    /* 70ms out of 1sec for partial stall */
     { PSI_SOME, 100 },   /* 100ms out of 1sec for partial stall */
@@ -2535,7 +2536,9 @@ static int64_t get_memory_usage(struct reread_data *file_data) {
         ALOGE("No memory!");
         return -1;
     }
-    ALOGI("%ld mem_usage", (long)mem_usage);
+    if(debug_mem_info) {
+        ALOGI("%ld mem_usage", (long)mem_usage);
+    }
     return mem_usage;
 }
 
@@ -3119,17 +3122,23 @@ static void mp_event_common(int data, uint32_t events, struct polling_params *po
     }
 
     if ((mem_usage = get_memory_usage(&mem_usage_file_data)) < 0) {
-        ALOGI("MemUsage called do_kill");
+        if(debug_mem_info) {
+            ALOGI("MemUsage called do_kill");
+        }
         goto do_kill;
     }
     if ((memsw_usage = get_memory_usage(&memsw_usage_file_data)) < 0) {
-        ALOGI("MemAndSwapUsage called do_kill");
+        if(debug_mem_info) {
+            ALOGI("MemAndSwapUsage called do_kill");
+        }
         goto do_kill;
     }
 
     // Calculate percent for swappinness.
     mem_pressure = (mem_usage * 100) / memsw_usage;
-    ALOGI("%ld mem_pressure", (long)mem_pressure);
+    if(debug_mem_info) {
+        ALOGI("%ld mem_pressure", (long)mem_pressure);
+    }
 
     if (enable_pressure_upgrade && level != VMPRESS_LEVEL_CRITICAL) {
         // We are swapping too much.
@@ -3856,6 +3865,7 @@ static bool update_props() {
     stall_limit_critical = GET_LMK_PROPERTY(int64, "stall_limit_critical", 100);
     delay_monitors_until_boot = GET_LMK_PROPERTY(bool, "delay_monitors_until_boot", false);
     property_get("ro.lmk.excluded_tasknames", excluded_tasknames, "");
+    debug_mem_info = GET_LMK_PROPERTY(bool, "debug_mem_info", false);
 
     reaper.enable_debug(debug_process_killing);
 
