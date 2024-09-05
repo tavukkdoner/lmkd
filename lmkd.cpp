@@ -2583,6 +2583,54 @@ static void start_wait_for_proc_kill(int pid_or_fd) {
     maxevents++;
 }
 
+/* If the package name is among the excluded ones, skip it without killing it. */
+static bool is_not_excluded(char *do_not_kill_tasknames, char *taskname) {
+    char *tasknames;
+    char *token;
+    int len = strlen(do_not_kill_tasknames);
+    int num_tasknames = 0;
+    bool is_killable = true;
+
+    tasknames = (char * ) malloc((len + 1) * sizeof(char));
+    tasknames[len] = '\0';
+
+
+    strncpy(tasknames, do_not_kill_tasknames, len);
+
+    /* Count the number of tasknames */
+    token = strtok(tasknames, ",");
+    while (token != NULL) {
+        num_tasknames++;
+        token = strtok(NULL, ",");
+    }
+    strncpy(tasknames, do_not_kill_tasknames, len);
+
+    /* Allocate memory for the array */
+    char **taskname_dict = malloc(num_tasknames * sizeof(char *));
+
+    /* Split the tasknames and store */
+    int i = 0;
+    token = strtok(tasknames, ",");
+
+    while (token != NULL) {
+        taskname_dict[i++] = strdup(token);
+        token = strtok(NULL, ",");
+    }
+
+    /* Check if is killable */
+    for (int i = 0; i < num_tasknames; i++) {
+        if (!strncmp(taskname_dict[i], taskname, strlen(taskname))) {
+            is_killable = false;
+            break;
+        }
+    }
+
+    free(tasknames);
+    free(taskname_dict);
+
+    return is_killable;
+}
+
 /* Kill one process specified by procp.  Returns the size (in pages) of the process killed */
 static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_info *ki,
                             union meminfo *mi, struct wakeup_info *wi, struct timespec *tm,
@@ -2624,6 +2672,11 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     // taskname will point inside buf, do not reuse buf onwards.
     if (!taskname) {
         goto out;
+    }
+    
+    if (strncmp(excluded_tasknames,"",strlen(excluded_tasknames)) && 
+            !is_not_excluded(excluded_tasknames, taskname)){
+    	goto out;
     }
 
     mem_st = stats_read_memory_stat(per_app_memcg, pid, uid, rss_kb * 1024, swap_kb * 1024);
