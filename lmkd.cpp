@@ -219,6 +219,7 @@ static int64_t stall_limit_critical;
 static bool use_psi_monitors = false;
 static int kpoll_fd;
 static bool delay_monitors_until_boot;
+static char* excluded_tasknames;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
     { PSI_SOME, 70 },    /* 70ms out of 1sec for partial stall */
     { PSI_SOME, 100 },   /* 100ms out of 1sec for partial stall */
@@ -3801,6 +3802,7 @@ static bool update_props() {
     filecache_min_kb = GET_LMK_PROPERTY(int64, "filecache_min_kb", 0);
     stall_limit_critical = GET_LMK_PROPERTY(int64, "stall_limit_critical", 100);
     delay_monitors_until_boot = GET_LMK_PROPERTY(bool, "delay_monitors_until_boot", false);
+    property_get("ro.lmk.excluded_tasknames", excluded_tasknames, "");
 
     reaper.enable_debug(debug_process_killing);
 
