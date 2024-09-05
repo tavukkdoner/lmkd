@@ -2310,7 +2310,7 @@ static void start_wait_for_proc_kill(int pid_or_fd) {
 }
 
 /* If the package name is among the excluded ones, skip it without killing it. */
-static bool is_not_excluded(char *do_not_kill_tasknames, char *taskname) {
+static bool is_excluded(char *do_not_kill_tasknames, char *taskname) {
     char *tasknames;
     char *token;
     int len = strlen(do_not_kill_tasknames);
@@ -2401,7 +2401,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
     }
     
     if (strncmp(excluded_tasknames,"",strlen(excluded_tasknames)) && 
-            !is_not_excluded(excluded_tasknames, taskname)){
+            !is_excluded(excluded_tasknames, taskname)){
     	goto out;
     }
 
