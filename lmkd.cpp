@@ -247,7 +247,7 @@ static bool delay_monitors_until_boot;
 static int direct_reclaim_threshold_ms;
 static int swap_compression_ratio;
 static int lowmem_min_oom_score;
-static char* excluded_tasknames;
+static bool exclude_tasknames;
 static bool debug_mem_info;
 static struct psi_threshold psi_thresholds[VMPRESS_LEVEL_COUNT] = {
     { PSI_SOME, 70 },    /* 70ms out of 1sec for partial stall */
@@ -2585,9 +2585,13 @@ static void start_wait_for_proc_kill(int pid_or_fd) {
 }
 
 /* If the package name is among the excluded ones, skip it without killing it. */
-static bool is_not_excluded(char *do_not_kill_tasknames, char *taskname) {
+static bool is_not_excluded(char *taskname) {
     char *tasknames;
     char *token;
+    char do_not_kill_tasknames[PROPERTY_VALUE_MAX]; //92
+	
+    property_get("ro.lmk.excluded_tasknames", do_not_kill_tasknames, "");
+	
     int len = strlen(do_not_kill_tasknames);
     int num_tasknames = 0;
     bool is_killable = true;
@@ -2678,8 +2682,7 @@ static int kill_one_process(struct proc* procp, int min_oom_score, struct kill_i
         goto out;
     }
     
-    if (strncmp(excluded_tasknames,"",strlen(excluded_tasknames)) && 
-            !is_not_excluded(excluded_tasknames, taskname)){
+    if (exclude_tasknames && !is_not_excluded(taskname)){
     	goto out;
     }
 
@@ -4304,7 +4307,7 @@ static bool update_props() {
     lowmem_min_oom_score =
             std::max(PERCEPTIBLE_APP_ADJ + 1,
                      GET_LMK_PROPERTY(int32, "lowmem_min_oom_score", DEF_LOWMEM_MIN_SCORE));
-    property_get("ro.lmk.excluded_tasknames", excluded_tasknames, "");
+    exclude_tasknames = GET_LMK_PROPERTY(bool, "exclude_tasknames", false);
     debug_mem_info = GET_LMK_PROPERTY(bool, "debug_mem_info", false);
 
     reaper.enable_debug(debug_process_killing);
